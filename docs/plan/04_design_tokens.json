@@ -1,0 +1,93 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/manifest",
+  "tokens": {
+    "spacing": {
+      "xxs": { "value": "4px" },
+      "xs": { "value": "8px" },
+      "sm": { "value": "12px" },
+      "md": { "value": "16px" },
+      "lg": { "value": "24px" },
+      "xl": { "value": "32px" },
+      "xxl": { "value": "48px" }
+    },
+    "radius": {
+      "sm": { "value": "6px" },
+      "md": { "value": "12px" },
+      "lg": { "value": "20px" }
+    },
+    "typography": {
+      "fontFamily": {
+        "sans": { "value": "'Inter', 'Segoe UI', sans-serif" },
+        "mono": { "value": "'Fira Code', monospace" }
+      },
+      "fontSize": {
+        "xs": { "value": "12px" },
+        "sm": { "value": "14px" },
+        "md": { "value": "16px" },
+        "lg": { "value": "20px" },
+        "xl": { "value": "24px" },
+        "xxl": { "value": "32px" },
+        "display": { "value": "40px" }
+      },
+      "lineHeight": {
+        "tight": { "value": 1.2 },
+        "normal": { "value": 1.5 },
+        "relaxed": { "value": 1.7 }
+      },
+      "fontWeight": {
+        "regular": { "value": 400 },
+        "medium": { "value": 500 },
+        "semibold": { "value": 600 },
+        "bold": { "value": 700 }
+      }
+    },
+    "elevation": {
+      "card": { "value": "0 12px 40px rgba(20,24,40,0.12)" },
+      "popover": { "value": "0 16px 48px rgba(20,24,40,0.16)" }
+    }
+  },
+  "themes": {
+    "light": {
+      "color": {
+        "background": "#F8FAFC",
+        "surface": "#FFFFFF",
+        "primary": "#2563EB",
+        "primaryContrast": "#FFFFFF",
+        "secondary": "#0EA5E9",
+        "accent": "#F97316",
+        "neutral900": "#0F172A",
+        "neutral600": "#475569",
+        "neutral300": "#CBD5F5",
+        "neutral100": "#E2E8F0",
+        "success": "#16A34A",
+        "warning": "#D97706",
+        "danger": "#DC2626"
+      }
+    },
+    "dark": {
+      "color": {
+        "background": "#0B1220",
+        "surface": "#111827",
+        "primary": "#60A5FA",
+        "primaryContrast": "#0B1220",
+        "secondary": "#38BDF8",
+        "accent": "#FB923C",
+        "neutral900": "#F8FAFC",
+        "neutral600": "#94A3B8",
+        "neutral300": "#1F2937",
+        "neutral100": "#0B1220",
+        "success": "#22C55E",
+        "warning": "#F59E0B",
+        "danger": "#F87171"
+      }
+    }
+  },
+  "accessibility": {
+    "minContrastRatio": 4.5,
+    "focusRing": {
+      "color": "#F97316",
+      "width": "3px",
+      "style": "solid"
+    }
+  }
+}

@@ -1,0 +1,140 @@
+core_features:
+  - name: Marketing Website Core
+    description: Halaman pemasaran SSG dengan fokus konversi dan performa tinggi.
+    priority: Must
+    depends_on: [Design_System, Astro_Foundation]
+  - name: Portfolio & Case Studies
+    description: Showcase proyek dengan filter dan studi kasus terstruktur.
+    priority: Must
+    depends_on: [Marketing_Website_Core, Content_Collections]
+  - name: Blog & Knowledge Base
+    description: Konten edukasi MDX dengan kategori, pencarian, dan TOC otomatis.
+    priority: Must
+    depends_on: [Content_Collections, Pagefind_Search]
+  - name: Client Portal Dashboard
+    description: Portal privat untuk klien memonitor proyek, pembayaran, dan dukungan.
+    priority: Must
+    depends_on: [Supabase_Auth_RBAC, Astro_Hybrid_Rendering]
+  - name: Projects & Environment Tracker
+    description: Detail proyek, URL staging/production, status deploy.
+    priority: Must
+    depends_on: [Client_Portal_Dashboard, Database_Schema]
+  - name: Packages & Upgrades
+    description: Manajemen paket, add-on, dan upgrade self-service.
+    priority: Must
+    depends_on: [Client_Portal_Dashboard, Payment_Gateway]
+  - name: Invoices & Payments
+    description: Faktur otomatis dengan pembayaran IDR dan status sinkron.
+    priority: Must
+    depends_on: [Payment_Gateway, Supabase_Webhooks]
+  - name: Support Tickets
+    description: Sistem tiket dengan SLA, komentar, dan notifikasi.
+    priority: Must
+    depends_on: [Supabase_Auth_RBAC, Notifications]
+  - name: Tutorials & Documentation Hub
+    description: Akses tutorial, video, dokumen onboarding dalam portal.
+    priority: Must
+    depends_on: [Content_Collections, Client_Portal_Dashboard]
+  - name: WhatsApp CTA & Notifications
+    description: Integrasi WA untuk lead dan notifikasi operasional.
+    priority: Must
+    depends_on: [Marketing_Website_Core, Notifications]
+  - name: Supabase Auth & RBAC
+    description: Autentikasi email/OAuth, peran Owner/Staff/Client/Viewer.
+    priority: Must
+    depends_on: [Database_Schema]
+  - name: Payment Gateway Integration
+    description: Abstraksi Midtrans/Xendit untuk sekali bayar & langganan.
+    priority: Must
+    depends_on: [Serverless_API, Database_Schema]
+  - name: CI/CD Pipeline GitHub→Cloudflare
+    description: Deploy otomatis dengan preview, canary, rollback.
+    priority: Must
+    depends_on: [GitHub_Actions_Workflow, Cloudflare_Config]
+  - name: Security & Compliance Controls
+    description: CSP, RLS, backup, privacy, dan audit.
+    priority: Must
+    depends_on: [Infrastructure_Baseline, Supabase_Auth_RBAC]
+  - name: Analytics & Experimentation
+    description: Pelacakan event ringan, consent-aware, A/B testing.
+    priority: Should
+    depends_on: [Marketing_Website_Core, Client_Portal_Dashboard]
+  - name: Monitoring & Observability
+    description: Sentry, uptime, log terstruktur, status page.
+    priority: Must
+    depends_on: [Infrastructure_Baseline]
+  - name: Design System & Accessibility
+    description: Token desain, tema terang/gelap, WCAG 2.2 AA.
+    priority: Must
+    depends_on: [Brand_Strategy]
+  - name: Documentation & Onboarding
+    description: Docs developer & klien, proposal, invoice template.
+    priority: Must
+    depends_on: [Tutorials_Documentation_Hub]
+  - name: Testing & QA Automation
+    description: Unit, e2e, aksesibilitas, regresi visual.
+    priority: Must
+    depends_on: [CI_CD_Pipeline]
+  - name: Governance & Go-Live Management
+    description: Checklist rilis, pelatihan, KPI, retrospektif.
+    priority: Should
+    depends_on: [Documentation_Onboarding, Monitoring_Observability]
+additional_features:
+  - name: Multi-language Support (ID/EN)
+    priority: Could
+    depends_on: [i18n_Integration, Content_Collections]
+  - name: Client Feedback Surveys
+    priority: Could
+    depends_on: [Analytics_Experimentation]
+  - name: Automated Migration Scripts
+    priority: Won't-for-now
+    depends_on: [Database_Schema]
+  - name: Referral Program Module
+    priority: Could
+    depends_on: [Payment_Gateway, Analytics_Experimentation]
+  - name: AI Copy Assistant Drafts
+    priority: Won't-for-now
+    depends_on: [Content_Collections]
+  - name: Interactive ROI Calculator
+    priority: Could
+    depends_on: [Marketing_Website_Core]
+  - name: Client-specific Branding Themes
+    priority: Should
+    depends_on: [Design_System_Accessibility]
+  - name: Automated Performance Audits
+    priority: Should
+    depends_on: [Monitoring_Observability]
+  - name: Webhook Event Replay UI
+    priority: Could
+    depends_on: [Payment_Gateway]
+  - name: Contract e-sign Integration
+    priority: Won't-for-now
+    depends_on: [Client_Portal_Dashboard]
+  - name: In-app Chat Support
+    priority: Could
+    depends_on: [Client_Portal_Dashboard]
+  - name: Progressive Web App Enhancements
+    priority: Could
+    depends_on: [Astro_Hybrid_Rendering]
+  - name: Client Success Scoring
+    priority: Should
+    depends_on: [Analytics_Experimentation, Activity_Events]
+  - name: Partner Agency Directory
+    priority: Could
+    depends_on: [Marketing_Website_Core]
+  - name: Automated Legal Policy Updates
+    priority: Won't-for-now
+    depends_on: [Documentation_Onboarding]
+dependency_map:
+  Astro_Foundation:
+    enables: [Marketing_Website_Core, Portfolio_&_Case_Studies, Blog_&_Knowledge_Base]
+  Content_Collections:
+    enables: [Portfolio_&_Case_Studies, Blog_&_Knowledge_Base, Tutorials_&_Documentation_Hub]
+  Supabase_Auth_RBAC:
+    enables: [Client_Portal_Dashboard, Support_Tickets, Security_&_Compliance_Controls]
+  Payment_Gateway:
+    enables: [Invoices_&_Payments, Packages_&_Upgrades]
+  Notifications:
+    enables: [WhatsApp_CTA_&_Notifications, Support_Tickets]
+  Infrastructure_Baseline:
+    enables: [Security_&_Compliance_Controls, Monitoring_&_Observability]
