@@ -1,0 +1,148 @@
+sitemap:
+  - path: /
+    title: Home
+    guard: public
+    menu: primary
+    children:
+      - path: /layanan
+        title: Layanan & Pricing
+        guard: public
+        menu: primary
+        children:
+          - path: /layanan/paket-premium
+            title: Paket Premium
+            guard: public
+            menu: secondary
+          - path: /layanan/paket-growth
+            title: Paket Growth
+            guard: public
+            menu: secondary
+          - path: /layanan/perbandingan
+            title: Perbandingan Paket
+            guard: public
+            menu: tertiary
+      - path: /portofolio
+        title: Portofolio
+        guard: public
+        menu: primary
+        children:
+          - path: /portofolio/studi-kasus
+            title: Studi Kasus
+            guard: public
+            menu: secondary
+          - path: /portofolio/studi-kasus/[slug]
+            title: Detail Studi Kasus
+            guard: public
+            menu: hidden
+      - path: /testimoni
+        title: Testimonial
+        guard: public
+        menu: primary
+      - path: /blog
+        title: Blog
+        guard: public
+        menu: primary
+        children:
+          - path: /blog/kategori/[category]
+            title: Kategori Blog
+            guard: public
+            menu: hidden
+          - path: /blog/[slug]
+            title: Artikel Blog
+            guard: public
+            menu: hidden
+      - path: /knowledge-base
+        title: Knowledge Base
+        guard: public
+        menu: primary
+        children:
+          - path: /knowledge-base/kategori/[category]
+            title: Kategori Knowledge Base
+            guard: public
+            menu: hidden
+          - path: /knowledge-base/[slug]
+            title: Artikel Knowledge Base
+            guard: public
+            menu: hidden
+      - path: /faq
+        title: FAQ
+        guard: public
+        menu: secondary
+      - path: /kontak
+        title: Kontak
+        guard: public
+        menu: primary
+        children:
+          - path: /kontak/terima-kasih
+            title: Konfirmasi Kontak
+            guard: public
+            menu: hidden
+  - path: /portal
+    title: Portal Klien
+    guard: private
+    menu: utility
+    children:
+      - path: /portal/dashboard
+        title: Dashboard
+        guard: private
+        menu: sidebar
+      - path: /portal/projects
+        title: Proyek & URL
+        guard: private
+        menu: sidebar
+        children:
+          - path: /portal/projects/[projectId]
+            title: Detail Proyek
+            guard: private
+            menu: breadcrumb
+      - path: /portal/packages
+        title: Paket & Upgrade
+        guard: private
+        menu: sidebar
+      - path: /portal/billing
+        title: Invoices & Payments
+        guard: private
+        menu: sidebar
+      - path: /portal/support
+        title: Dukungan
+        guard: private
+        menu: sidebar
+        children:
+          - path: /portal/support/tickets
+            title: Tickets
+            guard: private
+            menu: sidebar
+          - path: /portal/support/tickets/[ticketId]
+            title: Detail Ticket
+            guard: private
+            menu: breadcrumb
+          - path: /portal/support/faq
+            title: FAQ Internal
+            guard: private
+            menu: tertiary
+      - path: /portal/knowledge-base
+        title: Knowledge Base Klien
+        guard: private
+        menu: sidebar
+      - path: /portal/tutorials
+        title: Tutorials
+        guard: private
+        menu: sidebar
+      - path: /portal/account
+        title: Akun & Keamanan
+        guard: private
+        menu: sidebar
+        children:
+          - path: /portal/account/api-keys
+            title: API Keys & Integrasi
+            guard: private
+            menu: tertiary
+          - path: /portal/account/activity
+            title: Aktivitas
+            guard: private
+            menu: tertiary
+navigation_patterns:
+  primary_menu: [/, /layanan, /portofolio, /blog, /knowledge-base, /kontak]
+  secondary_menu: [/faq, /layanan/paket-premium, /layanan/paket-growth]
+  footer_links: [/privacy, /terms, /sitemap.xml]
+  portal_sidebar: [/portal/dashboard, /portal/projects, /portal/packages, /portal/billing, /portal/support, /portal/knowledge-base, /portal/tutorials, /portal/account]
