@@ -1,5 +1,9 @@
 ---
 import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import { buildWhatsappLink } from '../../consts';
+
+const launchWhatsappLink = buildWhatsappLink('Ingin diskusi paket Launch');
+const scaleWhatsappLink = buildWhatsappLink('Ingin diskusi paket Scale');
 ---
 
 <MarketingLayout title="Paket Layanan & Harga" description="Pilihan paket website Astro, portal klien, dan otomasi operasional sesuai kebutuhan bisnis Anda.">
@@ -18,7 +22,7 @@ import MarketingLayout from '../../layouts/MarketingLayout.astro';
                                 <li>Portal klien dengan 1 proyek aktif</li>
                                 <li>Integrasi WhatsApp CTA</li>
                         </ul>
-                        <a class="btn" href="https://wa.me/6281234567890?text=Ingin%20diskusi%20paket%20Launch" target="_blank" rel="noreferrer">Konsultasi Paket Launch</a>
+                        <a class="btn" href={launchWhatsappLink} target="_blank" rel="noreferrer">Konsultasi Paket Launch</a>
                 </div>
                 <div class="plan highlight">
                         <p class="badge">Terpopuler</p>
@@ -30,7 +34,7 @@ import MarketingLayout from '../../layouts/MarketingLayout.astro';
                                 <li>Integrasi pembayaran Midtrans/Xendit</li>
                                 <li>Automasi notifikasi WA &amp; email</li>
                         </ul>
-                        <a class="btn" href="https://wa.me/6281234567890?text=Ingin%20diskusi%20paket%20Scale" target="_blank" rel="noreferrer">Konsultasi Paket Scale</a>
+                        <a class="btn" href={scaleWhatsappLink} target="_blank" rel="noreferrer">Konsultasi Paket Scale</a>
                 </div>
                 <div class="plan">
                         <h2>Enterprise</h2>

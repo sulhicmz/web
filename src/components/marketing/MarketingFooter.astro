@@ -1,5 +1,10 @@
 ---
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import {
+        SITE_TITLE,
+        SITE_DESCRIPTION,
+        CONTACT_EMAIL,
+        buildWhatsappLink,
+} from '../../consts';
 
 const currentYear = new Date().getFullYear();
 ---
@@ -23,8 +28,8 @@ const currentYear = new Date().getFullYear();
                 <section>
                         <h2>Kontak</h2>
                         <ul>
-                                <li><a href="mailto:halo@astropro.id">halo@astropro.id</a></li>
-                                <li><a href="https://wa.me/6281234567890?text=Halo%2C%20saya%20ingin%20diskusi%20proyek%20website" rel="noreferrer" target="_blank">WhatsApp Tim</a></li>
+                                <li><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
+                                <li><a href={buildWhatsappLink()} rel="noreferrer" target="_blank">WhatsApp Tim</a></li>
                                 <li>Jam operasional: Senin–Jumat, 09.00–18.00 WIB</li>
                         </ul>
                 </section>

@@ -1,5 +1,8 @@
 ---
 import MarketingLayout from '../layouts/MarketingLayout.astro';
+import { buildWhatsappLink } from '../consts';
+
+const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website');
 ---
 
 <MarketingLayout title="Jasa Website Astro + Portal Klien" description="Bangun situs pemasaran, portofolio, blog, dan portal klien terpadu dengan arsitektur Astro yang cepat dan aman.">
@@ -10,7 +13,7 @@ import MarketingLayout from '../layouts/MarketingLayout.astro';
                         Kami membantu bisnis B2B dan agensi meluncurkan situs pemasaran, knowledge base, dan portal klien yang terintegrasi penuh dengan Supabase, pembayaran lokal, serta otomatisasi operasional.
                 </p>
                 <div class="hero-actions">
-                        <a class="btn primary" href="https://wa.me/6281234567890?text=Halo%2C%20saya%20butuh%20konsultasi%20website" target="_blank" rel="noreferrer">
+                        <a class="btn primary" href={heroWhatsappLink} target="_blank" rel="noreferrer">
                                 Konsultasi via WhatsApp
                         </a>
                         <a class="btn ghost" href="/layanan">Lihat Paket Layanan</a>

@@ -24,7 +24,13 @@ export const post: APIRoute = async ({ request }) => {
 
         try {
                 const event = await provider.parseWebhook(body, headers);
-                return json({ received: true, event: { reference: event.reference, status: event.status, signatureValid: event.signatureValid } });
+
+                if (!event.signatureValid) {
+                        console.warn('[payments/webhook] Invalid signature for reference', event.reference);
+                        return json({ error: 'Signature webhook tidak valid.' }, { status: 400 });
+                }
+
+                return json({ received: true, event: { reference: event.reference, status: event.status } });
         } catch (error) {
                 console.error('[payments/webhook]', error);
                 return json({ error: 'Payload webhook tidak valid.' }, { status: 400 });

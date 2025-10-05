@@ -1,6 +1,6 @@
 ---
 import NavLink from './NavLink.astro';
-import { SITE_TITLE } from '../../consts';
+import { SITE_TITLE, buildWhatsappLink } from '../../consts';
 ---
 
 <header class="marketing-header">
@@ -14,7 +14,7 @@ import { SITE_TITLE } from '../../consts';
                         <NavLink href="/faq">FAQ</NavLink>
                         <NavLink href="/kontak">Kontak</NavLink>
                 </div>
-                <a class="cta" href="https://wa.me/6281234567890?text=Halo%2C%20saya%20ingin%20diskusi%20proyek%20website" rel="noreferrer" target="_blank">
+                <a class="cta" href={buildWhatsappLink()} rel="noreferrer" target="_blank">
                         Konsultasi Gratis
                 </a>
         </nav>
