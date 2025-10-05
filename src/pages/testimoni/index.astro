@@ -1,0 +1,54 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+---
+
+<MarketingLayout title="Testimonial Klien" description="Cerita nyata dari klien yang berhasil mengotomasi layanan digital mereka.">
+        <section class="intro">
+                <h1>Apa kata klien kami</h1>
+                <p>Feedback terkurasi dari berbagai industri yang merasakan dampak platform terpadu kami.</p>
+        </section>
+        <section class="testimonials">
+                <article>
+                        <p class="quote">“Dalam 6 minggu kami sudah live dengan portal klien lengkap. Tim support sekarang bisa fokus pada issue strategis.”</p>
+                        <p class="author">Nadia, COO FinServe Pro</p>
+                </article>
+                <article>
+                        <p class="quote">“Integrasi pembayaran otomatis membuat cashflow bulanan lebih stabil dan mengurangi follow-up manual.”</p>
+                        <p class="author">Randy, Founder CraftHub Studio</p>
+                </article>
+                <article>
+                        <p class="quote">“Knowledge base privat membantu tim akademi kami menjawab pertanyaan berulang hanya dengan satu tautan.”</p>
+                        <p class="author">Sarah, Academic Director EduPlus</p>
+                </article>
+        </section>
+</MarketingLayout>
+
+<style>
+        .intro {
+                text-align: center;
+                max-width: 680px;
+                margin: 0 auto 3rem;
+        }
+
+        .testimonials {
+                display: grid;
+                gap: 1.5rem;
+        }
+
+        article {
+                background: #fff;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 16px 32px rgba(15, 18, 25, 0.06);
+        }
+
+        .quote {
+                font-style: italic;
+                font-size: 1.1rem;
+        }
+
+        .author {
+                margin-top: 1rem;
+                font-weight: 600;
+        }
+</style>

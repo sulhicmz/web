@@ -1,3 +1,5 @@
+# 22. Go-Live & Tata Kelola
+
 ## Checklist Pra-Rilis (≤30 Butir)
 1. Finalisasi konten marketing + proofread.
 2. Review aksesibilitas WCAG 2.2 AA.

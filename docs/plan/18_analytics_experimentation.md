@@ -1,3 +1,5 @@
+# 18. Analitik & Eksperimen
+
 ## Platform
 - Gunakan Plausible self-hosted (mode cookieless) + fallback Google Analytics 4 (hanya bila consent).
 - Consent mode: banner cookie mengaktifkan event marketing hanya setelah persetujuan.

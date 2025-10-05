@@ -1,14 +1,14 @@
 # TODO
 
 ## Prioritas Tinggi
-- [ ] Susun ulang dokumen perencanaan agar mengikuti panduan terbaru dan verifikasi konsistensi format.
-- [ ] Implementasikan struktur awal proyek Astro sesuai arsitektur yang telah dirancang dalam dokumen plan.
-- [ ] Siapkan konfigurasi Supabase (auth, RLS, skema) di lingkungan pengembangan.
+- [x] Susun ulang dokumen perencanaan agar mengikuti panduan terbaru dan verifikasi konsistensi format.
+- [x] Implementasikan struktur awal proyek Astro sesuai arsitektur yang telah dirancang dalam dokumen plan.
+- [x] Siapkan konfigurasi Supabase (auth, RLS, skema) di lingkungan pengembangan.
 
 ## Prioritas Menengah
-- [ ] Membuat komponen UI dasar (Button, Card, PricingTable) di codebase Astro.
-- [ ] Mengintegrasikan analitik ringan (mis. Plausible) dengan menghormati consent pengguna.
-- [ ] Mendesain alur checkout dengan antarmuka abstraksi gateway pembayaran.
+- [x] Membuat komponen UI dasar (Button, Card, PricingTable) di codebase Astro.
+- [x] Mengintegrasikan analitik ringan (mis. Plausible) dengan menghormati consent pengguna.
+- [x] Mendesain alur checkout dengan antarmuka abstraksi gateway pembayaran.
 
 ## Prioritas Rendah
 - [ ] Dokumentasikan runbook insiden detail dan lampirkan di `docs/`.

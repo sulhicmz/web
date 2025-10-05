@@ -1,0 +1,58 @@
+---
+import PortalLayout from '../../../../layouts/PortalLayout.astro';
+export const prerender = false;
+
+const { ticketId } = Astro.params;
+---
+
+<PortalLayout title={`Detail Tiket ${ticketId}`} description="Lihat percakapan, lampiran, dan SLA.">
+        <h1>Tiket {ticketId}</h1>
+        <section class="meta">
+                <p><strong>Status:</strong> In Progress</p>
+                <p><strong>Prioritas:</strong> High</p>
+                <p><strong>SLA:</strong> 8 jam (tersisa 2 jam)</p>
+        </section>
+        <section class="thread">
+                <article>
+                        <h2>Timeline</h2>
+                        <ol>
+                                <li>08 Mei 2024 09:10 — Klien membuat tiket</li>
+                                <li>08 Mei 2024 09:45 — Tim merespons awal</li>
+                                <li>08 Mei 2024 10:15 — Permintaan log tambahan</li>
+                        </ol>
+                </article>
+                <article>
+                        <h2>Balasan Terbaru</h2>
+                        <p>Tim dev mengulang webhook di sandbox dan membutuhkan akses log tambahan.</p>
+                </article>
+        </section>
+</PortalLayout>
+
+<style>
+        .meta {
+                display: flex;
+                gap: 1.5rem;
+                flex-wrap: wrap;
+                margin-bottom: 2rem;
+        }
+
+        .thread {
+                display: grid;
+                gap: 1.5rem;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        article {
+                background: #fff;
+                padding: 1.5rem;
+                border-radius: 1rem;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+        }
+
+        ol {
+                margin: 0;
+                padding-left: 1.5rem;
+                display: grid;
+                gap: 0.5rem;
+        }
+</style>

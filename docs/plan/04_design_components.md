@@ -1,4 +1,4 @@
-# Komponen Inti
+# 04. Komponen UI Inti
 
 ## Card
 - Variasi: default, elevated, outline

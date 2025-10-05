@@ -1,0 +1,54 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Paket & Upgrade" description="Kelola langganan, add-on, dan permintaan upgrade.">
+        <h1>Paket Aktif</h1>
+        <section class="package">
+                <h2>Scale Plan</h2>
+                <p>Termasuk portal multi-proyek, integrasi pembayaran, dan notifikasi otomatis.</p>
+                <button type="button">Ajukan Upgrade Enterprise</button>
+        </section>
+        <section class="addons">
+                <h2>Add-on Tersedia</h2>
+                <ul>
+                        <li>Monitoring Core Web Vitals</li>
+                        <li>Integrasi CRM lanjutan</li>
+                        <li>Support premium 24/7</li>
+                </ul>
+        </section>
+</PortalLayout>
+
+<style>
+        button {
+                border: none;
+                padding: 0.75rem 1rem;
+                border-radius: 0.75rem;
+                background: var(--accent);
+                color: #fff;
+                font-weight: 600;
+                cursor: pointer;
+        }
+
+        button:hover,
+        button:focus-visible {
+                background: var(--accent-dark);
+        }
+
+        .package,
+        .addons {
+                background: #fff;
+                border-radius: 1rem;
+                padding: 1.5rem;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+                margin-bottom: 2rem;
+        }
+
+        ul {
+                margin: 0;
+                padding-left: 1.5rem;
+                display: grid;
+                gap: 0.5rem;
+        }
+</style>

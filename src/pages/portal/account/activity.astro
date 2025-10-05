@@ -1,0 +1,22 @@
+---
+import PortalLayout from '../../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Aktivitas & Audit" description="Catatan aktivitas penting untuk keamanan dan kepatuhan.">
+        <h1>Aktivitas Akun</h1>
+        <ul class="activity">
+                <li>10 Mei 2024 09:30 — Login berhasil dari Jakarta, Chrome</li>
+                <li>09 Mei 2024 16:12 — API key "Zapier Automation" diputar ulang</li>
+                <li>08 Mei 2024 11:05 — Tiket TCK-1018 ditingkatkan prioritasnya</li>
+        </ul>
+</PortalLayout>
+
+<style>
+        .activity {
+                margin: 0;
+                padding-left: 1.5rem;
+                display: grid;
+                gap: 0.75rem;
+        }
+</style>

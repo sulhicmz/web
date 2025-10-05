@@ -1,3 +1,5 @@
+# 11. Integrasi Pembayaran
+
 ## Arsitektur Integrasi Pembayaran
 - Provider abstraksi: `PaymentProvider` interface (Midtrans/Xendit implementasi).
 - Mode: sandbox & production; pilih via ENV `PAYMENT_PROVIDER` dan `PAYMENT_ENV`.

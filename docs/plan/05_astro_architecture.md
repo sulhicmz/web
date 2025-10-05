@@ -1,4 +1,6 @@
-## Rendering Strategy
+# 05. Arsitektur Astro
+
+## Strategi Rendering
 - Marketing, portfolio, blog, knowledge base: **SSG** dengan incremental revalidate via Cloudflare cache purge.
 - Client portal dashboard & billing routes: **SSR** menggunakan Astro server output dengan Supabase auth middleware.
 - Interactive widgets (pricing toggle, testimonials carousel, ROI calculator): **Astro Islands** dengan partial hydration (solid-js components).
@@ -51,7 +53,9 @@ src/
   middleware/
     authGuard.ts
   lib/
-    supabaseClient.ts
+    supabase/
+      browser.ts
+      server.ts
     paymentProvider.ts
 ``` 
 
@@ -59,7 +63,7 @@ src/
 - `astro.config.mjs`: aktifkan `integrations: [mdx(), sitemap(), image(), pagefind(), partytown()]`, output `server` untuk Cloudflare adapter.
 - `src/content/config.ts`: definisi schema collections MDX.
 - `wrangler.json`: binding lingkungan Cloudflare + secrets.
-- `supabase/config.ts`: helper env loader + guard role.
+- `supabase/README.md`: panduan konfigurasi lingkungan Supabase lokal & variabel env.
 - `package.json`: script build `astro build`, `astro sync`, `pnpm run lint`.
 
 ## Integrasi

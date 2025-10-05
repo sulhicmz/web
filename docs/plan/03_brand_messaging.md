@@ -1,7 +1,10 @@
-## Pesan Merek
+# 03. Pesan Merek & Copywriting
+
+## Pesan Merek Inti
 Kami membangun ekosistem website Astro yang memadukan strategi pemasaran, portal klien terpadu, dan otomasi operasional sehingga bisnis Anda dapat meluncurkan pengalaman digital premium dengan waktu respon cepat dan kepercayaan tinggi.
 
-## Headline Hero
+## Hero Section
+### Headline
 "Bangun Website Premium + Portal Klien Terintegrasi dalam Satu Sprint"
 
 ### Subheadline

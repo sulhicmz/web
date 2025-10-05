@@ -1,3 +1,5 @@
+# 08. Spesifikasi Portal Klien
+
 | Halaman | Tujuan | Data Kunci | Aksi Utama | Guard |
 |---------|--------|------------|------------|-------|
 | Dashboard | Memberi ringkasan status proyek, billing, dan tiket terbaru | Ringkasan proyek aktif, invoice jatuh tempo, notifikasi penting, skor kesehatan | Navigasi cepat ke proyek, bayar invoice, buka tiket | owner, staff, client |

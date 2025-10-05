@@ -1,0 +1,234 @@
+---
+import Button from './Button.astro';
+
+interface FeatureItem {
+        label: string;
+        note?: string;
+        included?: boolean;
+}
+
+interface PlanItem {
+        id: string;
+        name: string;
+        price: string;
+        period?: string;
+        description?: string;
+        ctaLabel: string;
+        ctaHref: string;
+        mostPopular?: boolean;
+        badgeLabel?: string;
+        features: FeatureItem[];
+}
+
+interface Props {
+        plans: PlanItem[];
+        footnote?: string;
+        class?: string;
+}
+
+const { plans = [], footnote, class: customClass = '' } = Astro.props as Props;
+const classes = ['ui-pricing-table', typeof customClass === 'string' ? customClass : '']
+        .filter(Boolean)
+        .join(' ');
+---
+<section class={classes} aria-label="Tabel paket harga">
+        <div class="ui-pricing-table__grid">
+                {plans.map((plan) => (
+                        <article
+                                class={`ui-pricing-table__card${plan.mostPopular ? ' is-highlighted' : ''}`}
+                                data-plan-id={plan.id}
+                        >
+                                {plan.mostPopular && (
+                                        <span class="ui-pricing-table__badge">
+                                                {plan.badgeLabel ?? 'Paling Populer'}
+                                        </span>
+                                )}
+                                <header class="ui-pricing-table__header">
+                                        <h3 class="ui-pricing-table__title">{plan.name}</h3>
+                                        <p class="ui-pricing-table__price">
+                                                <span class="ui-pricing-table__price-amount">{plan.price}</span>
+                                                {plan.period && <span class="ui-pricing-table__price-period">/{plan.period}</span>}
+                                        </p>
+                                        {plan.description && (
+                                                <p class="ui-pricing-table__description">{plan.description}</p>
+                                        )}
+                                </header>
+                                <ul class="ui-pricing-table__features">
+                                        {plan.features.map((feature) => {
+                                                const included = feature.included !== false;
+                                                return (
+                                                        <li
+                                                                class={`ui-pricing-table__feature${
+                                                                        included ? '' : ' is-excluded'
+                                                                }`}
+                                                        >
+                                                                <span
+                                                                        class="ui-pricing-table__feature-indicator"
+                                                                        aria-hidden="true"
+                                                                >
+                                                                        {included ? '✓' : '✕'}
+                                                                </span>
+                                                                <span class="ui-pricing-table__feature-text">
+                                                                        {feature.label}
+                                                                        {feature.note && (
+                                                                                <span class="ui-pricing-table__feature-note">
+                                                                                        {feature.note}
+                                                                                </span>
+                                                                        )}
+                                                                </span>
+                                                        </li>
+                                                );
+                                        })}
+                                </ul>
+                                <div class="ui-pricing-table__actions">
+                                        <Button
+                                                href={plan.ctaHref}
+                                                variant={plan.mostPopular ? 'primary' : 'secondary'}
+                                                fullWidth
+                                        >
+                                                {plan.ctaLabel}
+                                        </Button>
+                                </div>
+                        </article>
+                ))}
+        </div>
+        {footnote && <p class="ui-pricing-table__footnote">{footnote}</p>}
+</section>
+
+<style>
+        .ui-pricing-table {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+        }
+
+        .ui-pricing-table__grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 1.75rem;
+        }
+
+        .ui-pricing-table__card {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                background: #ffffff;
+                border-radius: 1.5rem;
+                border: 1px solid rgba(var(--gray-light), 0.9);
+                padding: 2rem 1.75rem 1.75rem;
+                box-shadow: 0 20px 40px rgba(var(--gray), 0.1);
+        }
+
+        .ui-pricing-table__card.is-highlighted {
+                border-color: rgba(var(--accent), 0.4);
+                box-shadow: 0 26px 60px rgba(var(--accent), 0.18);
+        }
+
+        .ui-pricing-table__badge {
+                position: absolute;
+                top: 1rem;
+                right: 1.5rem;
+                background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+                color: #fff;
+                font-size: 0.75rem;
+                font-weight: 600;
+                padding: 0.35rem 0.75rem;
+                border-radius: 999px;
+                letter-spacing: 0.06em;
+        }
+
+        .ui-pricing-table__header {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+        }
+
+        .ui-pricing-table__title {
+                font-size: 1.5rem;
+                margin: 0;
+        }
+
+        .ui-pricing-table__price {
+                margin: 0;
+                font-weight: 700;
+                font-size: 2.2rem;
+                color: rgb(var(--black));
+        }
+
+        .ui-pricing-table__price-period {
+                font-size: 1rem;
+                font-weight: 500;
+                color: rgba(var(--gray), 0.9);
+                margin-left: 0.25rem;
+        }
+
+        .ui-pricing-table__description {
+                margin: 0;
+                color: rgba(var(--gray-dark), 0.85);
+        }
+
+        .ui-pricing-table__features {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+        }
+
+        .ui-pricing-table__feature {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.75rem;
+                color: rgba(var(--gray-dark), 0.95);
+        }
+
+        .ui-pricing-table__feature-indicator {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 1.25rem;
+                height: 1.25rem;
+                border-radius: 999px;
+                font-weight: 700;
+                background: rgba(var(--accent), 0.12);
+                color: rgb(var(--accent));
+        }
+
+        .ui-pricing-table__feature.is-excluded .ui-pricing-table__feature-indicator {
+                background: rgba(var(--gray), 0.15);
+                color: rgba(var(--gray), 0.9);
+        }
+
+        .ui-pricing-table__feature.is-excluded {
+                color: rgba(var(--gray), 0.7);
+        }
+
+        .ui-pricing-table__feature-text {
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+        }
+
+        .ui-pricing-table__feature-note {
+                font-size: 0.85rem;
+                color: rgba(var(--gray), 0.9);
+        }
+
+        .ui-pricing-table__actions {
+                margin-top: auto;
+        }
+
+        .ui-pricing-table__footnote {
+                margin: 0;
+                font-size: 0.9rem;
+                color: rgba(var(--gray), 0.8);
+        }
+
+        @media (max-width: 720px) {
+                .ui-pricing-table__card {
+                        padding: 1.75rem 1.5rem;
+                }
+        }
+</style>

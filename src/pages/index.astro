@@ -1,50 +1,206 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import MarketingLayout from '../layouts/MarketingLayout.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<MarketingLayout title="Jasa Website Astro + Portal Klien" description="Bangun situs pemasaran, portofolio, blog, dan portal klien terpadu dengan arsitektur Astro yang cepat dan aman.">
+        <section class="hero">
+                <p class="eyebrow">Website + Portal Klien dalam Satu Sprint</p>
+                <h1>Saatnya menghadirkan pengalaman digital premium untuk tim dan klien Anda.</h1>
+                <p class="lead">
+                        Kami membantu bisnis B2B dan agensi meluncurkan situs pemasaran, knowledge base, dan portal klien yang terintegrasi penuh dengan Supabase, pembayaran lokal, serta otomatisasi operasional.
+                </p>
+                <div class="hero-actions">
+                        <a class="btn primary" href="https://wa.me/6281234567890?text=Halo%2C%20saya%20butuh%20konsultasi%20website" target="_blank" rel="noreferrer">
+                                Konsultasi via WhatsApp
+                        </a>
+                        <a class="btn ghost" href="/layanan">Lihat Paket Layanan</a>
+                </div>
+        </section>
+
+        <section class="value-grid">
+                <h2>Mengapa memilih kami</h2>
+                <div class="grid">
+                        <article>
+                                <h3>Arsitektur Cepat &amp; Aman</h3>
+                                <p>Astro Islands, optimasi SEO, serta proteksi Cloudflare memastikan performa dan keamanan kelas enterprise.</p>
+                        </article>
+                        <article>
+                                <h3>Portal Klien Siap Pakai</h3>
+                                <p>Monitoring proyek, pembayaran, knowledge base privat, dan dukungan terpadu dalam satu dashboard.</p>
+                        </article>
+                        <article>
+                                <h3>Automasi Operasional</h3>
+                                <p>Integrasi Supabase, pembayaran lokal, WhatsApp, dan analitik ringan yang patuh privasi.</p>
+                        </article>
+                </div>
+        </section>
+
+        <section class="process">
+                <h2>Proses kolaborasi 4 langkah</h2>
+                <ol>
+                        <li>
+                                <h3>Discovery &amp; Scope</h3>
+                                <p>Workshop kebutuhan, definisi KPI, dan mapping konten awal.</p>
+                        </li>
+                        <li>
+                                <h3>Desain &amp; Implementasi</h3>
+                                <p>Setup design system, struktur konten, dan komponen utama.</p>
+                        </li>
+                        <li>
+                                <h3>Integrasi &amp; Automasi</h3>
+                                <p>Konfigurasi Supabase, pembayaran, notifikasi WhatsApp, dan analitik.</p>
+                        </li>
+                        <li>
+                                <h3>Go-Live &amp; Operasional</h3>
+                                <p>CI/CD GitHub → Cloudflare, training tim, serta monitoring berkelanjutan.</p>
+                        </li>
+                </ol>
+        </section>
+
+        <section class="cta-banner">
+                <div>
+                        <h2>Siap tingkatkan layanan digital Anda?</h2>
+                        <p>Jadwalkan sesi strategi 30 menit untuk melihat demo portal dan roadmap implementasi.</p>
+                </div>
+                <a class="btn primary" href="/kontak">Jadwalkan Demo</a>
+        </section>
+</MarketingLayout>
+
+<style>
+        .hero {
+                display: grid;
+                gap: 1.5rem;
+                text-align: center;
+        }
+
+        .eyebrow {
+                text-transform: uppercase;
+                letter-spacing: 0.2em;
+                color: rgb(var(--accent));
+                font-weight: 600;
+        }
+
+        .lead {
+                font-size: 1.15rem;
+                margin: 0 auto;
+                max-width: 720px;
+        }
+
+        .hero-actions {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+        }
+
+        .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.75rem 1.5rem;
+                border-radius: 999px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: background 0.2s ease;
+        }
+
+        .btn.primary {
+                background: var(--accent);
+                color: #fff;
+        }
+
+        .btn.primary:hover,
+        .btn.primary:focus-visible {
+                background: var(--accent-dark);
+        }
+
+        .btn.ghost {
+                border: 1px solid rgba(var(--gray), 0.4);
+                color: rgb(var(--black));
+        }
+
+        .btn.ghost:hover,
+        .btn.ghost:focus-visible {
+                border-color: var(--accent);
+                color: var(--accent);
+        }
+
+        .value-grid {
+                margin-top: 5rem;
+                text-align: center;
+        }
+
+        .value-grid .grid {
+                margin-top: 2rem;
+                display: grid;
+                gap: 1.5rem;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .value-grid article {
+                background: #fff;
+                border-radius: 1rem;
+                padding: 2rem;
+                box-shadow: 0 20px 40px rgba(15, 18, 25, 0.05);
+        }
+
+        .process {
+                margin-top: 5rem;
+        }
+
+        .process ol {
+                display: grid;
+                gap: 1.5rem;
+                counter-reset: steps;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                padding-left: 0;
+                list-style: none;
+        }
+
+        .process li {
+                background: #fff;
+                border-radius: 1rem;
+                padding: 2rem;
+                position: relative;
+                box-shadow: 0 20px 40px rgba(15, 18, 25, 0.05);
+        }
+
+        .process li::before {
+                counter-increment: steps;
+                content: counter(steps, decimal-leading-zero);
+                position: absolute;
+                top: 1rem;
+                right: 1.5rem;
+                font-weight: 700;
+                color: rgba(var(--accent), 0.7);
+        }
+
+        .cta-banner {
+                margin-top: 5rem;
+                background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+                color: #fff;
+                border-radius: 1.25rem;
+                padding: 3rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 2rem;
+                flex-wrap: wrap;
+        }
+
+        .cta-banner h2 {
+                color: inherit;
+        }
+
+        @media (max-width: 720px) {
+                .value-grid article,
+                .process li {
+                        text-align: left;
+                }
+
+                .cta-banner {
+                        text-align: center;
+                        justify-content: center;
+                }
+        }
+</style>

@@ -1,0 +1,35 @@
+---
+import PortalLayout from '../../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Pusat Dukungan" description="Kelola tiket, SLA, dan dokumentasi bantuan.">
+        <h1>Dukungan</h1>
+        <p>Pilih menu tiket, knowledge base, atau ajukan permintaan baru.</p>
+        <div class="actions">
+                <a href="/portal/support/tickets" class="btn">Buka Daftar Tiket</a>
+                <a href="/portal/knowledge-base" class="btn secondary">Knowledge Base</a>
+        </div>
+</PortalLayout>
+
+<style>
+        .actions {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+        }
+
+        .btn {
+                padding: 0.75rem 1rem;
+                border-radius: 0.75rem;
+                text-decoration: none;
+                background: var(--accent);
+                color: #fff;
+                font-weight: 600;
+        }
+
+        .btn.secondary {
+                background: rgba(15, 18, 25, 0.1);
+                color: rgb(var(--black));
+        }
+</style>

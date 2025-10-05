@@ -1,0 +1,52 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+---
+
+<MarketingLayout title="Pertanyaan yang Sering Diajukan" description="Jawaban cepat terkait layanan pembuatan website Astro, portal klien, dan dukungan operasional.">
+        <h1>FAQ</h1>
+        <dl class="faq">
+                <div>
+                        <dt>Berapa lama waktu implementasi standar?</dt>
+                        <dd>Rata-rata 6–8 minggu untuk paket Scale, termasuk migrasi konten dan pelatihan tim.</dd>
+                </div>
+                <div>
+                        <dt>Apa saja integrasi pembayaran yang didukung?</dt>
+                        <dd>Kami mendukung Midtrans dan Xendit untuk transaksi satu kali maupun berlangganan.</dd>
+                </div>
+                <div>
+                        <dt>Apakah portal klien mendukung multi-tenant?</dt>
+                        <dd>Ya, seluruh data dipisahkan per klien dengan Supabase Row Level Security.</dd>
+                </div>
+                <div>
+                        <dt>Bagaimana proses dukungan setelah go-live?</dt>
+                        <dd>Kami menyediakan SLA dukungan, runbook insiden, dan sesi review mingguan di 90 hari pertama.</dd>
+                </div>
+        </dl>
+</MarketingLayout>
+
+<style>
+        h1 {
+                text-align: center;
+                margin-bottom: 2rem;
+        }
+
+        .faq {
+                display: grid;
+                gap: 1.5rem;
+        }
+
+        dt {
+                font-weight: 700;
+        }
+
+        dd {
+                margin: 0.5rem 0 0;
+        }
+
+        div {
+                background: #fff;
+                padding: 1.75rem;
+                border-radius: 1rem;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+        }
+</style>

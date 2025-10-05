@@ -1,0 +1,44 @@
+---
+import BaseHead from '../components/ui/BaseHead.astro';
+import MarketingHeader from '../components/marketing/MarketingHeader.astro';
+import MarketingFooter from '../components/marketing/MarketingFooter.astro';
+import AnalyticsConsent from '../components/analytics/AnalyticsConsent.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+interface Props {
+        title?: string;
+        description?: string;
+}
+
+const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props as Props;
+---
+
+<!doctype html>
+<html lang="id">
+        <head>
+                <BaseHead title={title} description={description} />
+        </head>
+        <body>
+                <MarketingHeader />
+                <main class="marketing-main">
+                        <slot />
+                </main>
+                <MarketingFooter />
+                <AnalyticsConsent />
+        </body>
+</html>
+
+<style>
+        .marketing-main {
+                width: 100%;
+                max-width: 1080px;
+                margin: 0 auto;
+                padding: 4rem 1.5rem 6rem;
+        }
+
+        @media (max-width: 720px) {
+                .marketing-main {
+                        padding: 3rem 1rem 4rem;
+                }
+        }
+</style>

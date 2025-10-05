@@ -1,0 +1,70 @@
+---
+import type { astroHTML } from 'astro/types';
+
+interface CardProps extends astroHTML.JSX.HTMLAttributes<'article'> {
+        as?: 'article' | 'section' | 'div';
+        title?: string;
+        eyebrow?: string;
+        description?: string;
+}
+
+const { as = 'article', title, eyebrow, description, class: customClass = '', ...rest } =
+        Astro.props as CardProps & Record<string, unknown>;
+
+const classes = ['ui-card', typeof customClass === 'string' ? customClass : '']
+        .filter(Boolean)
+        .join(' ');
+
+const Tag = as;
+---
+<component is={Tag} {...rest} class={classes}>
+        {eyebrow && <p class="ui-card__eyebrow">{eyebrow}</p>}
+        {title && <h3 class="ui-card__title">{title}</h3>}
+        {description && <p class="ui-card__description">{description}</p>}
+        <div class="ui-card__body">
+                <slot />
+        </div>
+        <slot name="footer" />
+</component>
+
+<style>
+        .ui-card {
+                display: flex;
+                flex-direction: column;
+                gap: 1.25rem;
+                background: #ffffff;
+                padding: 1.75rem;
+                border-radius: 1.25rem;
+                border: 1px solid rgba(var(--gray-light), 0.8);
+                box-shadow: 0 10px 30px rgba(var(--gray), 0.1);
+        }
+
+        .ui-card__eyebrow {
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+                font-size: 0.75rem;
+                color: rgba(var(--gray), 0.9);
+                margin: 0;
+        }
+
+        .ui-card__title {
+                font-size: 1.45rem;
+                margin: 0;
+        }
+
+        .ui-card__description {
+                margin: 0;
+                color: rgba(var(--gray-dark), 0.9);
+                font-size: 1rem;
+        }
+
+        .ui-card__body {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+        }
+
+        :global(.ui-card__footer) {
+                margin-top: auto;
+        }
+</style>

@@ -1,0 +1,106 @@
+---
+import MarketingLayout from '../../../layouts/MarketingLayout.astro';
+
+const caseStudies = {
+        'finserve-pro': {
+                title: 'FinServe Pro',
+                summary: 'Portal onboarding dan layanan purna jual untuk perusahaan jasa keuangan B2B.',
+                results: [
+                        'Waktu onboarding berkurang 45%',
+                        'Kepuasan klien meningkat menjadi 4,8/5',
+                        'Integrasi pembayaran otomatis untuk layanan retainer',
+                ],
+        },
+        'eduplus-academy': {
+                title: 'EduPlus Academy',
+                summary: 'Platform edukasi digital dengan katalog kursus dan portal alumni.',
+                results: [
+                        'Peningkatan pendaftaran kursus 2,3x',
+                        'Sistem langganan otomatis via Midtrans',
+                        'Knowledge base privat untuk mentor',
+                ],
+        },
+        'crafthub-studio': {
+                title: 'CraftHub Studio',
+                summary: 'Portal approval desain dan pelacakan produksi untuk brand merchandise.',
+                results: [
+                        'Siklus revisi berkurang 60%',
+                        'Integrasi WhatsApp untuk notifikasi produksi',
+                        'Dashboard status produksi real-time',
+                ],
+        },
+} as const;
+
+export function getStaticPaths() {
+        return [
+                { params: { slug: 'finserve-pro' } },
+                { params: { slug: 'eduplus-academy' } },
+                { params: { slug: 'crafthub-studio' } },
+        ];
+}
+
+const { slug } = Astro.params;
+const detail = caseStudies[slug as keyof typeof caseStudies];
+
+if (!detail) {
+        throw Astro.redirect('/portofolio');
+}
+---
+
+<MarketingLayout title={`Studi Kasus ${detail.title}`} description={detail.summary}>
+        <article class="case-detail">
+                <h1>{detail.title}</h1>
+                <p class="summary">{detail.summary}</p>
+                <section>
+                        <h2>Hasil Utama</h2>
+                        <ul>
+                                {detail.results.map((item) => (
+                                        <li>{item}</li>
+                                ))}
+                        </ul>
+                </section>
+                <section>
+                        <h2>Solusi</h2>
+                        <p>
+                                Kami mengimplementasikan arsitektur Astro hybrid untuk memadukan halaman pemasaran statis dengan portal klien SSR. Supabase menangani autentikasi, RLS, dan penyimpanan data proyek. Pagefind digunakan untuk pencarian cepat pada knowledge base dan dokumentasi onboarding.
+                        </p>
+                </section>
+                <section>
+                        <h2>Tumpukan Teknologi</h2>
+                        <ul>
+                                <li>Astro + islands interaktif (Solid/React)</li>
+                                <li>Supabase Postgres, Auth, Storage</li>
+                                <li>Midtrans / Xendit gateway pembayaran</li>
+                                <li>Cloudflare Pages &amp; Functions</li>
+                        </ul>
+                </section>
+        </article>
+</MarketingLayout>
+
+<style>
+        .case-detail {
+                background: #fff;
+                padding: 3rem;
+                border-radius: 1.5rem;
+                box-shadow: 0 24px 48px rgba(15, 18, 25, 0.08);
+                display: grid;
+                gap: 2rem;
+        }
+
+        .summary {
+                font-size: 1.1rem;
+        }
+
+        ul {
+                margin: 0;
+                padding-left: 1.5rem;
+                display: grid;
+                gap: 0.75rem;
+        }
+
+        @media (max-width: 720px) {
+                .case-detail {
+                        padding: 2rem;
+                }
+        }
+</style>

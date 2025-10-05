@@ -1,3 +1,5 @@
+# 17. SEO & Kinerja
+
 ## KPI
 - Lighthouse Performance ≥ 90 (mobile), SEO ≥ 95, Accessibility ≥ 95.
 - LCP < 2.5s, CLS < 0.1, TBT < 200ms.

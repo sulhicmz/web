@@ -1,3 +1,5 @@
+# 19. Monitoring & Reliabilitas
+
 ## Observability Stack
 - Error Tracking: Sentry (frontend + server). Alert jika error rate > 1% dalam 5 menit.
 - Uptime: Better Stack ping + Cloudflare health checks tiap 1 menit. Alert jika 2 kegagalan beruntun.

@@ -1,0 +1,61 @@
+---
+import PortalLayout from '../../../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Tiket Dukungan" description="Lihat status tiket, SLA, dan ajukan permintaan baru.">
+        <h1>Tiket Dukungan</h1>
+        <table>
+                <thead>
+                        <tr>
+                                <th>ID</th>
+                                <th>Subjek</th>
+                                <th>Prioritas</th>
+                                <th>Status</th>
+                                <th>Pembaruan Terakhir</th>
+                        </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                                <td>TCK-1021</td>
+                                <td>Permintaan revisi landing page</td>
+                                <td>Medium</td>
+                                <td>In Progress</td>
+                                <td>10 Mei 2024</td>
+                        </tr>
+                        <tr>
+                                <td>TCK-1018</td>
+                                <td>Payment webhook gagal</td>
+                                <td>High</td>
+                                <td>Waiting Client</td>
+                                <td>08 Mei 2024</td>
+                        </tr>
+                </tbody>
+        </table>
+</PortalLayout>
+
+<style>
+        table {
+                width: 100%;
+                border-collapse: collapse;
+                background: #fff;
+                border-radius: 1rem;
+                overflow: hidden;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+        }
+
+        th,
+        td {
+                padding: 1rem;
+                border-bottom: 1px solid rgba(15, 18, 25, 0.08);
+                text-align: left;
+        }
+
+        th {
+                background: rgba(15, 18, 25, 0.05);
+        }
+
+        tbody tr:last-child td {
+                border-bottom: none;
+        }
+</style>

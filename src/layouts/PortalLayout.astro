@@ -1,0 +1,61 @@
+---
+import BaseHead from '../components/ui/BaseHead.astro';
+import PortalNav from '../components/portal/PortalNav.astro';
+import AnalyticsConsent from '../components/analytics/AnalyticsConsent.astro';
+import { SITE_TITLE } from '../consts';
+
+interface Props {
+        title?: string;
+        description?: string;
+}
+
+const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengelola proyek, paket, dan dukungan.' } = Astro.props as Props;
+---
+
+<!doctype html>
+<html lang="id">
+        <head>
+                <BaseHead title={title} description={description} />
+        </head>
+        <body class="portal-shell">
+                <aside class="sidebar">
+                        <PortalNav />
+                </aside>
+                <main class="portal-main">
+                        <slot />
+                </main>
+                <AnalyticsConsent />
+        </body>
+</html>
+
+<style>
+        .portal-shell {
+                margin: 0;
+                min-height: 100vh;
+                display: grid;
+                grid-template-columns: 280px 1fr;
+                background: #f6f7fb;
+        }
+
+        .sidebar {
+                background: #0f1219;
+                color: #f5f7fb;
+        }
+
+        .portal-main {
+                width: 100%;
+                padding: 2.5rem 2rem 4rem;
+        }
+
+        @media (max-width: 960px) {
+                .portal-shell {
+                        grid-template-columns: 1fr;
+                }
+
+                .sidebar {
+                        position: sticky;
+                        top: 0;
+                        z-index: 10;
+                }
+        }
+</style>
