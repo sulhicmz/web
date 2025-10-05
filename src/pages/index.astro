@@ -6,7 +6,9 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
 ---
 
 <MarketingLayout title="Jasa Website Astro + Portal Klien" description="Bangun situs pemasaran, portofolio, blog, dan portal klien terpadu dengan arsitektur Astro yang cepat dan aman.">
-        <section class="hero">
+        <section class="hero" data-animate>
+                <span class="hero-orb orb-1" aria-hidden="true"></span>
+                <span class="hero-orb orb-2" aria-hidden="true"></span>
                 <p class="eyebrow">Website + Portal Klien dalam Satu Sprint</p>
                 <h1>Saatnya menghadirkan pengalaman digital premium untuk tim dan klien Anda.</h1>
                 <p class="lead">
@@ -18,50 +20,71 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
                         </a>
                         <a class="btn ghost" href="/layanan">Lihat Paket Layanan</a>
                 </div>
+                <div class="metrics">
+                        <article>
+                                <h3>30+</h3>
+                                <p>Implementasi portal klien dengan SLA &lt; 48 jam respon</p>
+                        </article>
+                        <article>
+                                <h3>94%</h3>
+                                <p>Skor kepuasan klien terhadap onboarding digital kami</p>
+                        </article>
+                        <article>
+                                <h3>∞</h3>
+                                <p>Integrasi Supabase &amp; Cloudflare siap scale lintas industri</p>
+                        </article>
+                </div>
         </section>
 
-        <section class="value-grid">
+        <section class="value-grid" data-animate>
                 <h2>Mengapa memilih kami</h2>
                 <div class="grid">
                         <article>
+                                <span class="icon">⚡</span>
                                 <h3>Arsitektur Cepat &amp; Aman</h3>
                                 <p>Astro Islands, optimasi SEO, serta proteksi Cloudflare memastikan performa dan keamanan kelas enterprise.</p>
                         </article>
                         <article>
+                                <span class="icon">🛡️</span>
                                 <h3>Portal Klien Siap Pakai</h3>
                                 <p>Monitoring proyek, pembayaran, knowledge base privat, dan dukungan terpadu dalam satu dashboard.</p>
                         </article>
                         <article>
+                                <span class="icon">🤖</span>
                                 <h3>Automasi Operasional</h3>
                                 <p>Integrasi Supabase, pembayaran lokal, WhatsApp, dan analitik ringan yang patuh privasi.</p>
                         </article>
                 </div>
         </section>
 
-        <section class="process">
+        <section class="process" data-animate>
                 <h2>Proses kolaborasi 4 langkah</h2>
                 <ol>
                         <li>
+                                <div class="step-glow"></div>
                                 <h3>Discovery &amp; Scope</h3>
                                 <p>Workshop kebutuhan, definisi KPI, dan mapping konten awal.</p>
                         </li>
                         <li>
+                                <div class="step-glow"></div>
                                 <h3>Desain &amp; Implementasi</h3>
                                 <p>Setup design system, struktur konten, dan komponen utama.</p>
                         </li>
                         <li>
+                                <div class="step-glow"></div>
                                 <h3>Integrasi &amp; Automasi</h3>
                                 <p>Konfigurasi Supabase, pembayaran, notifikasi WhatsApp, dan analitik.</p>
                         </li>
                         <li>
+                                <div class="step-glow"></div>
                                 <h3>Go-Live &amp; Operasional</h3>
                                 <p>CI/CD GitHub → Cloudflare, training tim, serta monitoring berkelanjutan.</p>
                         </li>
                 </ol>
         </section>
 
-        <section class="cta-banner">
-                <div>
+        <section class="cta-banner" data-animate>
+                <div class="cta-content">
                         <h2>Siap tingkatkan layanan digital Anda?</h2>
                         <p>Jadwalkan sesi strategi 30 menit untuk melihat demo portal dan roadmap implementasi.</p>
                 </div>
@@ -71,22 +94,31 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
 
 <style>
         .hero {
+                position: relative;
                 display: grid;
-                gap: 1.5rem;
+                gap: clamp(1rem, 4vw, 2rem);
                 text-align: center;
+                padding: clamp(3rem, 7vw, 5rem) clamp(1.5rem, 6vw, 3.5rem);
+                background: rgba(var(--surface-elevated), 0.62);
+                border: 1px solid rgba(124, 133, 178, 0.18);
+                border-radius: clamp(2.5rem, 7vw, 3.5rem);
+                box-shadow: 0 0 45px rgba(20, 25, 45, 0.6), 0 0 65px rgba(124, 77, 255, 0.18);
+                overflow: hidden;
         }
 
         .eyebrow {
                 text-transform: uppercase;
-                letter-spacing: 0.2em;
-                color: rgb(var(--accent));
+                letter-spacing: 0.36em;
+                color: rgba(255, 255, 255, 0.68);
                 font-weight: 600;
+                font-size: 0.85rem;
         }
 
         .lead {
-                font-size: 1.15rem;
+                font-size: clamp(1.05rem, 2.2vw, 1.25rem);
                 margin: 0 auto;
                 max-width: 720px;
+                color: rgb(var(--text-secondary));
         }
 
         .hero-actions {
@@ -104,7 +136,7 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
                 border-radius: 999px;
                 font-weight: 600;
                 text-decoration: none;
-                transition: background 0.2s ease;
+                transition: background var(--transition-base);
         }
 
         .btn.primary {
@@ -112,48 +144,86 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
                 color: #fff;
         }
 
-        .btn.primary:hover,
-        .btn.primary:focus-visible {
-                background: var(--accent-dark);
-        }
-
         .btn.ghost {
-                border: 1px solid rgba(var(--gray), 0.4);
-                color: rgb(var(--black));
+                border: 1px solid rgba(124, 133, 178, 0.3);
+                color: rgb(var(--text-secondary));
+                background: rgba(21, 25, 43, 0.82);
         }
 
         .btn.ghost:hover,
         .btn.ghost:focus-visible {
-                border-color: var(--accent);
-                color: var(--accent);
+                border-color: rgba(124, 77, 255, 0.65);
+                color: rgb(var(--text-primary));
+        }
+
+        .hero .metrics {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 1rem;
+                margin-top: 2rem;
+        }
+
+        .hero .metrics article {
+                background: rgba(16, 20, 33, 0.85);
+                border: 1px solid rgba(124, 133, 178, 0.18);
+                border-radius: 1.35rem;
+                padding: 1.4rem 1.25rem;
+                box-shadow: 0 0 24px rgba(124, 77, 255, 0.18);
+        }
+
+        .hero .metrics h3 {
+                margin: 0;
+                font-size: clamp(1.8rem, 4vw, 2.4rem);
+                color: rgb(var(--text-primary));
+        }
+
+        .hero .metrics p {
+                margin: 0.35rem 0 0;
+                font-size: 0.95rem;
+                color: rgb(var(--text-muted));
         }
 
         .value-grid {
-                margin-top: 5rem;
+                margin-top: clamp(4rem, 8vw, 6rem);
                 text-align: center;
         }
 
         .value-grid .grid {
-                margin-top: 2rem;
+                margin-top: clamp(1.5rem, 4vw, 2.5rem);
                 display: grid;
-                gap: 1.5rem;
+                gap: clamp(1.2rem, 3vw, 1.75rem);
                 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         }
 
         .value-grid article {
-                background: #fff;
-                border-radius: 1rem;
+                position: relative;
+                background: rgba(17, 21, 34, 0.72);
+                border-radius: 1.5rem;
                 padding: 2rem;
-                box-shadow: 0 20px 40px rgba(15, 18, 25, 0.05);
+                border: 1px solid rgba(124, 133, 178, 0.18);
+                box-shadow: 0 0 35px rgba(124, 77, 255, 0.14);
+                overflow: hidden;
+        }
+
+        .value-grid .icon {
+                font-size: 1.75rem;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 44px;
+                height: 44px;
+                border-radius: 14px;
+                background: rgba(124, 77, 255, 0.16);
+                margin-bottom: 1rem;
         }
 
         .process {
-                margin-top: 5rem;
+                margin-top: clamp(4rem, 8vw, 6rem);
         }
 
         .process ol {
                 display: grid;
-                gap: 1.5rem;
+                gap: clamp(1.2rem, 3vw, 1.75rem);
                 counter-reset: steps;
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
                 padding-left: 0;
@@ -161,44 +231,141 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
         }
 
         .process li {
-                background: #fff;
-                border-radius: 1rem;
+                background: rgba(17, 21, 34, 0.72);
+                border-radius: 1.5rem;
                 padding: 2rem;
                 position: relative;
-                box-shadow: 0 20px 40px rgba(15, 18, 25, 0.05);
+                border: 1px solid rgba(124, 133, 178, 0.18);
+                overflow: hidden;
+                transition: transform var(--transition-base), box-shadow var(--transition-base);
         }
 
         .process li::before {
                 counter-increment: steps;
                 content: counter(steps, decimal-leading-zero);
                 position: absolute;
-                top: 1rem;
-                right: 1.5rem;
+                top: 1.25rem;
+                right: 1.35rem;
                 font-weight: 700;
-                color: rgba(var(--accent), 0.7);
+                color: rgba(124, 77, 255, 0.75);
+        }
+
+        .step-glow {
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                background: radial-gradient(circle at 30% 20%, rgba(124, 77, 255, 0.35), transparent 60%);
+                transition: opacity var(--transition-base);
+        }
+
+        .process li:hover,
+        .process li:focus-within {
+                transform: translateY(-4px);
+                box-shadow: 0 0 40px rgba(124, 77, 255, 0.18);
+        }
+
+        .process li:hover .step-glow,
+        .process li:focus-within .step-glow {
+                opacity: 1;
         }
 
         .cta-banner {
-                margin-top: 5rem;
-                background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+                margin-top: clamp(4.5rem, 9vw, 7rem);
+                background: linear-gradient(120deg, rgba(124, 77, 255, 0.85), rgba(0, 187, 255, 0.75));
                 color: #fff;
-                border-radius: 1.25rem;
-                padding: 3rem;
+                border-radius: 1.75rem;
+                padding: clamp(2.5rem, 6vw, 3.5rem);
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                gap: 2rem;
+                gap: clamp(1.5rem, 4vw, 2.5rem);
                 flex-wrap: wrap;
+                box-shadow: 0 0 35px rgba(124, 77, 255, 0.45);
         }
 
         .cta-banner h2 {
                 color: inherit;
         }
 
+        [data-animate] {
+                animation: floatFade 720ms var(--transition-smooth) both;
+        }
+
+        [data-animate]:nth-of-type(2) {
+                animation-delay: 120ms;
+        }
+
+        [data-animate]:nth-of-type(3) {
+                animation-delay: 220ms;
+        }
+
+        [data-animate]:nth-of-type(4) {
+                animation-delay: 320ms;
+        }
+
+        .hero-orb {
+                position: absolute;
+                border-radius: 999px;
+                filter: blur(0px);
+                opacity: 0.8;
+                animation: orbDrift 12s ease-in-out infinite;
+        }
+
+        .hero .orb-1 {
+                width: 180px;
+                height: 180px;
+                background: radial-gradient(circle, rgba(124, 77, 255, 0.65), transparent 70%);
+                top: -60px;
+                left: -60px;
+        }
+
+        .hero .orb-2 {
+                width: 220px;
+                height: 220px;
+                background: radial-gradient(circle, rgba(0, 187, 255, 0.6), transparent 75%);
+                bottom: -70px;
+                right: -40px;
+                animation-delay: 2s;
+        }
+
+        @keyframes orbDrift {
+                0% {
+                        transform: translate3d(0, 0, 0) scale(1);
+                        opacity: 0.6;
+                }
+                50% {
+                        transform: translate3d(18px, -16px, 0) scale(1.05);
+                        opacity: 0.85;
+                }
+                100% {
+                        transform: translate3d(-12px, 12px, 0) scale(1.02);
+                        opacity: 0.7;
+                }
+        }
+
+        @keyframes floatFade {
+                0% {
+                        opacity: 0;
+                        transform: translateY(22px) scale(0.98);
+                }
+                100% {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                }
+        }
+
         @media (max-width: 720px) {
                 .value-grid article,
                 .process li {
                         text-align: left;
+                }
+
+                .hero {
+                        border-radius: 2rem;
+                }
+
+                .hero .metrics {
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
                 }
 
                 .cta-banner {

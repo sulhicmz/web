@@ -38,9 +38,12 @@ const currentYear = new Date().getFullYear();
 </footer>
 <style>
         .marketing-footer {
-                padding: 3rem 1.5rem 4rem;
-                background: #0f1219;
-                color: #f5f7fb;
+                padding: clamp(3rem, 8vw, 5rem) clamp(1.5rem, 6vw, 4rem) clamp(3rem, 6vw, 4.5rem);
+                background: linear-gradient(180deg, rgba(12, 15, 26, 0.85) 0%, rgba(5, 6, 15, 0.95) 100%);
+                color: rgb(var(--text-secondary));
+                border-top: 1px solid rgba(124, 133, 178, 0.16);
+                position: relative;
+                overflow: hidden;
         }
 
         .footer-grid {
@@ -49,19 +52,23 @@ const currentYear = new Date().getFullYear();
                 gap: 2rem;
                 max-width: 1080px;
                 margin: 0 auto;
+                position: relative;
         }
 
         .brand {
-                font-size: 1.25rem;
+                font-size: 1.35rem;
                 font-weight: 700;
                 margin-bottom: 0.5rem;
+                color: rgb(var(--text-primary));
+                text-shadow: 0 0 18px rgba(124, 77, 255, 0.35);
         }
 
         h2 {
-                font-size: 1rem;
+                font-size: 0.95rem;
                 text-transform: uppercase;
-                letter-spacing: 0.04em;
-                margin-bottom: 0.75rem;
+                letter-spacing: 0.1em;
+                margin-bottom: 0.9rem;
+                color: rgb(var(--text-muted));
         }
 
         ul {
@@ -73,20 +80,24 @@ const currentYear = new Date().getFullYear();
         }
 
         a {
-                color: #f5f7fb;
+                color: rgb(var(--text-secondary));
                 text-decoration: none;
+                transition: color var(--transition-base), text-shadow var(--transition-base);
         }
 
         a:hover,
         a:focus-visible {
-                text-decoration: underline;
+                color: rgb(var(--text-primary));
+                text-decoration: none;
+                text-shadow: 0 0 16px rgba(124, 77, 255, 0.5);
         }
 
         .copyright {
-                margin-top: 2rem;
+                margin-top: clamp(2rem, 5vw, 3rem);
                 text-align: center;
-                font-size: 0.9rem;
-                opacity: 0.8;
+                font-size: 0.85rem;
+                opacity: 0.65;
+                color: rgb(var(--text-muted));
         }
 
         @media (max-width: 720px) {
@@ -95,7 +106,7 @@ const currentYear = new Date().getFullYear();
                 }
 
                 .footer-grid {
-                        gap: 1.5rem;
+                        gap: 1.75rem;
                 }
         }
 </style>
