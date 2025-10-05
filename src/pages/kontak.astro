@@ -16,7 +16,57 @@ const demoWhatsappLink = buildWhatsappLink('Halo, saya ingin menjadwalkan demo')
                         </label>
                         <label>
                                 Email Kerja
-                                <input type="email" name="email" required placeholder="nama@perusahaan.com" />
+                                import { CONTACT_DETAILS } from '../config';
+
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import { buildWhatsappLink, CONTACT_EMAIL } from '../consts';
+
+const demoWhatsappLink = buildWhatsappLink('Halo, saya ingin menjadwalkan demo');
+---
+
+<MarketingLayout title="Hubungi Tim Kami" description="Kirim brief proyek, jadwalkan demo portal, atau konsultasi kebutuhan website Astro Anda.">
+        <section class="contact">
+                <h1>Kontak &amp; Konsultasi</h1>
+                <p>Isi formulir di bawah atau hubungi langsung via WhatsApp untuk diskusi cepat.</p>
+                <form class="contact-form">
+                        <label>
+                                Nama Lengkap
+                                <input type="text" name="name" required placeholder="Nama Anda" />
+                        </label>
+                        <label>
+                                Email Kerja
+                                <input type="email" name="email" required placeholder={CONTACT_DETAILS.email} />
+                        </label>
+                        <label>
+                                Nomor WhatsApp
+                                <input type="tel" name="phone" required placeholder="08xxxxxxxxxx" />
+                        </label>
+                        <label>
+                                Jenis Proyek
+                                <select name="projectType" required>
+                                        <option value="">Pilih salah satu</option>
+                                        <option value="marketing">Website Marketing</option>
+                                        <option value="portal">Portal Klien</option>
+                                        <option value="keduanya">Keduanya</option>
+                                </select>
+                        </label>
+                        <label>
+                                Pesan
+                                <textarea name="message" rows="4" placeholder="Ceritakan kebutuhan Anda"></textarea>
+                        </label>
+                        <label class="consent">
+                                <input type="checkbox" name="consent" required />
+                                Saya setuju menerima update via email dan WhatsApp.
+                        </label>
+                        <button type="submit">Kirim Brief</button>
+                </form>
+                <div class="direct-contact">
+                        <a class="whatsapp" href={demoWhatsappLink} target="_blank" rel="noreferrer">Chat WhatsApp</a>
+                        <a class="email" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+                </div>
+        </section>
+</MarketingLayout>
                         </label>
                         <label>
                                 Nomor WhatsApp

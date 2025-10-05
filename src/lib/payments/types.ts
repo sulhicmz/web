@@ -79,7 +79,24 @@ export interface WebhookEvent {
 export interface PaymentProvider {
         readonly name: string;
         createCheckoutSession(payload: CheckoutPayload): Promise<CheckoutSession>;
+        createSubscription(payload: SubscriptionPayload): Promise<ProviderSubscription>;
         getPaymentStatus(reference: string): Promise<PaymentRecord>;
         applyCoupon?(reference: string, code: string): Promise<CouponResult>;
         parseWebhook(body: string, headers: Record<string, string>): Promise<WebhookEvent>;
+        verifyWebhook(payload: unknown, signature: string): boolean;
+}
+
+export interface SubscriptionPayload {
+        packageId: string;
+        addons: string[];
+        coupon?: string;
+        customer: CustomerInfo;
+}
+
+export interface ProviderSubscription {
+        id: string;
+        status: 'active' | 'inactive' | 'pending';
+        schedule: 'monthly' | 'yearly';
+        virtualAccount?: string;
+        providerPayload?: Record<string, unknown>;
 }

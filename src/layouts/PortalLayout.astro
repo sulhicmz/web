@@ -31,6 +31,19 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
         </body>
 </html>
 
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const supabase = createClient(import.meta.env.PUBLIC_SUPABASE_URL, import.meta.env.PUBLIC_SUPABASE_ANON_KEY);
+
+  const logoutButton = document.getElementById('logout-button');
+
+  logoutButton.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  });
+</script>
+
 <style>
         .portal-shell {
                 margin: 0;

@@ -8,10 +8,7 @@ const baseUrl = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
 const rawPathname = Astro.url.pathname;
 const pathname = rawPathname.startsWith(baseUrl) ? rawPathname.slice(baseUrl.length) || '/' : rawPathname;
 const subpath = pathname.match(/[^\/]+/g);
-const isActive =
-        href === pathname ||
-        (href !== '/' && pathname.startsWith(href)) ||
-        href === '/' + (subpath?.[0] || '');
+const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
 ---
 
 <a href={href} class:list={["nav-link", className, { active: isActive }]} {...props}>

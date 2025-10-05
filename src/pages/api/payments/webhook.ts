@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro';
-
-import { assertPaymentProvider } from '../../../lib/payments';
+import { MidtransProvider } from '../../../lib/payments/providers/midtrans';
 
 const json = (data: unknown, init: ResponseInit = {}) =>
         new Response(JSON.stringify(data), {
@@ -12,27 +11,20 @@ const json = (data: unknown, init: ResponseInit = {}) =>
         });
 
 export const post: APIRoute = async ({ request }) => {
-        let provider;
-        try {
-                provider = assertPaymentProvider();
-        } catch (error) {
-                return json({ error: 'Provider pembayaran belum dikonfigurasi.' }, { status: 503 });
+        const provider = new MidtransProvider({
+                serverKey: import.meta.env.MIDTRANS_SERVER_KEY,
+                environment: import.meta.env.PAYMENT_ENV as 'sandbox' | 'production',
+        });
+
+        const body = await request.json();
+        const signature = request.headers.get('x-callback-token') ?? request.headers.get('x-callback-signature') ?? '';
+
+        if (!provider.verifyWebhook(body, signature)) {
+                console.warn('[payments/webhook] Invalid signature');
+                return json({ error: 'Signature webhook tidak valid.' }, { status: 400 });
         }
 
-        const body = await request.text();
-        const headers = Object.fromEntries(request.headers.entries());
+        const event = await provider.parseWebhook(JSON.stringify(body), Object.fromEntries(request.headers.entries()));
 
-        try {
-                const event = await provider.parseWebhook(body, headers);
-
-                if (!event.signatureValid) {
-                        console.warn('[payments/webhook] Invalid signature for reference', event.reference);
-                        return json({ error: 'Signature webhook tidak valid.' }, { status: 400 });
-                }
-
-                return json({ received: true, event: { reference: event.reference, status: event.status } });
-        } catch (error) {
-                console.error('[payments/webhook]', error);
-                return json({ error: 'Payload webhook tidak valid.' }, { status: 400 });
-        }
+        return json({ received: true, event: { reference: event.reference, status: event.status } });
 };
