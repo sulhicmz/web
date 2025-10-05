@@ -1,33 +1,55 @@
+
 :root {
-  /* Color Palette - Futuristic & Elegant Dark Mode */
-  --color-background-primary: #0D0F1A; /* Deep Space Blue */
-  --color-accent-primary: #00F2FF;    /* Cyber Glow Cyan */
-  --color-accent-secondary: #A450F3;  /* Synthwave Purple */
-  --color-text-primary: #E0E6F1;      /* Starlight White */
-  --color-text-secondary: #9AA0B8;    /* A slightly lighter Lunar Rock for readability */
-  --color-border-subtle: #3C3F58;     /* Lunar Rock */
+  /* Colors from 04_design_tokens.json - Dark Theme (as base) */
+  --color-background-base: #0B1220; /* Original background */
+  --color-surface-base: #111827;   /* Original surface */
+  --color-primary-base: #60A5FA;   /* Original primary */
+  --color-secondary-base: #38BDF8; /* Original secondary */
+  --color-neutral-900-base: #F8FAFC; /* Original lightest neutral */
+  --color-neutral-600-base: #94A3B8;
+  --color-neutral-300-base: #1F2937;
 
-  /* Typography */
-  --font-family-primary: 'Atkinson Hyperlegible', sans-serif; /* Assuming these fonts are available */
-  --font-family-heading: 'Atkinson Hyperlegible', sans-serif;
+  /* Cyberpunk Noir Palette */
+  --color-cn-background: #0D0D1A; /* Deep, almost black, with hint of dark blue/gray */
+  --color-cn-surface: #1A1A2E;    /* Slightly lighter, textured dark gray */
+  --color-cn-glow-primary: #00FF99; /* Electric Neon Green */
+  --color-cn-glow-secondary: #CC33FF; /* Deep Electric Purple */
+  --color-cn-text-primary: #E6E6FA; /* Crisp, slightly desaturated white */
+  --color-cn-text-secondary: #99AABB; /* Muted blue-gray for secondary text */
+  --color-cn-border-subtle: #33334D; /* Dark, cool gray */
 
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
+  /* Typography from 04_design_tokens.json */
+  --font-family-sans: 'Inter', 'Segoe UI', sans-serif;
+  --font-family-mono: 'Fira Code', monospace;
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 24px;
+  --font-size-xxl: 32px;
+  --font-size-display: 40px;
+  --line-height-normal: 1.5;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
-  /* Border Radius */
-  --border-radius-sm: 0.25rem;
-  --border-radius-md: 0.5rem;
-  --border-radius-lg: 0.75rem;
+  /* Spacing from 04_design_tokens.json */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
 
-  /* Transitions */
-  --transition-speed-fast: 0.2s;
-  --transition-speed-normal: 0.3s;
-  --transition-speed-slow: 0.5s;
-  --transition-ease: ease-in-out;
+  /* Radius from 04_design_tokens.json */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Custom Transitions */
+  --transition-speed-fast: 0.15s; /* Snappier */
+  --transition-speed-normal: 0.25s; /* Snappier */
+  --transition-ease: cubic-bezier(0.25, 0.8, 0.25, 1); /* More dynamic ease */
 }
 
 /* Base Styles */
@@ -36,11 +58,12 @@ html {
 }
 
 body {
-  font-family: var(--font-family-primary);
-  color: var(--color-text-primary);
-  background-color: var(--color-background-primary);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  color: var(--color-cn-text-primary);
+  background-color: var(--color-cn-background);
   margin: 0;
-  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--transition-speed-normal) var(--transition-ease), color var(--transition-speed-normal) var(--transition-ease);
@@ -48,90 +71,107 @@ body {
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-heading);
-  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+  color: var(--color-cn-text-primary);
   line-height: 1.2;
   margin-top: var(--spacing-xl);
   margin-bottom: var(--spacing-md);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em; /* Slightly wider for techy feel */
 }
+h1 { font-size: var(--font-size-display); text-shadow: 0 0 5px var(--color-cn-glow-primary); }
+h2 { font-size: var(--font-size-xxl); }
+h3 { font-size: var(--font-size-xl); }
+h4 { font-size: var(--font-size-lg); }
 
 /* Links */
 a {
-  color: var(--color-accent-primary);
+  color: var(--color-cn-glow-primary);
   text-decoration: none;
   transition: color var(--transition-speed-fast) var(--transition-ease), text-shadow var(--transition-speed-fast) var(--transition-ease);
 }
 
 a:hover {
-  color: var(--color-accent-primary);
-  text-shadow: 0 0 8px var(--color-accent-primary); /* Subtle glow on hover */
+  color: var(--color-cn-glow-secondary);
+  text-shadow: 0 0 10px var(--color-cn-glow-secondary), 0 0 20px rgba(204, 51, 255, 0.4); /* Stronger glow on hover */
 }
 
-/* Buttons (assuming a generic button style, specific Astro components might override) */
+/* Buttons (generic style) */
 button, .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-sm) var(--spacing-lg);
-  border: 1px solid var(--color-accent-primary);
-  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-cn-glow-primary);
+  border-radius: var(--radius-sm); /* Sharper corners */
   background-color: transparent;
-  color: var(--color-accent-primary);
-  font-family: var(--font-family-primary);
-  font-size: 1rem;
+  color: var(--color-cn-glow-primary);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all var(--transition-speed-normal) var(--transition-ease);
   position: relative;
   overflow: hidden;
   z-index: 1;
+  box-shadow: 0 0 8px rgba(0, 255, 153, 0.3); /* Initial subtle glow */
 }
 
 button:hover, .button:hover {
-  color: var(--color-background-primary);
-  background-color: var(--color-accent-primary);
-  box-shadow: 0 0 15px var(--color-accent-primary), 0 0 30px var(--color-accent-primary); /* Stronger glow on hover */
-  transform: translateY(-2px);
+  color: var(--color-cn-background);
+  background-color: var(--color-cn-glow-primary);
+  border-color: var(--color-cn-glow-secondary);
+  box-shadow:
+    0 0 15px var(--color-cn-glow-primary),
+    0 0 30px var(--color-cn-glow-secondary),
+    0 0 45px rgba(204, 51, 255, 0.6); /* Multi-layered, strong glow */
+  transform: translateY(-3px) scale(1.03);
 }
 
 button:active, .button:active {
-  transform: translateY(0);
-  box-shadow: 0 0 5px var(--color-accent-primary);
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 0 5px var(--color-cn-glow-primary);
 }
 
-/* Card-like elements (assuming a generic card style) */
+/* Card-like elements (generic style) */
 .card {
-  background-color: rgba(var(--color-border-subtle), 0.2); /* Semi-transparent background */
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--border-radius-lg);
+  background-color: var(--color-cn-surface);
+  border: 1px solid var(--color-cn-border-subtle);
+  border-radius: var(--radius-md);
   padding: var(--spacing-xl);
   transition: all var(--transition-speed-normal) var(--transition-ease);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
 }
 
 .card:hover {
-  border-color: var(--color-accent-primary);
-  box-shadow: 0 0 20px rgba(var(--color-accent-primary), 0.3), 0 0 40px rgba(var(--color-accent-secondary), 0.1);
-  transform: translateY(-5px);
+  border-color: var(--color-cn-glow-primary);
+  box-shadow:
+    0 0 12px rgba(0, 255, 153, 0.5),
+    0 0 25px rgba(204, 51, 255, 0.3),
+    0 8px 40px rgba(0, 0, 0, 0.6);
+  transform: translateY(-7px) scale(1.02);
 }
 
 /* Utility classes for text colors */
-.text-primary { color: var(--color-text-primary); }
-.text-secondary { color: var(--color-text-secondary); }
-.text-accent-primary { color: var(--color-accent-primary); }
-.text-accent-secondary { color: var(--color-accent-secondary); }
+.text-primary { color: var(--color-cn-text-primary); }
+.text-secondary { color: var(--color-cn-text-secondary); }
+.text-glow-primary { color: var(--color-cn-glow-primary); }
+.text-glow-secondary { color: var(--color-cn-glow-secondary); }
 
-/* Basic layout adjustments (if needed, otherwise Astro components handle this) */
+/* Basic layout adjustments */
 .container {
-  max-width: 1200px;
+  max-width: 1300px; /* Slightly wider */
   margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  padding: 0 var(--spacing-lg);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   body {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
+  h1 { font-size: var(--font-size-xxl); }
+  h2 { font-size: var(--font-size-xl); }
 }
