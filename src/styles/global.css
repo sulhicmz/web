@@ -5,21 +5,23 @@
  */
 
 :root {
-  --accent: #7c4dff;
-  --accent-soft: rgba(124, 77, 255, 0.3);
-  --accent-dark: #3c20ff;
-  --accent-glow: 0 0 25px rgba(124, 77, 255, 0.6);
-  --surface: 17, 21, 34;
-  --surface-elevated: 28, 33, 52;
-  --surface-muted: 11, 13, 22;
-  --text-primary: 230, 233, 255;
-  --text-secondary: 183, 190, 221;
-  --text-muted: 135, 144, 181;
-  --border-subtle: rgba(124, 133, 178, 0.14);
-  --glow-ambient: radial-gradient(circle at top left, rgba(124, 77, 255, 0.18), transparent 45%),
-    radial-gradient(circle at bottom right, rgba(0, 187, 255, 0.16), transparent 55%);
-  --transition-base: 150ms ease;
-  --transition-smooth: 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  --accent: #5ad1ff;
+  --accent-strong: #2ab0ff;
+  --accent-secondary: #a889ff;
+  --accent-gradient: linear-gradient(135deg, rgba(90, 209, 255, 0.95), rgba(168, 137, 255, 0.9));
+  --bg-base: #070a16;
+  --bg-overlay: rgba(15, 19, 34, 0.75);
+  --bg-elevated: rgba(17, 23, 42, 0.88);
+  --bg-muted: rgba(12, 16, 29, 0.92);
+  --text-primary: 245, 247, 255;
+  --text-secondary: 205, 214, 235;
+  --text-muted: 150, 160, 190;
+  --border-soft: rgba(108, 126, 171, 0.18);
+  --glow-ambient: radial-gradient(circle at 5% 15%, rgba(90, 209, 255, 0.18), transparent 58%),
+    radial-gradient(circle at 85% 25%, rgba(168, 137, 255, 0.16), transparent 62%),
+    radial-gradient(circle at 45% 90%, rgba(39, 207, 184, 0.12), transparent 65%);
+  --transition-base: 160ms ease;
+  --transition-smooth: 280ms cubic-bezier(0.4, 0.12, 0.2, 1);
 }
 @font-face {
   font-family: "Atkinson";
@@ -40,21 +42,21 @@ body {
   margin: 0;
   padding: 0;
   text-align: left;
-  background: #05060f;
+  background: var(--bg-base);
   background-image: var(--glow-ambient);
   background-attachment: fixed;
-  background-size: 160% 160%;
+  background-size: 180% 180%;
   word-wrap: break-word;
   overflow-wrap: break-word;
   color: rgb(var(--text-secondary));
   font-size: 20px;
   line-height: 1.7;
-  transition: background 500ms ease;
+  transition: background 500ms ease, color 300ms ease;
 }
 main {
-  width: clamp(280px, 92vw, 960px);
+  width: clamp(300px, 94vw, 1080px);
   margin: auto;
-  padding: clamp(2.5rem, 4vw, 4rem) clamp(1.5rem, 5vw, 3rem);
+  padding: clamp(2.5rem, 4vw, 4rem) clamp(1.75rem, 6vw, 3.75rem);
 }
 h1,
 h2,
@@ -65,8 +67,8 @@ h6 {
   margin: 0 0 0.6rem 0;
   color: rgb(var(--text-primary));
   line-height: 1.12;
-  letter-spacing: 0.01em;
-  text-shadow: 0 0 16px rgba(124, 77, 255, 0.24);
+  letter-spacing: 0.015em;
+  text-shadow: 0 12px 30px rgba(20, 28, 45, 0.35);
 }
 h1 {
   font-size: 3.052em;
@@ -100,7 +102,7 @@ a::after {
   bottom: -0.2rem;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), rgba(0, 187, 255, 0.75));
+  background: linear-gradient(90deg, var(--accent), rgba(168, 137, 255, 0.8));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--transition-smooth);
@@ -123,18 +125,18 @@ p {
 textarea {
   width: 100%;
   font-size: 16px;
-  background: rgba(var(--surface-elevated), 0.7);
+  background: rgba(18, 24, 40, 0.75);
   color: rgb(var(--text-primary));
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-soft);
   border-radius: 12px;
   padding: 0.75rem 1rem;
   transition: border var(--transition-base), box-shadow var(--transition-base);
 }
 input {
   font-size: 16px;
-  background: rgba(var(--surface-elevated), 0.7);
+  background: rgba(18, 24, 40, 0.75);
   color: rgb(var(--text-primary));
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-soft);
   border-radius: 12px;
   padding: 0.65rem 1rem;
   transition: border var(--transition-base), box-shadow var(--transition-base);
@@ -143,13 +145,13 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: rgba(124, 77, 255, 0.65);
-  box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.18);
+  border-color: rgba(90, 209, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(90, 209, 255, 0.18);
 }
 select {
-  background: rgba(var(--surface-elevated), 0.7);
+  background: rgba(18, 24, 40, 0.75);
   color: rgb(var(--text-primary));
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-soft);
   border-radius: 12px;
   padding: 0.65rem 1rem;
 }
@@ -163,10 +165,10 @@ img {
 }
 code {
   padding: 3px 7px;
-  background: rgba(124, 77, 255, 0.14);
+  background: rgba(90, 209, 255, 0.16);
   color: rgb(var(--text-primary));
   border-radius: 6px;
-  border: 1px solid rgba(124, 77, 255, 0.35);
+  border: 1px solid rgba(90, 209, 255, 0.35);
 }
 pre {
   padding: 1.5em;
@@ -189,7 +191,7 @@ blockquote {
 }
 hr {
   border: none;
-  border-top: 1px solid rgba(124, 77, 255, 0.2);
+  border-top: 1px solid rgba(90, 209, 255, 0.22);
 }
 @media (max-width: 720px) {
   body {

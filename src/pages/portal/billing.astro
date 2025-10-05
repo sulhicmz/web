@@ -41,8 +41,8 @@ export const prerender = false;
                 background: rgba(17, 22, 36, 0.88);
                 border-radius: 1.35rem;
                 overflow: hidden;
-                border: 1px solid rgba(124, 133, 178, 0.18);
-                box-shadow: 0 0 36px rgba(12, 18, 36, 0.4), 0 0 28px rgba(124, 77, 255, 0.14);
+                border: 1px solid rgba(108, 126, 171, 0.2);
+                box-shadow: 0 0 36px rgba(12, 18, 36, 0.38), 0 0 24px rgba(34, 156, 235, 0.16);
         }
 
         th,
@@ -66,7 +66,7 @@ export const prerender = false;
         }
 
         tbody tr:hover {
-                background: rgba(124, 77, 255, 0.12);
+                background: rgba(90, 209, 255, 0.12);
         }
 
         .status {
@@ -89,21 +89,21 @@ export const prerender = false;
         }
 
         button {
-                border: 1px solid rgba(124, 77, 255, 0.4);
+                border: 1px solid rgba(90, 209, 255, 0.4);
                 padding: 0.55rem 1rem;
                 border-radius: 0.95rem;
-                background: linear-gradient(120deg, var(--accent), rgba(0, 187, 255, 0.85));
+                background: var(--accent-gradient);
                 color: #fff;
                 font-weight: 600;
                 cursor: pointer;
-                box-shadow: 0 0 20px rgba(124, 77, 255, 0.35);
+                box-shadow: 0 0 20px rgba(34, 156, 235, 0.3);
                 transition: transform var(--transition-base), box-shadow var(--transition-base);
         }
 
         button:hover,
         button:focus-visible {
-                background: var(--accent-dark);
+                background: var(--accent-strong);
                 transform: translateY(-2px);
-                box-shadow: 0 0 26px rgba(124, 77, 255, 0.5);
+                box-shadow: 0 0 24px rgba(34, 156, 235, 0.35);
         }
 </style>
