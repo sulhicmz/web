@@ -1,0 +1,47 @@
+name: Feature Request
+description: Ajukan ide fitur atau peningkatan
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Isi formulir ini untuk mengusulkan fitur atau perbaikan UX/teknis.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Permasalahan yang ingin diselesaikan
+      description: Jelaskan kebutuhan pengguna atau business goal di balik usulan fitur.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Solusi/usulan
+      description: Gambarkan solusi yang diharapkan beserta referensi desain/dokumen apabila ada.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Dampak & metrik
+      description: Bagaimana fitur ini meningkatkan pengalaman atau KPI? (mis. retensi, lead, waktu respon)
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Area yang terdampak
+      options:
+        - label: Marketing site (Astro SSG)
+        - label: Portal klien (SSR)
+        - label: Supabase / Database
+        - label: Payments & webhook
+        - label: Dokumentasi / runbook
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Ketergantungan
+      description: Fitur lain, dokumen plan, atau pekerjaan pihak ketiga yang berkaitan.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Catatan tambahan
+      description: Lampirkan mockup, link rencana di `docs/plan/`, atau context tambahan.

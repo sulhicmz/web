@@ -18,8 +18,8 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props as Pr
         <head>
                 <BaseHead title={title} description={description} />
         </head>
-<body class="marketing-shell">
-                <div class="marketing-gradient" aria-hidden="true"></div>
+        <body class="marketing-shell">
+                <div class="marketing-backdrop" aria-hidden="true"></div>
                 <MarketingHeader />
                 <main class="marketing-main">
                         <slot />
@@ -38,38 +38,40 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props as Pr
                 overflow-x: hidden;
         }
 
-        .marketing-gradient {
+        .marketing-backdrop {
                 position: fixed;
-                inset: -15vh -20vw;
+                inset: -15% -30%;
                 pointer-events: none;
-                background: radial-gradient(40% 60% at 15% 20%, rgba(124, 77, 255, 0.35), transparent 70%),
-                        radial-gradient(50% 60% at 80% 10%, rgba(0, 187, 255, 0.28), transparent 75%),
-                        radial-gradient(55% 65% at 50% 85%, rgba(255, 72, 155, 0.18), transparent 75%);
+                background:
+                        radial-gradient(38% 42% at 20% 15%, rgba(90, 209, 255, 0.22), transparent 68%),
+                        radial-gradient(45% 55% at 80% 10%, rgba(168, 137, 255, 0.18), transparent 70%),
+                        radial-gradient(55% 45% at 60% 85%, rgba(66, 233, 207, 0.12), transparent 72%);
                 filter: blur(0px);
-                transform: translateZ(0);
                 z-index: -1;
-                animation: pulseGlow 16s ease-in-out infinite alternate;
+                animation: backdropFloat 24s ease-in-out infinite alternate;
         }
 
         .marketing-main {
                 width: 100%;
-                max-width: 1100px;
+                max-width: 1140px;
                 margin: 0 auto;
-                padding: clamp(3.5rem, 8vw, 6rem) clamp(1.5rem, 6vw, 4rem) clamp(4rem, 10vw, 7rem);
+                padding: clamp(3.5rem, 7vw, 6rem) clamp(1.75rem, 6vw, 3.75rem) clamp(4.5rem, 10vw, 7rem);
         }
 
-        @keyframes pulseGlow {
+        @keyframes backdropFloat {
                 0% {
-                        opacity: 0.55;
+                        transform: translate3d(0, 0, 0) scale(1);
+                        opacity: 0.7;
                 }
                 100% {
-                        opacity: 0.85;
+                        transform: translate3d(-28px, 26px, 0) scale(1.05);
+                        opacity: 0.9;
                 }
         }
 
         @media (max-width: 720px) {
                 .marketing-main {
-                        padding: 3.5rem 1.25rem 4.5rem;
+                        padding: 3.5rem 1.4rem 4.5rem;
                 }
         }
 </style>

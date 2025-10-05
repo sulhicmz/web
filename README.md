@@ -150,6 +150,8 @@ Planned automation:
 3. Open a PR — GitHub Actions (to be added) should run build + future Playwright suite.
 4. After merge, monitor Cloudflare deployment and Supabase logs per runbook guidance.
 
+> Lihat [CONTRIBUTING.md](./CONTRIBUTING.md) untuk template issue/PR, label, dan kebijakan triase.
+
 ---
 
 Happy shipping! Dive into the planning docs for deeper context or run the portal locally to explore the SSR experience.

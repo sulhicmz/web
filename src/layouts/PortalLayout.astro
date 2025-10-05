@@ -17,7 +17,7 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
         <head>
                 <BaseHead title={title} description={description} />
         </head>
-<body class="portal-shell">
+        <body class="portal-shell">
                 <div class="portal-background" aria-hidden="true"></div>
                 <aside class="sidebar">
                         <PortalNav />
@@ -31,36 +31,48 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
         </body>
 </html>
 
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const supabase = createClient(import.meta.env.PUBLIC_SUPABASE_URL, import.meta.env.PUBLIC_SUPABASE_ANON_KEY);
+
+  const logoutButton = document.getElementById('logout-button');
+
+  logoutButton.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  });
+</script>
+
 <style>
         .portal-shell {
                 margin: 0;
                 min-height: 100vh;
                 display: grid;
                 grid-template-columns: minmax(240px, 280px) 1fr;
-                background: radial-gradient(circle at top left, rgba(124, 77, 255, 0.12), transparent 45%),
-                        radial-gradient(circle at bottom right, rgba(0, 187, 255, 0.1), transparent 55%),
-                        #05060f;
+                background: var(--bg-base);
                 position: relative;
                 overflow-x: hidden;
         }
 
         .portal-background {
                 position: fixed;
-                inset: -20%;
-                background: radial-gradient(35% 55% at 20% 25%, rgba(124, 77, 255, 0.35), transparent 70%),
-                        radial-gradient(50% 60% at 70% 80%, rgba(0, 187, 255, 0.25), transparent 75%);
+                inset: -20% -25%;
+                background:
+                        radial-gradient(40% 48% at 20% 25%, rgba(90, 209, 255, 0.2), transparent 70%),
+                        radial-gradient(52% 55% at 70% 80%, rgba(168, 137, 255, 0.18), transparent 70%);
                 filter: blur(0px);
                 opacity: 0.75;
-                z-index: -2;
-                animation: ambientShift 18s ease-in-out infinite alternate;
+                z-index: -1;
+                animation: ambientShift 24s ease-in-out infinite alternate;
         }
 
         .sidebar {
-                background: rgba(11, 13, 22, 0.88);
+                background: rgba(8, 11, 22, 0.88);
                 color: #f5f7fb;
                 backdrop-filter: blur(18px);
-                border-right: 1px solid rgba(124, 133, 178, 0.16);
-                box-shadow: inset -1px 0 0 rgba(124, 133, 178, 0.04), 20px 0 40px rgba(5, 6, 15, 0.4);
+                border-right: 1px solid rgba(108, 126, 171, 0.22);
+                box-shadow: inset -1px 0 0 rgba(108, 126, 171, 0.05), 18px 0 38px rgba(7, 11, 22, 0.4);
         }
 
         .portal-main {
@@ -70,11 +82,11 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
         }
 
         .portal-main__surface {
-                background: rgba(18, 22, 34, 0.72);
-                border-radius: clamp(2rem, 5vw, 2.75rem);
-                border: 1px solid rgba(124, 133, 178, 0.18);
-                box-shadow: 0 0 45px rgba(18, 22, 40, 0.4), 0 0 60px rgba(124, 77, 255, 0.12);
-                padding: clamp(2rem, 5vw, 3rem);
+                background: rgba(13, 18, 32, 0.78);
+                border-radius: clamp(2rem, 5vw, 2.6rem);
+                border: 1px solid rgba(108, 126, 171, 0.22);
+                box-shadow: 0 18px 40px rgba(7, 11, 22, 0.35);
+                padding: clamp(2rem, 5vw, 2.8rem);
                 min-height: calc(100vh - clamp(5rem, 10vw, 7rem));
         }
 
@@ -90,7 +102,7 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
                 }
 
                 .portal-main {
-                        padding: 2.5rem 1.5rem 3.5rem;
+                        padding: 2.5rem 1.6rem 3.5rem;
                 }
         }
 
@@ -100,8 +112,8 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
                         opacity: 0.6;
                 }
                 100% {
-                        transform: translate3d(-25px, 18px, 0) scale(1.05);
-                        opacity: 0.85;
+                        transform: translate3d(-28px, 22px, 0) scale(1.05);
+                        opacity: 0.82;
                 }
         }
 </style>

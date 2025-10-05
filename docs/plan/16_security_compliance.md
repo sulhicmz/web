@@ -16,7 +16,7 @@
 
 ## Contoh Header HTTP (Cloudflare)
 ```
-Content-Security-Policy: default-src 'self'; img-src 'self' data: https://images.ctfassets.net; script-src 'self' 'nonce-{nonce}' https://static.cloudflareinsights.com; connect-src 'self' https://*.supabase.co https://wa.me; style-src 'self' 'unsafe-inline'; font-src 'self' data:
+Content-Security-Policy: default-src 'self'; img-src 'self' data: https://images.ctfassets.net; script-src 'self' 'nonce-{nonce}' https://static.cloudflareinsights.com; connect-src 'self' https://*.supabase.co https://wa.me/{NOMOR_WHATSAPP}; style-src 'self' 'unsafe-inline'; font-src 'self' data:
 Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin

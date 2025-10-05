@@ -1,0 +1,26 @@
+name: Task / Chore
+description: Buat tugas teknis, refactor, atau dokumentasi internal
+labels: [chore]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Tujuan
+      description: Jelaskan tujuan tugas ini.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Langkah atau definisi selesai (DoD)
+      description: Daftar aksi, checklist, atau kriteria penerimaan.
+  - type: textarea
+    id: references
+    attributes:
+      label: Referensi
+      description: Tautkan ke `docs/plan/`, PR, atau catatan lain yang relevan.
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risiko & mitigasi
+      description: Sebutkan risiko yang perlu diwaspadai serta mitigasi yang diusulkan.

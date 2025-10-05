@@ -7,6 +7,9 @@ import type {
         PaymentRecord,
         PaymentStatus,
         WebhookEvent,
+        SubscriptionPayload,
+        ProviderSubscription,
+        CouponResult,
 } from '../types';
 
 interface MidtransOptions {
@@ -77,8 +80,33 @@ export class MidtransProvider implements PaymentProvider {
         }
 
         async createCheckoutSession(payload: CheckoutPayload): Promise<CheckoutSession> {
-                        const orderReference = payload.reference ?? `order-${Date.now()}`;
-                const grossAmount = toAmount(payload.items, payload.taxPercent);
+                const orderReference = payload.reference ?? `order-${Date.now()}`;
+                let grossAmount = toAmount(payload.items, payload.taxPercent);
+
+                if (payload.couponCode) {
+                        const coupon = await this.applyCoupon(orderReference, payload.couponCode);
+                        if (coupon.valid) {
+                                if (coupon.amountOff) {
+                                        grossAmount -= coupon.amountOff;
+                                        payload.items.push({
+                                                id: 'DISCOUNT',
+                                                name: `Coupon: ${payload.couponCode}`,
+                                                price: -coupon.amountOff,
+                                                quantity: 1,
+                                        });
+                                } else if (coupon.percentOff) {
+                                        const discount = grossAmount * (coupon.percentOff / 100);
+                                        grossAmount -= discount;
+                                        payload.items.push({
+                                                id: 'DISCOUNT',
+                                                name: `Coupon: ${payload.couponCode}`,
+                                                price: -discount,
+                                                quantity: 1,
+                                        });
+                                }
+                        }
+                }
+
                 const body = {
                         transaction_details: {
                                 order_id: orderReference,
@@ -137,6 +165,99 @@ export class MidtransProvider implements PaymentProvider {
                         expiresAt: data.expiry_time ?? new Date(Date.now() + DEFAULT_EXPIRY_MINUTES * 60 * 1000).toISOString(),
                         providerPayload: data,
                 };
+        }
+
+        async createSubscription(payload: SubscriptionPayload): Promise<ProviderSubscription> {
+                // TODO: Fetch package details from the database
+                let amount = 100000; // TODO: Get amount from package details
+
+                if (payload.coupon) {
+                        const coupon = await this.applyCoupon(payload.packageId, payload.coupon);
+                        if (coupon.valid) {
+                                if (coupon.amountOff) {
+                                        amount -= coupon.amountOff;
+                                } else if (coupon.percentOff) {
+                                        amount -= amount * (coupon.percentOff / 100);
+                                }
+                        }
+                }
+
+                const body = {
+                        name: payload.packageId,
+                        amount,
+                        currency: 'IDR',
+                        payment_type: 'credit_card', // TODO: Get payment_type from payload
+                        token: 'dummy_token', // TODO: Get token from customer
+                        schedule: {
+                                interval: 1,
+                                interval_unit: 'month',
+                                max_interval: 12,
+                        },
+                        customer_details: {
+                                first_name: payload.customer.name,
+                                email: payload.customer.email,
+                                phone: payload.customer.phone,
+                        },
+                };
+
+                const response = await fetch(`${this.endpoints.api}/subscriptions`, {
+                        method: 'POST',
+                        headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: this.authorizationHeader(),
+                                Accept: 'application/json',
+                        },
+                        body: JSON.stringify(body),
+                });
+
+                if (!response.ok) {
+                        const detail = await response.text();
+                        throw new Error(`Gagal membuat langganan: ${response.status} ${detail}`);
+                }
+
+                const data = (await response.json()) as { id: string; status: 'active' | 'inactive' | 'pending'; schedule: 'monthly' | 'yearly'; };
+
+                return {
+                        id: data.id,
+                        status: data.status,
+                        schedule: data.schedule,
+                        providerPayload: data,
+                };
+        }
+
+        async applyCoupon(reference: string, code: string): Promise<CouponResult> {
+                // TODO: Implement this method
+                // This method should fetch the coupon details from the database
+                // and return the discount amount.
+                // For now, we'll just return a dummy response.
+                return {
+                        code,
+                        valid: true,
+                        amountOff: 10000,
+                        percentOff: 0,
+                        message: 'Coupon applied successfully',
+                };
+        }
+
+        verifyWebhook(payload: any, signature: string): boolean {
+                const body = JSON.stringify(payload);
+                const expectedSignature = createHmac('sha512', this.serverKey)
+                        .update(body)
+                        .digest('hex');
+
+                if (signature !== expectedSignature) {
+                        return false;
+                }
+
+                const transactionTime = new Date(payload.transaction_time);
+                const now = new Date();
+                const fiveMinutes = 5 * 60 * 1000;
+
+                if (now.getTime() - transactionTime.getTime() > fiveMinutes) {
+                        return false;
+                }
+
+                return true;
         }
 
         async getPaymentStatus(reference: string): Promise<PaymentRecord> {

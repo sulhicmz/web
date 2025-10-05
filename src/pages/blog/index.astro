@@ -43,15 +43,15 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
                 background: rgba(17, 22, 36, 0.82);
                 border-radius: clamp(1.4rem, 4vw, 1.75rem);
                 overflow: hidden;
-                border: 1px solid rgba(124, 133, 178, 0.18);
-                box-shadow: 0 0 36px rgba(12, 18, 36, 0.4);
+                border: 1px solid rgba(108, 126, 171, 0.2);
+                box-shadow: 0 0 36px rgba(12, 18, 36, 0.38);
                 transition: transform var(--transition-base), box-shadow var(--transition-base);
         }
 
         article:hover,
         article:focus-within {
                 transform: translateY(-6px);
-                box-shadow: 0 0 42px rgba(124, 77, 255, 0.2);
+                box-shadow: 0 0 42px rgba(34, 156, 235, 0.22);
         }
 
         article a {
