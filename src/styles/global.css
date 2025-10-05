@@ -1,32 +1,49 @@
+
 :root {
-  /* Color Palette - Futuristic & Elegant Dark Mode */
-  --color-background-primary: #0D0F1A; /* Deep Space Blue */
-  --color-accent-primary: #00F2FF;    /* Cyber Glow Cyan */
-  --color-accent-secondary: #A450F3;  /* Synthwave Purple */
-  --color-text-primary: #E0E6F1;      /* Starlight White */
-  --color-text-secondary: #9AA0B8;    /* A slightly lighter Lunar Rock for readability */
-  --color-border-subtle: #3C3F58;     /* Lunar Rock */
+  /* Colors from 04_design_tokens.json - Dark Theme */
+  --color-background: #0B1220;
+  --color-surface: #111827;
+  --color-primary: #60A5FA;
+  --color-secondary: #38BDF8;
+  --color-accent-orange: #FB923C; /* Original accent, kept for reference */
+  --color-neutral-900: #F8FAFC; /* Lightest neutral for text */
+  --color-neutral-600: #94A3B8;
+  --color-neutral-300: #1F2937;
+  --color-neutral-100: #0B1220; /* Darkest neutral */
 
-  /* Typography */
-  --font-family-primary: 'Atkinson Hyperlegible', sans-serif; /* Assuming these fonts are available */
-  --font-family-heading: 'Atkinson Hyperlegible', sans-serif;
+  /* New Futuristic Glow Accents */
+  --color-glow-cyan: #00E0FF; /* Cyber Glow Cyan */
+  --color-glow-purple: #B026FF; /* Synthwave Purple */
 
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
+  /* Typography from 04_design_tokens.json */
+  --font-family-sans: 'Inter', 'Segoe UI', sans-serif; /* Using Inter as per tokens */
+  --font-family-mono: 'Fira Code', monospace;
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 24px;
+  --font-size-xxl: 32px;
+  --font-size-display: 40px;
+  --line-height-normal: 1.5;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
 
-  /* Border Radius */
-  --border-radius-sm: 0.25rem;
-  --border-radius-md: 0.5rem;
-  --border-radius-lg: 0.75rem;
+  /* Spacing from 04_design_tokens.json */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
 
-  /* Transitions */
+  /* Radius from 04_design_tokens.json */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Custom Transitions */
   --transition-speed-fast: 0.2s;
   --transition-speed-normal: 0.3s;
-  --transition-speed-slow: 0.5s;
   --transition-ease: ease-in-out;
 }
 
@@ -36,11 +53,12 @@ html {
 }
 
 body {
-  font-family: var(--font-family-primary);
-  color: var(--color-text-primary);
-  background-color: var(--color-background-primary);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  color: var(--color-neutral-900); /* Lightest neutral for primary text */
+  background-color: var(--color-background);
   margin: 0;
-  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--transition-speed-normal) var(--transition-ease), color var(--transition-speed-normal) var(--transition-ease);
@@ -48,81 +66,93 @@ body {
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-heading);
-  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+  color: var(--color-neutral-900);
   line-height: 1.2;
   margin-top: var(--spacing-xl);
   margin-bottom: var(--spacing-md);
+  font-weight: var(--font-weight-bold);
 }
+h1 { font-size: var(--font-size-display); }
+h2 { font-size: var(--font-size-xxl); }
+h3 { font-size: var(--font-size-xl); }
+h4 { font-size: var(--font-size-lg); }
 
 /* Links */
 a {
-  color: var(--color-accent-primary);
+  color: var(--color-primary);
   text-decoration: none;
   transition: color var(--transition-speed-fast) var(--transition-ease), text-shadow var(--transition-speed-fast) var(--transition-ease);
 }
 
 a:hover {
-  color: var(--color-accent-primary);
-  text-shadow: 0 0 8px var(--color-accent-primary); /* Subtle glow on hover */
+  color: var(--color-glow-cyan);
+  text-shadow: 0 0 8px var(--color-glow-cyan), 0 0 15px rgba(0, 224, 255, 0.3); /* Subtle glow on hover */
 }
 
-/* Buttons (assuming a generic button style, specific Astro components might override) */
+/* Buttons (generic style) */
 button, .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-sm) var(--spacing-lg);
-  border: 1px solid var(--color-accent-primary);
-  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-glow-cyan);
+  border-radius: var(--radius-md);
   background-color: transparent;
-  color: var(--color-accent-primary);
-  font-family: var(--font-family-primary);
-  font-size: 1rem;
+  color: var(--color-glow-cyan);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold); /* Assuming semibold is available or fallback to bold */
   cursor: pointer;
   transition: all var(--transition-speed-normal) var(--transition-ease);
   position: relative;
   overflow: hidden;
   z-index: 1;
+  box-shadow: 0 0 5px rgba(0, 224, 255, 0.2);
 }
 
 button:hover, .button:hover {
-  color: var(--color-background-primary);
-  background-color: var(--color-accent-primary);
-  box-shadow: 0 0 15px var(--color-accent-primary), 0 0 30px var(--color-accent-primary); /* Stronger glow on hover */
-  transform: translateY(-2px);
+  color: var(--color-background);
+  background-color: var(--color-glow-cyan);
+  box-shadow: 0 0 15px var(--color-glow-cyan), 0 0 30px var(--color-glow-cyan), 0 0 45px var(--color-glow-purple); /* Stronger glow on hover */
+  transform: translateY(-2px) scale(1.02);
 }
 
 button:active, .button:active {
-  transform: translateY(0);
-  box-shadow: 0 0 5px var(--color-accent-primary);
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 0 5px var(--color-glow-cyan);
 }
 
-/* Card-like elements (assuming a generic card style) */
+/* Card-like elements (generic style) */
 .card {
-  background-color: rgba(var(--color-border-subtle), 0.2); /* Semi-transparent background */
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--border-radius-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   transition: all var(--transition-speed-normal) var(--transition-ease);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .card:hover {
-  border-color: var(--color-accent-primary);
-  box-shadow: 0 0 20px rgba(var(--color-accent-primary), 0.3), 0 0 40px rgba(var(--color-accent-secondary), 0.1);
-  transform: translateY(-5px);
+  border-color: var(--color-glow-cyan);
+  box-shadow:
+    0 0 10px rgba(0, 224, 255, 0.4),
+    0 0 20px rgba(176, 38, 255, 0.2),
+    0 8px 30px rgba(0, 0, 0, 0.5);
+  transform: translateY(-5px) scale(1.01);
 }
 
 /* Utility classes for text colors */
-.text-primary { color: var(--color-text-primary); }
-.text-secondary { color: var(--color-text-secondary); }
-.text-accent-primary { color: var(--color-accent-primary); }
-.text-accent-secondary { color: var(--color-accent-secondary); }
+.text-primary { color: var(--color-neutral-900); }
+.text-secondary { color: var(--color-neutral-600); }
+.text-glow-cyan { color: var(--color-glow-cyan); }
+.text-glow-purple { color: var(--color-glow-purple); }
 
-/* Basic layout adjustments (if needed, otherwise Astro components handle this) */
+/* Basic layout adjustments */
 .container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
@@ -130,8 +160,8 @@ button:active, .button:active {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   body {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
+  h1 { font-size: var(--font-size-xxl); }
+  h2 { font-size: var(--font-size-xl); }
 }
