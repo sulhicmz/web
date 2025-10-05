@@ -7,106 +7,108 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
 
 <MarketingLayout title="Jasa Website Astro + Portal Klien" description="Bangun situs pemasaran, portofolio, blog, dan portal klien terpadu dengan arsitektur Astro yang cepat dan aman.">
         <section class="hero" data-animate>
-                <div class="hero-grid">
-                        <div class="hero-copy">
-                                <p class="eyebrow">Website + Portal Klien dalam Satu Sprint</p>
-                                <h1>Solusi digital futuristik yang tetap ramah dioperasikan tim Anda.</h1>
-                                <p class="lead">
-                                        Kami mendesain pengalaman terpadu—dari situs pemasaran, knowledge base, hingga portal klien—dengan fondasi Astro, Supabase, dan otomasi pembayaran lokal yang siap scale.
-                                </p>
-                                <div class="hero-actions">
-                                        <a class="btn primary" href={heroWhatsappLink} target="_blank" rel="noreferrer">
-                                                Konsultasi via WhatsApp
-                                        </a>
-                                        <a class="btn ghost" href="/layanan">Lihat Paket Layanan</a>
-                                </div>
-                                <dl class="hero-stats">
-                                        <div>
-                                                <dt>30+</dt>
-                                                <dd>implementasi portal aktif dengan SLA respons &lt; 48 jam</dd>
-                                        </div>
-                                        <div>
-                                                <dt>94%</dt>
-                                                <dd>kepuasan klien terhadap onboarding digital</dd>
-                                        </div>
-                                        <div>
-                                                <dt>6 minggu</dt>
-                                                <dd>rata-rata waktu go-live dari discovery ke produksi</dd>
-                                        </div>
-                                </dl>
+                <div class="hero-content">
+                        <span class="eyebrow">Digital sprint terpadu</span>
+                        <h1>Bangun pengalaman digital futuristik yang tetap mudah dioperasikan.</h1>
+                        <p class="lead">
+                                Kami menyatukan marketing site, knowledge base, dan portal klien dalam satu sprint terarah—mengemas Astro, Supabase, dan pembayaran lokal menjadi solusi yang ramah tim dan cepat scale.
+                        </p>
+                        <div class="hero-actions">
+                                <a class="btn primary" href={heroWhatsappLink} target="_blank" rel="noreferrer">
+                                        Konsultasi via WhatsApp
+                                </a>
+                                <a class="btn ghost" href="/layanan">Lihat Paket Layanan</a>
                         </div>
-                        <aside class="hero-panel">
-                                <span class="hero-panel__glow" aria-hidden="true"></span>
-                                <h2>Blueprint Cepat</h2>
-                                <ul>
-                                        <li>
-                                                <span>Astro hybrid untuk marketing cepat &amp; portal SSR.</span>
-                                                <strong>Performa &lt; 1s TTFB</strong>
-                                        </li>
-                                        <li>
-                                                <span>Supabase dengan RLS siap multi klien.</span>
-                                                <strong>Peran owner/staff/client/viewer</strong>
-                                        </li>
-                                        <li>
-                                                <span>Integrasi Midtrans Snap dan webhook tervalidasi.</span>
-                                                <strong>Pembayaran IDR otomatis</strong>
-                                        </li>
-                                </ul>
-                        </aside>
+                        <ul class="hero-benefits">
+                                <li>
+                                        <strong>Blueprint terverifikasi</strong>
+                                        <span>SSR portal + SSG marketing dengan guard RBAC, siap multi tenant.</span>
+                                </li>
+                                <li>
+                                        <strong>Automasi operasional</strong>
+                                        <span>Midtrans Snap, notifikasi lintas kanal, dan runbook insiden siap pakai.</span>
+                                </li>
+                                <li>
+                                        <strong>Kolaborasi efisien</strong>
+                                        <span>CI/CD Cloudflare, content collections MDX, dan kontrol akses granular.</span>
+                                </li>
+                        </ul>
                 </div>
+                <aside class="hero-summary">
+                        <div class="hero-summary__glow" aria-hidden="true"></div>
+                        <h2>Peta perjalanan</h2>
+                        <dl>
+                                <div>
+                                        <dt>Discovery &amp; scope</dt>
+                                        <dd>Model KPI, journey pengguna, arsitektur informasi.</dd>
+                                </div>
+                                <div>
+                                        <dt>Desain &amp; validasi</dt>
+                                        <dd>Design system futuristik, prototipe aksesibel, copy terpandu.</dd>
+                                </div>
+                                <div>
+                                        <dt>Integrasi inti</dt>
+                                        <dd>Supabase RLS, pembayaran locale, analitik consent-first.</dd>
+                                </div>
+                                <div>
+                                        <dt>Go-live &amp; optimasi</dt>
+                                        <dd>Deploy Cloudflare, observability, dan sesi enablement tim.</dd>
+                                </div>
+                        </dl>
+                </aside>
         </section>
 
         <section class="value-grid" data-animate>
-                <h2>Mengapa memilih kami</h2>
+                <h2>Mengapa bermitra dengan kami</h2>
                 <div class="grid">
                         <article>
                                 <span class="icon">⚙️</span>
-                                <h3>Arsitektur Modular</h3>
-                                <p>Integrasi marketing, portal, dan analitik dalam komponen yang mudah dipelihara.</p>
+                                <h3>Arsitektur modular</h3>
+                                <p>Komponen terstruktur membuat fitur baru dan iterasi UI tetap gesit.</p>
                         </article>
                         <article>
                                 <span class="icon">🛰️</span>
-                                <h3>Pengalaman Futuristik</h3>
-                                <p>Desain responsif dengan mikrointeraksi halus yang menjaga fokus pengguna.</p>
+                                <h3>Pengalaman masa depan</h3>
+                                <p>Transisi lembut, tipografi terang, dan respons cepat menjaga fokus pengguna.</p>
                         </article>
                         <article>
                                 <span class="icon">🤝</span>
-                                <h3>Ramah Operasional</h3>
-                                <p>Runbook, automasi notifikasi, dan guard Supabase memastikan tim support tetap ringan.</p>
+                                <h3>Operasional ramah tim</h3>
+                                <p>Runbook, checklist QA, dan integrasi otomatis meminimalkan beban support.</p>
                         </article>
                 </div>
         </section>
 
         <section class="process" data-animate>
-                <h2>Peta kolaborasi cepat</h2>
+                <h2>Peta kolaborasi empat fase</h2>
                 <ol>
                         <li>
                                 <div class="step-badge">01</div>
-                                <h3>Discovery &amp; Scope</h3>
-                                <p>Workshop kebutuhan, definisi KPI, dan penentuan journey pengguna.</p>
+                                <h3>Discovery</h3>
+                                <p>Audit journey, segmentasi persona, dan definisi KPI.</p>
                         </li>
                         <li>
                                 <div class="step-badge">02</div>
-                                <h3>Desain &amp; Validasi</h3>
-                                <p>Design system tematik, prototipe, dan uji aksesibilitas.</p>
+                                <h3>Desain &amp; prototipe</h3>
+                                <p>Visual futuristik yang tetap mudah dibaca serta aksesibilitas WCAG.</p>
                         </li>
                         <li>
                                 <div class="step-badge">03</div>
-                                <h3>Integrasi &amp; Automasi</h3>
-                                <p>Konfigurasi Supabase, pembayaran, dan sinkronisasi WhatsApp/email.</p>
+                                <h3>Integrasi teknis</h3>
+                                <p>Supabase, pembayaran, dan notifikasi terpadu lintas kanal.</p>
                         </li>
                         <li>
                                 <div class="step-badge">04</div>
-                                <h3>Go-Live &amp; Optimasi</h3>
-                                <p>Deploy ke Cloudflare, pelatihan tim, dan observability berkelanjutan.</p>
+                                <h3>Go-live</h3>
+                                <p>Deploy Cloudflare, observability, dan sesi enablement tim.</p>
                         </li>
                 </ol>
         </section>
 
         <section class="cta-banner" data-animate>
                 <div class="cta-content">
-                        <h2>Siap melesat ke pengalaman digital baru?</h2>
-                        <p>Jadwalkan sesi strategi 30 menit untuk melihat demo portal dan rencana implementasi yang paling pas.</p>
+                        <h2>Siap melesat menuju pengalaman digital baru?</h2>
+                        <p>Kami bantu rangkai demo, timeline, dan roadmap peningkatan layanan Anda.</p>
                 </div>
                 <a class="btn primary" href="/kontak">Jadwalkan Demo</a>
         </section>
@@ -115,123 +117,124 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
 <style>
         .hero {
                 position: relative;
-                padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 6vw, 3rem);
-                background: rgba(15, 19, 34, 0.65);
-                border: 1px solid rgba(108, 126, 171, 0.18);
-                border-radius: clamp(2.4rem, 6vw, 3rem);
-                box-shadow: 0 18px 42px rgba(7, 11, 22, 0.35);
+                display: grid;
+                gap: clamp(2rem, 6vw, 3.5rem);
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                padding: clamp(3rem, 6vw, 5rem);
+                background: rgba(18, 24, 40, 0.78);
+                border: 1px solid rgba(110, 132, 182, 0.18);
+                border-radius: clamp(2.2rem, 6vw, 3rem);
+                box-shadow: 0 20px 44px rgba(12, 18, 36, 0.3);
                 overflow: hidden;
         }
 
-        .hero::after {
+        .hero::before {
                 content: "";
                 position: absolute;
-                inset: -45% auto auto 55%;
+                inset: -30% 40% auto auto;
                 width: 420px;
                 height: 420px;
-                background: radial-gradient(circle, rgba(90, 209, 255, 0.14), transparent 70%);
-                filter: blur(12px);
+                background: radial-gradient(circle, rgba(100, 193, 255, 0.18), transparent 70%);
+                filter: blur(14px);
                 opacity: 0.7;
         }
 
-        .hero-grid {
-                display: grid;
-                gap: clamp(2rem, 6vw, 3rem);
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                align-items: center;
-                position: relative;
-        }
-
-        .hero-copy {
+        .hero-content {
                 display: grid;
                 gap: clamp(1.2rem, 3vw, 1.8rem);
+                position: relative;
+                z-index: 1;
         }
 
         .eyebrow {
                 text-transform: uppercase;
-                letter-spacing: 0.36em;
-                color: rgba(255, 255, 255, 0.7);
+                letter-spacing: 0.32em;
+                color: rgba(255, 255, 255, 0.68);
                 font-weight: 600;
-                font-size: 0.8rem;
+                font-size: 0.78rem;
         }
 
         .lead {
-                font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+                font-size: clamp(1.05rem, 2.1vw, 1.25rem);
                 margin: 0;
                 color: rgb(var(--text-secondary));
+                max-width: 52ch;
         }
 
         .hero-actions {
                 display: flex;
-                gap: 1rem;
                 flex-wrap: wrap;
-        }
-
-        .hero-stats {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
                 gap: 1rem;
-                margin: 0;
-                padding: 0;
         }
 
-        .hero-stats dt {
-                font-size: clamp(1.4rem, 3vw, 1.9rem);
-                font-weight: 700;
-                color: rgb(var(--text-primary));
-        }
-
-        .hero-stats dd {
-                margin: 0.35rem 0 0;
-                color: rgb(var(--text-muted));
-                font-size: 0.9rem;
-        }
-
-        .hero-panel {
-                position: relative;
-                background: rgba(12, 18, 32, 0.82);
-                border-radius: clamp(1.8rem, 5vw, 2.2rem);
-                border: 1px solid rgba(108, 126, 171, 0.18);
-                padding: clamp(1.8rem, 4vw, 2.3rem);
-                box-shadow: 0 18px 36px rgba(7, 11, 22, 0.32);
-                display: grid;
-                gap: 1.2rem;
-        }
-
-        .hero-panel__glow {
-                position: absolute;
-                inset: -25% -15% auto auto;
-                width: 240px;
-                height: 240px;
-                background: radial-gradient(circle, rgba(90, 209, 255, 0.18), transparent 65%);
-                filter: blur(16px);
-                opacity: 0.6;
-        }
-
-        .hero-panel h2 {
-                margin: 0;
-                font-size: 1.1rem;
-                color: rgb(var(--text-primary));
-        }
-
-        .hero-panel ul {
+        .hero-benefits {
                 margin: 0;
                 padding: 0;
                 list-style: none;
                 display: grid;
+                gap: 0.85rem;
+        }
+
+        .hero-benefits li {
+                display: grid;
+                gap: 0.3rem;
+                background: rgba(15, 21, 35, 0.82);
+                border: 1px solid rgba(110, 132, 182, 0.2);
+                border-radius: 1.1rem;
+                padding: 0.9rem 1.1rem;
+        }
+
+        .hero-benefits strong {
+                color: rgb(var(--text-primary));
+        }
+
+        .hero-benefits span {
+                color: rgb(var(--text-muted));
+                font-size: 0.95rem;
+        }
+
+        .hero-summary {
+                position: relative;
+                background: rgba(14, 20, 36, 0.82);
+                border: 1px solid rgba(110, 132, 182, 0.2);
+                border-radius: clamp(1.8rem, 5vw, 2.2rem);
+                padding: clamp(1.9rem, 4vw, 2.4rem);
+                box-shadow: 0 18px 38px rgba(12, 18, 36, 0.28);
+                display: grid;
+                gap: 1.1rem;
+        }
+
+        .hero-summary__glow {
+                position: absolute;
+                inset: -25% -10% auto auto;
+                width: 220px;
+                height: 220px;
+                background: radial-gradient(circle, rgba(100, 193, 255, 0.18), transparent 70%);
+                filter: blur(14px);
+                opacity: 0.65;
+        }
+
+        .hero-summary h2 {
+                margin: 0;
+                font-size: 1.05rem;
+                color: rgb(var(--text-primary));
+        }
+
+        .hero-summary dl {
+                margin: 0;
+                padding: 0;
+                display: grid;
                 gap: 1rem;
         }
 
-        .hero-panel li {
-                display: grid;
-                gap: 0.35rem;
-                padding: 0.25rem 0;
-                color: rgb(var(--text-secondary));
+        .hero-summary dt {
+                font-weight: 600;
+                color: rgb(var(--text-primary));
         }
 
-        .hero-panel strong {
-                font-size: 0.85rem;
-                color: rgb(var(--text-primary));
+        .hero-summary dd {
+                margin: 0.3rem 0 0;
+                color: rgb(var(--text-muted));
         }
 
         .value-grid {
@@ -248,11 +251,11 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
 
         .value-grid article {
                 position: relative;
-                background: rgba(15, 20, 36, 0.8);
+                background: rgba(17, 23, 40, 0.82);
                 border-radius: clamp(1.5rem, 4vw, 1.9rem);
                 padding: clamp(1.8rem, 4vw, 2.3rem);
-                border: 1px solid rgba(108, 126, 171, 0.18);
-                box-shadow: 0 16px 32px rgba(7, 11, 22, 0.28);
+                border: 1px solid rgba(110, 132, 182, 0.18);
+                box-shadow: 0 14px 32px rgba(12, 18, 36, 0.24);
                 display: grid;
                 gap: 0.75rem;
         }
@@ -275,11 +278,11 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
         }
 
         .process li {
-                background: rgba(15, 20, 36, 0.78);
+                background: rgba(17, 23, 40, 0.8);
                 border-radius: clamp(1.6rem, 4vw, 1.9rem);
-                padding: clamp(1.8rem, 4vw, 2.3rem);
-                border: 1px solid rgba(108, 126, 171, 0.18);
-                box-shadow: 0 14px 28px rgba(7, 11, 22, 0.26);
+                padding: clamp(1.8rem, 4vw, 2.2rem);
+                border: 1px solid rgba(110, 132, 182, 0.18);
+                box-shadow: 0 14px 28px rgba(12, 18, 36, 0.24);
                 position: relative;
                 display: grid;
                 gap: 0.65rem;
@@ -289,7 +292,7 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
                 width: 2.25rem;
                 height: 2.25rem;
                 border-radius: 0.75rem;
-                background: rgba(90, 209, 255, 0.18);
+                background: rgba(100, 193, 255, 0.16);
                 color: rgb(var(--text-primary));
                 display: inline-flex;
                 align-items: center;
@@ -300,16 +303,16 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
 
         .cta-banner {
                 margin-top: clamp(4.5rem, 9vw, 7rem);
-                background: rgba(11, 16, 30, 0.88);
-                border-radius: clamp(1.8rem, 5vw, 2.3rem);
+                background: rgba(13, 19, 34, 0.85);
+                border-radius: clamp(1.8rem, 5vw, 2.2rem);
                 padding: clamp(2.5rem, 6vw, 3.5rem);
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 gap: clamp(1.5rem, 4vw, 2.5rem);
                 flex-wrap: wrap;
-                border: 1px solid rgba(108, 126, 171, 0.22);
-                box-shadow: 0 16px 36px rgba(7, 11, 22, 0.32);
+                border: 1px solid rgba(110, 132, 182, 0.2);
+                box-shadow: 0 16px 34px rgba(12, 18, 36, 0.26);
         }
 
         .cta-banner h2 {
@@ -345,14 +348,11 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
 
         @media (max-width: 900px) {
                 .hero {
+                        grid-template-columns: 1fr;
                         padding: clamp(2.5rem, 6vw, 3.2rem);
                 }
 
-                .hero-grid {
-                        grid-template-columns: 1fr;
-                }
-
-                .hero-panel {
+                .hero-summary {
                         order: -1;
                 }
         }

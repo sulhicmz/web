@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Dokumentasi & How-to
+    url: https://github.com/sulhicmz/web/blob/main/howto.md
+    about: Panduan lengkap setup dan deployment.

@@ -1,0 +1,52 @@
+name: Bug Report
+description: Laporkan bug yang Anda temui di produk atau dokumentasi
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Terima kasih telah membantu meningkatkan kualitas proyek.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Ringkasan singkat
+      description: Jelaskan bug secara ringkas dalam 1-2 kalimat.
+      placeholder: Contoh "Tombol CTA di halaman landing tidak merespons pada perangkat mobile."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Langkah reproduksi
+      description: Langkah jelas untuk memicu bug.
+      placeholder: |
+        1. Buka ...
+        2. Klik ...
+        3. Lihat hasil ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Perilaku yang diharapkan
+      description: Jelaskan apa yang seharusnya terjadi.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Perilaku aktual
+      description: Jelaskan apa yang terjadi saat ini, termasuk pesan error/log jika ada.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Lingkungan
+      description: Browser, OS, perangkat, atau branch spesifik.
+      placeholder: "Chrome 123 di macOS 14, branch main"
+  - type: textarea
+    id: additional
+    attributes:
+      label: Lampiran tambahan
+      description: Tangkapan layar, rekaman, atau catatan lain yang mendukung laporan.

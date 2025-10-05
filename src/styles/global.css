@@ -1,28 +1,18 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 :root {
-  --accent: #5ad1ff;
-  --accent-strong: #2ab0ff;
-  --accent-secondary: #a889ff;
-  --accent-gradient: linear-gradient(135deg, rgba(90, 209, 255, 0.95), rgba(168, 137, 255, 0.9));
-  --bg-base: #070a16;
-  --bg-overlay: rgba(15, 19, 34, 0.75);
-  --bg-elevated: rgba(17, 23, 42, 0.88);
-  --bg-muted: rgba(12, 16, 29, 0.92);
-  --text-primary: 245, 247, 255;
-  --text-secondary: 205, 214, 235;
-  --text-muted: 150, 160, 190;
-  --border-soft: rgba(108, 126, 171, 0.18);
-  --glow-ambient: radial-gradient(circle at 5% 15%, rgba(90, 209, 255, 0.18), transparent 58%),
-    radial-gradient(circle at 85% 25%, rgba(168, 137, 255, 0.16), transparent 62%),
-    radial-gradient(circle at 45% 90%, rgba(39, 207, 184, 0.12), transparent 65%);
-  --transition-base: 160ms ease;
-  --transition-smooth: 280ms cubic-bezier(0.4, 0.12, 0.2, 1);
+  --primary-glow: #00f6ff;
+  --secondary-glow: #ff00ff;
+  --bg-base: #0a0a1a;
+  --bg-overlay: rgba(10, 10, 26, 0.7);
+  --bg-elevated: #1a1a3a;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --border-soft: rgba(0, 246, 255, 0.2);
+  --transition-base: 250ms ease;
+  --transition-smooth: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 @font-face {
   font-family: "Atkinson";
   src: url("/fonts/atkinson-regular.woff") format("woff");
@@ -37,64 +27,76 @@
   font-style: normal;
   font-display: swap;
 }
+
 body {
   font-family: "Atkinson", sans-serif;
   margin: 0;
   padding: 0;
   text-align: left;
-  background: var(--bg-base);
-  background-image: var(--glow-ambient);
+  background-color: var(--bg-base);
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(0, 246, 255, 0.1), transparent 30%),
+    radial-gradient(circle at 75% 75%, rgba(255, 0, 255, 0.1), transparent 30%);
   background-attachment: fixed;
-  background-size: 180% 180%;
+  background-size: 200% 200%;
+  animation: background-pan 20s linear infinite;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  color: rgb(var(--text-secondary));
+  color: var(--text-secondary);
   font-size: 20px;
   line-height: 1.7;
-  transition: background 500ms ease, color 300ms ease;
+  transition: background 480ms ease, color 320ms ease;
 }
+
+@keyframes background-pan {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 200%; }
+}
+
 main {
   width: clamp(300px, 94vw, 1080px);
   margin: auto;
   padding: clamp(2.5rem, 4vw, 4rem) clamp(1.75rem, 6vw, 3.75rem);
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+
+h1, h2, h3, h4, h5, h6 {
   margin: 0 0 0.6rem 0;
-  color: rgb(var(--text-primary));
+  color: var(--text-primary);
   line-height: 1.12;
-  letter-spacing: 0.015em;
-  text-shadow: 0 12px 30px rgba(20, 28, 45, 0.35);
+  letter-spacing: 0.01em;
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 
+    0 0 5px var(--primary-glow),
+    0 0 10px var(--primary-glow),
+    0 0 20px var(--secondary-glow),
+    0 0 40px var(--secondary-glow);
+  animation: text-flicker 3s linear infinite;
 }
-h1 {
-  font-size: 3.052em;
+
+@keyframes text-flicker {
+  0%, 100% { text-shadow: 0 0 5px var(--primary-glow), 0 0 10px var(--primary-glow), 0 0 20px var(--secondary-glow), 0 0 40px var(--secondary-glow); }
+  50% { text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow), 0 0 30px var(--secondary-glow), 0 0 50px var(--secondary-glow); }
 }
-h2 {
-  font-size: 2.441em;
-}
-h3 {
-  font-size: 1.953em;
-}
-h4 {
-  font-size: 1.563em;
-}
-h5 {
-  font-size: 1.25em;
-}
-strong,
-b {
+
+h1 { font-size: 3.052em; }
+h2 { font-size: 2.441em; }
+h3 { font-size: 1.953em; }
+h4 { font-size: 1.563em; }
+h5 { font-size: 1.25em; }
+
+strong, b {
   font-weight: 700;
+  color: var(--primary-glow);
 }
+
 a {
-  color: var(--accent);
+  color: var(--primary-glow);
   text-decoration: none;
   position: relative;
-  transition: color var(--transition-base);
+  transition: color var(--transition-base), text-shadow var(--transition-base);
+  text-shadow: 0 0 2px var(--primary-glow);
 }
+
 a::after {
   content: "";
   position: absolute;
@@ -102,97 +104,111 @@ a::after {
   bottom: -0.2rem;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), rgba(168, 137, 255, 0.8));
+  background: linear-gradient(90deg, var(--primary-glow), var(--secondary-glow));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--transition-smooth);
   border-radius: 999px;
+  box-shadow: 0 0 5px var(--primary-glow);
 }
-a:hover,
-a:focus-visible {
-  color: rgb(var(--text-primary));
+
+a:hover, a:focus-visible {
+  color: var(--text-primary);
+  text-shadow: 0 0 5px var(--primary-glow), 0 0 10px var(--primary-glow);
 }
-a:hover::after,
-a:focus-visible::after {
+
+a:hover::after, a:focus-visible::after {
   transform: scaleX(1);
 }
+
 p {
   margin-bottom: 1em;
 }
+
 .prose p {
   margin-bottom: 2em;
 }
-textarea {
+
+textarea, input, select {
   width: 100%;
   font-size: 16px;
-  background: rgba(18, 24, 40, 0.75);
-  color: rgb(var(--text-primary));
+  background: var(--bg-overlay);
+  color: var(--text-primary);
   border: 1px solid var(--border-soft);
   border-radius: 12px;
   padding: 0.75rem 1rem;
   transition: border var(--transition-base), box-shadow var(--transition-base);
+  box-shadow: 0 0 5px rgba(0, 246, 255, 0.1);
 }
-input {
-  font-size: 16px;
-  background: rgba(18, 24, 40, 0.75);
-  color: rgb(var(--text-primary));
-  border: 1px solid var(--border-soft);
-  border-radius: 12px;
-  padding: 0.65rem 1rem;
-  transition: border var(--transition-base), box-shadow var(--transition-base);
-}
-input:focus,
-textarea:focus,
-select:focus {
+
+input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: rgba(90, 209, 255, 0.55);
-  box-shadow: 0 0 0 3px rgba(90, 209, 255, 0.18);
+  border-color: var(--primary-glow);
+  box-shadow: 0 0 10px var(--primary-glow);
 }
-select {
-  background: rgba(18, 24, 40, 0.75);
-  color: rgb(var(--text-primary));
-  border: 1px solid var(--border-soft);
-  border-radius: 12px;
-  padding: 0.65rem 1rem;
-}
+
 table {
   width: 100%;
+  border-collapse: collapse;
 }
+
+th, td {
+  padding: 0.75rem;
+  border: 1px solid var(--border-soft);
+}
+
+th {
+  background-color: var(--bg-elevated);
+  color: var(--primary-glow);
+  text-shadow: 0 0 2px var(--primary-glow);
+}
+
 img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 246, 255, 0.3);
 }
+
 code {
   padding: 3px 7px;
-  background: rgba(90, 209, 255, 0.16);
-  color: rgb(var(--text-primary));
+  background: rgba(0, 246, 255, 0.1);
+  color: var(--primary-glow);
   border-radius: 6px;
-  border: 1px solid rgba(90, 209, 255, 0.35);
+  border: 1px solid var(--border-soft);
+  text-shadow: 0 0 2px var(--primary-glow);
 }
+
 pre {
   padding: 1.5em;
   border-radius: 16px;
-  background: rgba(var(--surface-elevated), 0.85);
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--accent-glow);
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 0 20px rgba(0, 246, 255, 0.2);
+  overflow-x: auto;
 }
+
 pre > code {
   all: unset;
 }
+
 blockquote {
-  border-left: 4px solid var(--accent);
-  padding: 0 0 0 20px;
-  margin: 0px;
+  border-left: 4px solid var(--primary-glow);
+  padding: 1rem 1.5rem;
+  margin: 0;
   font-size: 1.333em;
-  color: rgb(var(--text-primary));
-  background: rgba(var(--surface-elevated), 0.6);
+  color: var(--text-primary);
+  background: var(--bg-overlay);
   border-radius: 0 12px 12px 0;
+  box-shadow: 0 0 10px rgba(0, 246, 255, 0.1);
 }
+
 hr {
   border: none;
-  border-top: 1px solid rgba(90, 209, 255, 0.22);
+  border-top: 1px solid var(--border-soft);
+  margin: 2rem 0;
 }
+
 @media (max-width: 720px) {
   body {
     font-size: 18px;
@@ -210,12 +226,7 @@ hr {
   height: 1px;
   width: 1px;
   overflow: hidden;
-  /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-  clip: rect(1px 1px 1px 1px);
-  /* maybe deprecated but we need to support legacy browsers */
   clip: rect(1px, 1px, 1px, 1px);
-  /* modern browsers, clip-path works inwards from each corner */
   clip-path: inset(50%);
-  /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
   white-space: nowrap;
 }
