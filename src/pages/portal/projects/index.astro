@@ -1,0 +1,62 @@
+---
+import PortalLayout from '../../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Proyek Klien" description="Kelola daftar proyek, environment, dan timeline.">
+        <h1>Proyek &amp; URL</h1>
+        <table>
+                <thead>
+                        <tr>
+                                <th>Nama Proyek</th>
+                                <th>Status</th>
+                                <th>Staging</th>
+                                <th>Produksi</th>
+                        </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                                <td>Portal Onboarding</td>
+                                <td>Dalam Pengembangan</td>
+                                <td><a href="#">staging.domain.com</a></td>
+                                <td><span class="muted">Belum tersedia</span></td>
+                        </tr>
+                        <tr>
+                                <td>Situs Marketing</td>
+                                <td>Live</td>
+                                <td><a href="#">preview.domain.com</a></td>
+                                <td><a href="#">domain.com</a></td>
+                        </tr>
+                </tbody>
+        </table>
+</PortalLayout>
+
+<style>
+        table {
+                width: 100%;
+                border-collapse: collapse;
+                background: #fff;
+                border-radius: 1rem;
+                overflow: hidden;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+        }
+
+        th,
+        td {
+                padding: 1rem;
+                border-bottom: 1px solid rgba(15, 18, 25, 0.08);
+                text-align: left;
+        }
+
+        th {
+                background: rgba(15, 18, 25, 0.05);
+        }
+
+        tbody tr:last-child td {
+                border-bottom: none;
+        }
+
+        .muted {
+                color: rgba(15, 18, 25, 0.5);
+        }
+</style>

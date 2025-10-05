@@ -1,0 +1,41 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Dashboard Portal" description="Ringkasan proyek, tagihan, dan notifikasi terbaru.">
+        <h1>Dashboard</h1>
+        <section class="cards">
+                <article>
+                        <h2>Proyek Aktif</h2>
+                        <p>Tampilkan status sprint, progres deploy, dan URL staging/produksi.</p>
+                </article>
+                <article>
+                        <h2>Invoice &amp; Pembayaran</h2>
+                        <p>Invoice jatuh tempo dan riwayat pembayaran terbaru.</p>
+                </article>
+                <article>
+                        <h2>Notifikasi</h2>
+                        <p>Update tiket dukungan, aktivitas deployment, dan catatan penting tim.</p>
+                </article>
+        </section>
+</PortalLayout>
+
+<style>
+        h1 {
+                margin-bottom: 2rem;
+        }
+
+        .cards {
+                display: grid;
+                gap: 1.5rem;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+
+        article {
+                background: #fff;
+                border-radius: 1rem;
+                padding: 1.5rem;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+        }
+</style>

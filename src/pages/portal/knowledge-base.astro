@@ -1,0 +1,40 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Knowledge Base" description="Dokumentasi privat, panduan onboarding, dan FAQ khusus klien.">
+        <h1>Knowledge Base</h1>
+        <p>Cari artikel bantuan privat berdasarkan kategori.</p>
+        <ul class="kb-list">
+                <li>
+                        <h2>Getting Started</h2>
+                        <p>Checklist pre-launch, akses portal, dan konfigurasi domain.</p>
+                </li>
+                <li>
+                        <h2>Pembayaran</h2>
+                        <p>Alur penagihan otomatis, cara update metode pembayaran, dan kupon.</p>
+                </li>
+                <li>
+                        <h2>Dukungan Teknis</h2>
+                        <p>Troubleshooting umum, cara mengajukan tiket prioritas, dan panduan lampiran.</p>
+                </li>
+        </ul>
+</PortalLayout>
+
+<style>
+        .kb-list {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                display: grid;
+                gap: 1.5rem;
+        }
+
+        li {
+                background: #fff;
+                border-radius: 1rem;
+                padding: 1.5rem;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+        }
+</style>

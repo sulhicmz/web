@@ -1,0 +1,64 @@
+---
+import PortalLayout from '../../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Profil & Keamanan" description="Perbarui profil, kata sandi, dan faktor autentikasi.">
+        <h1>Profil Akun</h1>
+        <form class="profile-form">
+                <label>
+                        Nama Lengkap
+                        <input type="text" value="Nadia Pratama" />
+                </label>
+                <label>
+                        Email
+                        <input type="email" value="nadia@finserve.id" />
+                </label>
+                <label>
+                        Nomor WhatsApp
+                        <input type="tel" value="081234567890" />
+                </label>
+                <button type="submit">Simpan Perubahan</button>
+        </form>
+        <div class="links">
+                <a href="/portal/account/api-keys">Kelola API Keys</a>
+                <a href="/portal/account/activity">Aktivitas &amp; Audit</a>
+        </div>
+</PortalLayout>
+
+<style>
+        .profile-form {
+                display: grid;
+                gap: 1rem;
+                max-width: 480px;
+        }
+
+        label {
+                display: grid;
+                gap: 0.5rem;
+                font-weight: 600;
+        }
+
+        input {
+                padding: 0.75rem 1rem;
+                border-radius: 0.75rem;
+                border: 1px solid rgba(var(--gray), 0.3);
+        }
+
+        button {
+                width: fit-content;
+                padding: 0.75rem 1rem;
+                border-radius: 0.75rem;
+                border: none;
+                background: var(--accent);
+                color: #fff;
+                font-weight: 600;
+        }
+
+        .links {
+                margin-top: 2rem;
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+        }
+</style>

@@ -1,0 +1,45 @@
+---
+import NavLink from '../marketing/NavLink.astro';
+---
+
+<nav class="portal-nav" aria-label="Navigasi portal klien">
+        <ul>
+                <li><NavLink class="inverse" href="/portal/dashboard">Dashboard</NavLink></li>
+                <li><NavLink class="inverse" href="/portal/projects">Proyek</NavLink></li>
+                <li><NavLink class="inverse" href="/portal/packages">Paket</NavLink></li>
+                <li><NavLink class="inverse" href="/portal/billing">Invoice &amp; Pembayaran</NavLink></li>
+                <li><NavLink class="inverse" href="/portal/support">Dukungan</NavLink></li>
+                <li><NavLink class="inverse" href="/portal/knowledge-base">Knowledge Base</NavLink></li>
+                <li><NavLink class="inverse" href="/portal/tutorials">Tutorial</NavLink></li>
+                <li><NavLink class="inverse" href="/portal/account">Akun</NavLink></li>
+        </ul>
+</nav>
+
+<style>
+        .portal-nav {
+                background: #0f1219;
+                color: #f5f7fb;
+                padding: 1rem;
+        }
+
+        ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                display: grid;
+                gap: 0.5rem;
+        }
+
+        a {
+                color: inherit;
+                text-decoration: none;
+                display: inline-flex;
+                padding: 0.25rem 0;
+        }
+
+        a:hover,
+        a:focus-visible,
+        a.active {
+                text-decoration: underline;
+        }
+</style>

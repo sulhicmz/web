@@ -1,0 +1,92 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Invoice & Pembayaran" description="Kelola tagihan, metode pembayaran, dan riwayat transaksi.">
+        <h1>Invoice</h1>
+        <table>
+                <thead>
+                        <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Jumlah</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                        </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                                <td>INV-2024-005</td>
+                                <td>10 Mei 2024</td>
+                                <td>IDR 12.500.000</td>
+                                <td><span class="status paid">Lunas</span></td>
+                                <td><a href="#">Unduh PDF</a></td>
+                        </tr>
+                        <tr>
+                                <td>INV-2024-006</td>
+                                <td>25 Mei 2024</td>
+                                <td>IDR 7.500.000</td>
+                                <td><span class="status due">Jatuh Tempo</span></td>
+                                <td><button type="button">Bayar Sekarang</button></td>
+                        </tr>
+                </tbody>
+        </table>
+</PortalLayout>
+
+<style>
+        table {
+                width: 100%;
+                border-collapse: collapse;
+                background: #fff;
+                border-radius: 1rem;
+                overflow: hidden;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+        }
+
+        th,
+        td {
+                padding: 1rem;
+                border-bottom: 1px solid rgba(15, 18, 25, 0.08);
+                text-align: left;
+        }
+
+        th {
+                background: rgba(15, 18, 25, 0.05);
+        }
+
+        tbody tr:last-child td {
+                border-bottom: none;
+        }
+
+        .status {
+                padding: 0.25rem 0.75rem;
+                border-radius: 999px;
+                font-weight: 600;
+        }
+
+        .status.paid {
+                background: rgba(46, 204, 113, 0.2);
+                color: #2ecc71;
+        }
+
+        .status.due {
+                background: rgba(231, 76, 60, 0.2);
+                color: #e74c3c;
+        }
+
+        button {
+                border: none;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.75rem;
+                background: var(--accent);
+                color: #fff;
+                font-weight: 600;
+                cursor: pointer;
+        }
+
+        button:hover,
+        button:focus-visible {
+                background: var(--accent-dark);
+        }
+</style>

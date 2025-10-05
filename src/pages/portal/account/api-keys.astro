@@ -1,0 +1,79 @@
+---
+import PortalLayout from '../../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="API Keys" description="Kelola akses token untuk integrasi custom.">
+        <h1>API Keys</h1>
+        <table>
+                <thead>
+                        <tr>
+                                <th>Nama</th>
+                                <th>Terakhir Digunakan</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                        </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                                <td>Zapier Automation</td>
+                                <td>09 Mei 2024</td>
+                                <td>Aktif</td>
+                                <td><button type="button">Rotasi</button></td>
+                        </tr>
+                        <tr>
+                                <td>CRM Sync</td>
+                                <td>02 Mei 2024</td>
+                                <td>Nonaktif</td>
+                                <td><button type="button">Aktifkan</button></td>
+                        </tr>
+                </tbody>
+        </table>
+        <button type="button" class="create">Buat API Key Baru</button>
+</PortalLayout>
+
+<style>
+        table {
+                width: 100%;
+                border-collapse: collapse;
+                background: #fff;
+                border-radius: 1rem;
+                overflow: hidden;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+                margin-bottom: 1.5rem;
+        }
+
+        th,
+        td {
+                padding: 1rem;
+                border-bottom: 1px solid rgba(15, 18, 25, 0.08);
+                text-align: left;
+        }
+
+        th {
+                background: rgba(15, 18, 25, 0.05);
+        }
+
+        tbody tr:last-child td {
+                border-bottom: none;
+        }
+
+        button {
+                border: none;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.75rem;
+                background: var(--accent);
+                color: #fff;
+                font-weight: 600;
+                cursor: pointer;
+        }
+
+        .create {
+                padding: 0.75rem 1rem;
+        }
+
+        button:hover,
+        button:focus-visible {
+                background: var(--accent-dark);
+        }
+</style>

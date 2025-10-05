@@ -1,0 +1,96 @@
+---
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="marketing-footer">
+        <div class="footer-grid">
+                <section>
+                        <p class="brand">{SITE_TITLE}</p>
+                        <p>{SITE_DESCRIPTION}</p>
+                </section>
+                <section>
+                        <h2>Navigasi</h2>
+                        <ul>
+                                <li><a href="/layanan">Layanan &amp; Harga</a></li>
+                                <li><a href="/portofolio">Portofolio</a></li>
+                                <li><a href="/blog">Blog &amp; Insight</a></li>
+                                <li><a href="/faq">FAQ</a></li>
+                                <li><a href="/portal">Portal Klien</a></li>
+                        </ul>
+                </section>
+                <section>
+                        <h2>Kontak</h2>
+                        <ul>
+                                <li><a href="mailto:halo@astropro.id">halo@astropro.id</a></li>
+                                <li><a href="https://wa.me/6281234567890?text=Halo%2C%20saya%20ingin%20diskusi%20proyek%20website" rel="noreferrer" target="_blank">WhatsApp Tim</a></li>
+                                <li>Jam operasional: Senin–Jumat, 09.00–18.00 WIB</li>
+                        </ul>
+                </section>
+        </div>
+        <p class="copyright">&copy; {currentYear} {SITE_TITLE}. Seluruh hak cipta dilindungi.</p>
+</footer>
+<style>
+        .marketing-footer {
+                padding: 3rem 1.5rem 4rem;
+                background: #0f1219;
+                color: #f5f7fb;
+        }
+
+        .footer-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 2rem;
+                max-width: 1080px;
+                margin: 0 auto;
+        }
+
+        .brand {
+                font-size: 1.25rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+        }
+
+        h2 {
+                font-size: 1rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                margin-bottom: 0.75rem;
+        }
+
+        ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: grid;
+                gap: 0.5rem;
+        }
+
+        a {
+                color: #f5f7fb;
+                text-decoration: none;
+        }
+
+        a:hover,
+        a:focus-visible {
+                text-decoration: underline;
+        }
+
+        .copyright {
+                margin-top: 2rem;
+                text-align: center;
+                font-size: 0.9rem;
+                opacity: 0.8;
+        }
+
+        @media (max-width: 720px) {
+                .marketing-footer {
+                        text-align: center;
+                }
+
+                .footer-grid {
+                        gap: 1.5rem;
+                }
+        }
+</style>

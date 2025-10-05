@@ -1,0 +1,39 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+export const prerender = false;
+---
+
+<PortalLayout title="Tutorial & Onboarding" description="Video panduan dan checklist tugas untuk tim Anda.">
+        <h1>Tutorial</h1>
+        <ul class="tutorials">
+                <li>
+                        <h2>Setup Portal Klien</h2>
+                        <p>Durasi 12 menit — Aktivasi akun, manajemen pengguna, dan pengaturan notifikasi.</p>
+                </li>
+                <li>
+                        <h2>Workflow Deployment</h2>
+                        <p>Durasi 9 menit — Cara request deploy staging ke produksi dan melakukan review.</p>
+                </li>
+                <li>
+                        <h2>Pengelolaan Konten</h2>
+                        <p>Durasi 7 menit — Update blog, docs, dan case study melalui content collections.</p>
+                </li>
+        </ul>
+</PortalLayout>
+
+<style>
+        .tutorials {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                display: grid;
+                gap: 1.5rem;
+        }
+
+        li {
+                background: #fff;
+                border-radius: 1rem;
+                padding: 1.5rem;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+        }
+</style>

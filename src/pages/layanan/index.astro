@@ -1,0 +1,138 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+---
+
+<MarketingLayout title="Paket Layanan & Harga" description="Pilihan paket website Astro, portal klien, dan otomasi operasional sesuai kebutuhan bisnis Anda.">
+        <section class="pricing-intro">
+                <h1>Paket fleksibel untuk tiap tahap pertumbuhan</h1>
+                <p>Kami menyediakan paket siap pakai dengan opsi add-on agar implementasi berjalan cepat namun tetap terukur.</p>
+        </section>
+
+        <section class="pricing-table">
+                <div class="plan">
+                        <h2>Launch</h2>
+                        <p class="price">IDR 35jt</p>
+                        <ul>
+                                <li>Situs marketing 5 halaman</li>
+                                <li>Blog &amp; knowledge base dasar</li>
+                                <li>Portal klien dengan 1 proyek aktif</li>
+                                <li>Integrasi WhatsApp CTA</li>
+                        </ul>
+                        <a class="btn" href="https://wa.me/6281234567890?text=Ingin%20diskusi%20paket%20Launch" target="_blank" rel="noreferrer">Konsultasi Paket Launch</a>
+                </div>
+                <div class="plan highlight">
+                        <p class="badge">Terpopuler</p>
+                        <h2>Scale</h2>
+                        <p class="price">IDR 55jt</p>
+                        <ul>
+                                <li>Semua fitur Launch</li>
+                                <li>Portal multi-proyek + staging/production URLs</li>
+                                <li>Integrasi pembayaran Midtrans/Xendit</li>
+                                <li>Automasi notifikasi WA &amp; email</li>
+                        </ul>
+                        <a class="btn" href="https://wa.me/6281234567890?text=Ingin%20diskusi%20paket%20Scale" target="_blank" rel="noreferrer">Konsultasi Paket Scale</a>
+                </div>
+                <div class="plan">
+                        <h2>Enterprise</h2>
+                        <p class="price">Mulai IDR 80jt</p>
+                        <ul>
+                                <li>Integrasi SSO &amp; RBAC kustom</li>
+                                <li>Workflow approval &amp; SLA khusus</li>
+                                <li>Dedicated success manager</li>
+                                <li>Support 24/7 &amp; pelatihan tim</li>
+                        </ul>
+                        <a class="btn" href="/kontak">Jadwalkan Diskusi Enterprise</a>
+                </div>
+        </section>
+
+        <section class="addons">
+                <h2>Add-on Opsional</h2>
+                <ul>
+                        <li>Pengelolaan konten &amp; copywriting bulanan</li>
+                        <li>Integrasi CRM &amp; automation (HubSpot, Pipedrive)</li>
+                        <li>Pengembangan fitur custom portal klien</li>
+                        <li>Monitoring performa &amp; SEO berkelanjutan</li>
+                </ul>
+        </section>
+</MarketingLayout>
+
+<style>
+        .pricing-intro {
+                text-align: center;
+                max-width: 720px;
+                margin: 0 auto 3rem;
+        }
+
+        .pricing-table {
+                display: grid;
+                gap: 2rem;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .plan {
+                background: #fff;
+                border-radius: 1rem;
+                padding: 2rem;
+                box-shadow: 0 24px 48px rgba(15, 18, 25, 0.08);
+                display: grid;
+                gap: 1rem;
+        }
+
+        .plan.highlight {
+                border: 2px solid var(--accent);
+                position: relative;
+        }
+
+        .badge {
+                position: absolute;
+                top: -0.75rem;
+                right: 1.5rem;
+                background: var(--accent);
+                color: #fff;
+                padding: 0.25rem 0.75rem;
+                border-radius: 999px;
+                font-size: 0.8rem;
+                font-weight: 600;
+        }
+
+        .price {
+                font-size: 2rem;
+                font-weight: 700;
+                margin: 0;
+        }
+
+        ul {
+                margin: 0;
+                padding-left: 1.25rem;
+                display: grid;
+                gap: 0.5rem;
+        }
+
+        .btn {
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0.75rem 1rem;
+                border-radius: 0.75rem;
+                background: #0f1219;
+                color: #fff;
+                text-decoration: none;
+                font-weight: 600;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+                background: var(--accent);
+        }
+
+        .addons {
+                margin-top: 4rem;
+                background: rgba(var(--accent), 0.05);
+                padding: 2rem;
+                border-radius: 1rem;
+        }
+
+        .addons ul {
+                padding-left: 1.5rem;
+        }
+</style>

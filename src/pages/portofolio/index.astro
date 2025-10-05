@@ -1,0 +1,54 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+---
+
+<MarketingLayout title="Portofolio & Studi Kasus" description="Lihat contoh implementasi website Astro dan portal klien yang kami bangun untuk berbagai industri.">
+        <section class="intro">
+                <h1>Portofolio terkurasi</h1>
+                <p>Setiap proyek difokuskan pada hasil bisnis: peningkatan konversi, otomasi onboarding klien, dan efisiensi operasional.</p>
+        </section>
+        <section class="cases">
+                <article>
+                        <h2>FinServe Pro</h2>
+                        <p>Portal onboarding nasabah B2B dengan SLA dukungan 24 jam dan dashboard status proyek.</p>
+                        <a href="/portofolio/studi-kasus/finserve-pro">Baca studi kasus</a>
+                </article>
+                <article>
+                        <h2>EduPlus Academy</h2>
+                        <p>Situs pemasaran multi-bahasa, katalog kursus, dan portal alumni dengan pembayaran berulang.</p>
+                        <a href="/portofolio/studi-kasus/eduplus-academy">Baca studi kasus</a>
+                </article>
+                <article>
+                        <h2>CraftHub Studio</h2>
+                        <p>E-commerce katalog produk custom dengan portal klien untuk approve desain dan memantau produksi.</p>
+                        <a href="/portofolio/studi-kasus/crafthub-studio">Baca studi kasus</a>
+                </article>
+        </section>
+</MarketingLayout>
+
+<style>
+        .intro {
+                text-align: center;
+                max-width: 720px;
+                margin: 0 auto 3rem;
+        }
+
+        .cases {
+                display: grid;
+                gap: 1.5rem;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        }
+
+        article {
+                background: #fff;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.08);
+                display: grid;
+                gap: 1rem;
+        }
+
+        a {
+                font-weight: 600;
+        }
+</style>
