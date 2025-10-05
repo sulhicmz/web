@@ -50,51 +50,53 @@ const demoWhatsappLink = buildWhatsappLink('Halo, saya ingin menjadwalkan demo')
 
 <style>
         .contact {
-                max-width: 720px;
+                max-width: 760px;
                 margin: 0 auto;
                 display: grid;
-                gap: 2rem;
+                gap: clamp(1.75rem, 4vw, 2.5rem);
+                background: rgba(17, 22, 36, 0.78);
+                border: 1px solid rgba(124, 133, 178, 0.18);
+                border-radius: clamp(2rem, 5vw, 2.75rem);
+                padding: clamp(2rem, 5vw, 3rem);
+                box-shadow: 0 0 42px rgba(12, 18, 36, 0.45);
         }
 
         form {
                 display: grid;
-                gap: 1rem;
+                gap: 1.15rem;
         }
 
         label {
                 display: grid;
                 gap: 0.5rem;
                 font-weight: 600;
-        }
-
-        input,
-        textarea,
-        select {
-                padding: 0.75rem 1rem;
-                border-radius: 0.75rem;
-                border: 1px solid rgba(var(--gray), 0.3);
-                font-size: 1rem;
+                color: rgb(var(--text-primary));
         }
 
         button {
-                padding: 0.75rem 1rem;
-                border-radius: 0.75rem;
-                border: none;
-                background: var(--accent);
+                padding: 0.85rem 1.4rem;
+                border-radius: 0.95rem;
+                border: 1px solid rgba(124, 77, 255, 0.4);
+                background: linear-gradient(120deg, var(--accent), rgba(0, 187, 255, 0.85));
                 color: #fff;
                 font-weight: 600;
                 cursor: pointer;
+                width: fit-content;
+                box-shadow: 0 0 26px rgba(124, 77, 255, 0.42);
+                transition: transform var(--transition-base), box-shadow var(--transition-base);
         }
 
         button:hover,
         button:focus-visible {
                 background: var(--accent-dark);
+                transform: translateY(-2px);
         }
 
         .consent {
                 align-items: center;
                 grid-template-columns: auto 1fr;
                 font-weight: 400;
+                color: rgb(var(--text-secondary));
         }
 
         .consent input {
@@ -110,19 +112,30 @@ const demoWhatsappLink = buildWhatsappLink('Halo, saya ingin menjadwalkan demo')
 
         .whatsapp,
         .email {
-                padding: 0.75rem 1rem;
-                border-radius: 0.75rem;
+                padding: 0.75rem 1.1rem;
+                border-radius: 0.85rem;
                 text-decoration: none;
                 font-weight: 600;
+                transition: transform var(--transition-base), box-shadow var(--transition-base);
         }
 
         .whatsapp {
-                background: #25d366;
-                color: #0f1219;
+                background: linear-gradient(120deg, #25d366, #30f28a);
+                color: #051017;
+                box-shadow: 0 0 20px rgba(37, 211, 102, 0.4);
         }
 
         .email {
-                background: rgba(var(--gray), 0.1);
-                color: rgb(var(--black));
+                background: rgba(21, 25, 43, 0.82);
+                color: rgb(var(--text-secondary));
+                border: 1px solid rgba(124, 133, 178, 0.22);
+        }
+
+        .whatsapp:hover,
+        .whatsapp:focus-visible,
+        .email:hover,
+        .email:focus-visible {
+                transform: translateY(-2px);
+                box-shadow: 0 0 26px rgba(124, 77, 255, 0.28);
         }
 </style>
