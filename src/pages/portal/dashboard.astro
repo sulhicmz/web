@@ -23,19 +23,28 @@ export const prerender = false;
 
 <style>
         h1 {
-                margin-bottom: 2rem;
+                margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+                font-size: clamp(1.8rem, 3vw, 2.4rem);
         }
 
         .cards {
                 display: grid;
-                gap: 1.5rem;
+                gap: clamp(1.25rem, 3vw, 1.75rem);
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         }
 
         article {
-                background: #fff;
-                border-radius: 1rem;
-                padding: 1.5rem;
-                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+                background: rgba(17, 22, 36, 0.8);
+                border-radius: 1.35rem;
+                padding: 1.75rem;
+                border: 1px solid rgba(124, 133, 178, 0.18);
+                box-shadow: 0 0 32px rgba(12, 18, 36, 0.4), 0 0 24px rgba(124, 77, 255, 0.14);
+                transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        article:hover,
+        article:focus-within {
+                transform: translateY(-4px);
+                box-shadow: 0 0 40px rgba(124, 77, 255, 0.18);
         }
 </style>

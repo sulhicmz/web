@@ -21,9 +21,12 @@ const isActive =
         .nav-link {
                 display: inline-block;
                 text-decoration: none;
-                color: rgb(var(--black));
+                color: rgb(var(--text-secondary));
                 font-weight: 500;
-                padding: 0.35rem 0.5rem;
+                padding: 0.35rem 0.85rem;
+                border-radius: 999px;
+                position: relative;
+                transition: color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
         }
 
         .nav-link.inverse {
@@ -32,12 +35,16 @@ const isActive =
 
         .nav-link:hover,
         .nav-link:focus-visible {
-                color: var(--accent);
+                color: rgb(var(--text-primary));
+                background: rgba(124, 77, 255, 0.12);
+                box-shadow: 0 0 18px rgba(124, 77, 255, 0.28);
         }
 
         .nav-link.active {
                 font-weight: 700;
-                color: var(--accent);
+                color: rgb(var(--text-primary));
+                background: rgba(124, 77, 255, 0.18);
+                box-shadow: 0 0 16px rgba(124, 77, 255, 0.35);
         }
 
         .nav-link.inverse:hover,

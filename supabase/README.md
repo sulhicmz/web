@@ -17,6 +17,12 @@ Dokumen ini menjelaskan cara menyiapkan lingkungan Supabase lokal untuk pengemba
    ```
    Perintah di atas akan menjalankan database, autentikasi, dan storage lokal serta menerapkan skema + kebijakan RLS yang telah ditulis.
 4. **Menerapkan data awal (opsional)**: tempatkan skrip seeding di folder `supabase/seed/` lalu jalankan `supabase db execute --file supabase/seed/<nama-file>.sql`.
+5. **Deploy ke Supabase hosted** (opsional):
+   ```bash
+   supabase link --project-ref <project-ref>
+   supabase db push --file supabase/migrations/0001_core_schema.sql
+   ```
+   Setelah push, salin `anon key`, `service role`, dan `project url` dari dashboard ke `.env`/secrets Cloudflare.
 
 ## Struktur Folder
 - `migrations/0001_core_schema.sql` – definisi skema inti, fungsi helper, dan kebijakan RLS.

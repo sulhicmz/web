@@ -38,24 +38,33 @@ export const prerender = false;
         table {
                 width: 100%;
                 border-collapse: collapse;
-                background: #fff;
-                border-radius: 1rem;
+                background: rgba(17, 22, 36, 0.88);
+                border-radius: 1.35rem;
                 overflow: hidden;
-                box-shadow: 0 12px 32px rgba(15, 18, 25, 0.06);
+                border: 1px solid rgba(124, 133, 178, 0.18);
+                box-shadow: 0 0 36px rgba(12, 18, 36, 0.4), 0 0 28px rgba(124, 77, 255, 0.14);
         }
 
         th,
         td {
-                padding: 1rem;
-                border-bottom: 1px solid rgba(15, 18, 25, 0.08);
+                padding: 1rem 1.25rem;
+                border-bottom: 1px solid rgba(124, 133, 178, 0.12);
                 text-align: left;
         }
 
         th {
-                background: rgba(15, 18, 25, 0.05);
+                background: rgba(21, 26, 40, 0.72);
+                color: rgb(var(--text-muted));
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                font-size: 0.75rem;
         }
 
         tbody tr:last-child td {
                 border-bottom: none;
+        }
+
+        tbody tr:hover {
+                background: rgba(124, 77, 255, 0.12);
         }
 </style>

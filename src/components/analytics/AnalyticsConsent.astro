@@ -7,6 +7,7 @@ const shouldRender = Boolean(domain);
 {shouldRender && (
         <>
                 <div id="analytics-consent-banner" class="analytics-consent" hidden>
+                        <div class="analytics-consent__glow" aria-hidden="true"></div>
                         <div class="analytics-consent__content" role="dialog" aria-live="polite">
                                 <h2 class="analytics-consent__title">Penggunaan Analitik</h2>
                                 <p class="analytics-consent__text">
@@ -102,27 +103,38 @@ const shouldRender = Boolean(domain);
                 left: 50%;
                 transform: translateX(-50%);
                 z-index: 9999;
-                max-width: min(480px, calc(100% - 2rem));
+                max-width: min(520px, calc(100% - 2rem));
                 width: 100%;
         }
 
+        .analytics-consent__glow {
+                position: absolute;
+                inset: -30%;
+                background: radial-gradient(circle, rgba(124, 77, 255, 0.4), transparent 70%);
+                filter: blur(24px);
+                opacity: 0.75;
+        }
+
         .analytics-consent__content {
-                background: #ffffff;
-                border-radius: 1rem;
-                border: 1px solid rgba(var(--gray-light), 0.9);
-                box-shadow: 0 18px 40px rgba(var(--gray), 0.18);
-                padding: 1.5rem;
+                position: relative;
+                background: rgba(17, 21, 34, 0.88);
+                backdrop-filter: blur(18px);
+                border-radius: 1.25rem;
+                border: 1px solid rgba(124, 133, 178, 0.25);
+                box-shadow: 0 18px 40px rgba(6, 10, 26, 0.6), 0 0 32px rgba(124, 77, 255, 0.18);
+                padding: 1.7rem;
         }
 
         .analytics-consent__title {
                 margin: 0 0 0.75rem 0;
                 font-size: 1.35rem;
+                color: rgb(var(--text-primary));
         }
 
         .analytics-consent__text {
                 margin: 0 0 1.5rem 0;
                 font-size: 0.95rem;
-                color: rgba(var(--gray-dark), 0.85);
+                color: rgb(var(--text-secondary));
         }
 
         .analytics-consent__actions {
@@ -138,29 +150,32 @@ const shouldRender = Boolean(domain);
                 font-weight: 600;
                 cursor: pointer;
                 transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-                background: var(--accent);
+                background: linear-gradient(120deg, var(--accent), rgba(0, 187, 255, 0.85));
                 color: #fff;
+                box-shadow: 0 0 18px rgba(124, 77, 255, 0.35);
         }
 
         .analytics-consent__button:focus-visible {
-                outline: 3px solid rgba(var(--accent), 0.35);
+                outline: 3px solid rgba(124, 77, 255, 0.35);
                 outline-offset: 2px;
         }
 
         .analytics-consent__button--ghost {
-                background: #fff;
-                color: rgb(var(--gray-dark));
-                border-color: rgba(var(--gray), 0.2);
+                background: rgba(21, 25, 43, 0.9);
+                color: rgb(var(--text-secondary));
+                border-color: rgba(124, 133, 178, 0.25);
         }
 
         .analytics-consent__button--ghost:hover,
         .analytics-consent__button--ghost:focus-visible {
-                background: rgba(var(--gray-light), 0.8);
+                background: rgba(124, 77, 255, 0.18);
+                color: rgb(var(--text-primary));
         }
 
         .analytics-consent__button:not(.analytics-consent__button--ghost):hover,
         .analytics-consent__button:not(.analytics-consent__button--ghost):focus-visible {
                 background: var(--accent-dark);
+                box-shadow: 0 0 26px rgba(124, 77, 255, 0.5);
         }
 
         @media (max-width: 720px) {
@@ -169,7 +184,7 @@ const shouldRender = Boolean(domain);
                 }
 
                 .analytics-consent__content {
-                        padding: 1.25rem;
+                        padding: 1.4rem;
                 }
         }
 </style>
