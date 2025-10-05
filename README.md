@@ -4,6 +4,21 @@
 
 AstroPro Digital is a monorepo that powers both a high-converting marketing website and a secure client portal. The project combines Astro's hybrid rendering, Supabase authentication/Row-Level Security, and Midtrans payments so agencies can onboard clients quickly while keeping operations automated and observable.
 
+## Table of Contents
+
+- [Features at a Glance](#features-at-a-glance)
+- [Stack](#stack)
+- [Project Layout](#project-layout)
+- [Prerequisites](#prerequisites)
+- [Environment Configuration](#environment-configuration)
+- [Local Development](#local-development)
+- [Deployment Quickstart](#deployment-quickstart)
+- [Testing & Quality](#testing--quality)
+- [Documentation & Runbooks](#documentation--runbooks)
+- [Contributing Workflow](#contributing-workflow)
+
+> Need a full walkthrough? Jump to [`howto.md`](./howto.md) for an end-to-end guide that covers Supabase, Cloudflare, payments, and production hardening.
+
 ## Features at a Glance
 
 - **Marketing experience** — SSG marketing, portfolio, and blog content backed by MDX collections.
@@ -86,6 +101,17 @@ npm run dev           # start Astro dev server at http://localhost:4321
 
 The portal pages (`/portal/**`) are SSR and honor Supabase auth. When running locally, use the Supabase Studio to create test users and roles that match the policies in `supabase/migrations/0001_core_schema.sql`.
 
+## Deployment Quickstart
+
+The high-level workflow to go to production:
+
+1. **Bootstrap infrastructure** – Configure Supabase (database + auth), Midtrans (payments), and Cloudflare Workers (hosting). See [`howto.md`](./howto.md#1-prepare-infrastructure) for detailed steps, including CLI commands and secrets.
+2. **Set environment variables** – Copy `.env.example` into `.env.local` for local work, then mirror the required secrets into Cloudflare using `wrangler secret put` (Supabase URL/keys, Midtrans server key, analytics, etc.).
+3. **Run quality gates** – `npm run build` (and, when added, lint/tests) to ensure the bundle is production-ready.
+4. **Deploy** – `npm run deploy` to ship to Cloudflare Workers/Pages. Use `wrangler tail` for post-deploy logs and set the Midtrans webhook URL to `/api/payments/webhook` on the deployed domain.
+
+For optional extras—CI/CD with GitHub Actions, analytics consent, WhatsApp notifications—refer to the relevant sections in [`howto.md`](./howto.md) and `docs/plan/`.
+
 ### Payments Sandbox
 
 1. Populate Midtrans sandbox keys in `.env.local`.
@@ -116,17 +142,6 @@ Planned automation:
 - Operational playbooks under `docs/runbooks/` — start with `incident_response.md`.
 - Notification templates ready to plug into email providers under `docs/templates/notifications/`.
 - Backlog items tracked in `todo.md` alongside newly discovered tasks.
-
-## Deployment
-
-The default setup targets Cloudflare Workers via `@astrojs/cloudflare`:
-
-```bash
-npm run build
-npm run deploy   # uses wrangler with config from wrangler.json
-```
-
-Adjust `astro.config.mjs` to add optional integrations (image optimization, Partytown, etc.) outlined in `docs/plan/05_astro_architecture.md`.
 
 ## Contributing Workflow
 
