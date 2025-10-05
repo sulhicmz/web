@@ -1,219 +1,137 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
-
 :root {
-  --accent: #7c4dff;
-  --accent-soft: rgba(124, 77, 255, 0.3);
-  --accent-dark: #3c20ff;
-  --accent-glow: 0 0 25px rgba(124, 77, 255, 0.6);
-  --surface: 17, 21, 34;
-  --surface-elevated: 28, 33, 52;
-  --surface-muted: 11, 13, 22;
-  --text-primary: 230, 233, 255;
-  --text-secondary: 183, 190, 221;
-  --text-muted: 135, 144, 181;
-  --border-subtle: rgba(124, 133, 178, 0.14);
-  --glow-ambient: radial-gradient(circle at top left, rgba(124, 77, 255, 0.18), transparent 45%),
-    radial-gradient(circle at bottom right, rgba(0, 187, 255, 0.16), transparent 55%);
-  --transition-base: 150ms ease;
-  --transition-smooth: 260ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-@font-face {
-  font-family: "Atkinson";
-  src: url("/fonts/atkinson-regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Atkinson";
-  src: url("/fonts/atkinson-bold.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-body {
-  font-family: "Atkinson", sans-serif;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  background: #05060f;
-  background-image: var(--glow-ambient);
-  background-attachment: fixed;
-  background-size: 160% 160%;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  color: rgb(var(--text-secondary));
-  font-size: 20px;
-  line-height: 1.7;
-  transition: background 500ms ease;
-}
-main {
-  width: clamp(280px, 92vw, 960px);
-  margin: auto;
-  padding: clamp(2.5rem, 4vw, 4rem) clamp(1.5rem, 5vw, 3rem);
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0 0 0.6rem 0;
-  color: rgb(var(--text-primary));
-  line-height: 1.12;
-  letter-spacing: 0.01em;
-  text-shadow: 0 0 16px rgba(124, 77, 255, 0.24);
-}
-h1 {
-  font-size: 3.052em;
-}
-h2 {
-  font-size: 2.441em;
-}
-h3 {
-  font-size: 1.953em;
-}
-h4 {
-  font-size: 1.563em;
-}
-h5 {
-  font-size: 1.25em;
-}
-strong,
-b {
-  font-weight: 700;
-}
-a {
-  color: var(--accent);
-  text-decoration: none;
-  position: relative;
-  transition: color var(--transition-base);
-}
-a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -0.2rem;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), rgba(0, 187, 255, 0.75));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition-smooth);
-  border-radius: 999px;
-}
-a:hover,
-a:focus-visible {
-  color: rgb(var(--text-primary));
-}
-a:hover::after,
-a:focus-visible::after {
-  transform: scaleX(1);
-}
-p {
-  margin-bottom: 1em;
-}
-.prose p {
-  margin-bottom: 2em;
-}
-textarea {
-  width: 100%;
-  font-size: 16px;
-  background: rgba(var(--surface-elevated), 0.7);
-  color: rgb(var(--text-primary));
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  transition: border var(--transition-base), box-shadow var(--transition-base);
-}
-input {
-  font-size: 16px;
-  background: rgba(var(--surface-elevated), 0.7);
-  color: rgb(var(--text-primary));
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 0.65rem 1rem;
-  transition: border var(--transition-base), box-shadow var(--transition-base);
-}
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: rgba(124, 77, 255, 0.65);
-  box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.18);
-}
-select {
-  background: rgba(var(--surface-elevated), 0.7);
-  color: rgb(var(--text-primary));
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 0.65rem 1rem;
-}
-table {
-  width: 100%;
-}
-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-code {
-  padding: 3px 7px;
-  background: rgba(124, 77, 255, 0.14);
-  color: rgb(var(--text-primary));
-  border-radius: 6px;
-  border: 1px solid rgba(124, 77, 255, 0.35);
-}
-pre {
-  padding: 1.5em;
-  border-radius: 16px;
-  background: rgba(var(--surface-elevated), 0.85);
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--accent-glow);
-}
-pre > code {
-  all: unset;
-}
-blockquote {
-  border-left: 4px solid var(--accent);
-  padding: 0 0 0 20px;
-  margin: 0px;
-  font-size: 1.333em;
-  color: rgb(var(--text-primary));
-  background: rgba(var(--surface-elevated), 0.6);
-  border-radius: 0 12px 12px 0;
-}
-hr {
-  border: none;
-  border-top: 1px solid rgba(124, 77, 255, 0.2);
-}
-@media (max-width: 720px) {
-  body {
-    font-size: 18px;
-  }
-  main {
-    padding: 1em;
-  }
+  /* Color Palette - Futuristic & Elegant Dark Mode */
+  --color-background-primary: #0D0F1A; /* Deep Space Blue */
+  --color-accent-primary: #00F2FF;    /* Cyber Glow Cyan */
+  --color-accent-secondary: #A450F3;  /* Synthwave Purple */
+  --color-text-primary: #E0E6F1;      /* Starlight White */
+  --color-text-secondary: #9AA0B8;    /* A slightly lighter Lunar Rock for readability */
+  --color-border-subtle: #3C3F58;     /* Lunar Rock */
+
+  /* Typography */
+  --font-family-primary: 'Atkinson Hyperlegible', sans-serif; /* Assuming these fonts are available */
+  --font-family-heading: 'Atkinson Hyperlegible', sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Border Radius */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 0.75rem;
+
+  /* Transitions */
+  --transition-speed-fast: 0.2s;
+  --transition-speed-normal: 0.3s;
+  --transition-speed-slow: 0.5s;
+  --transition-ease: ease-in-out;
 }
 
-.sr-only {
-  border: 0;
-  padding: 0;
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-primary);
+  color: var(--color-text-primary);
+  background-color: var(--color-background-primary);
   margin: 0;
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-speed-normal) var(--transition-ease), color var(--transition-speed-normal) var(--transition-ease);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Links */
+a {
+  color: var(--color-accent-primary);
+  text-decoration: none;
+  transition: color var(--transition-speed-fast) var(--transition-ease), text-shadow var(--transition-speed-fast) var(--transition-ease);
+}
+
+a:hover {
+  color: var(--color-accent-primary);
+  text-shadow: 0 0 8px var(--color-accent-primary); /* Subtle glow on hover */
+}
+
+/* Buttons (assuming a generic button style, specific Astro components might override) */
+button, .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: 1px solid var(--color-accent-primary);
+  border-radius: var(--border-radius-md);
+  background-color: transparent;
+  color: var(--color-accent-primary);
+  font-family: var(--font-family-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-speed-normal) var(--transition-ease);
+  position: relative;
   overflow: hidden;
-  /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-  clip: rect(1px 1px 1px 1px);
-  /* maybe deprecated but we need to support legacy browsers */
-  clip: rect(1px, 1px, 1px, 1px);
-  /* modern browsers, clip-path works inwards from each corner */
-  clip-path: inset(50%);
-  /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
-  white-space: nowrap;
+  z-index: 1;
+}
+
+button:hover, .button:hover {
+  color: var(--color-background-primary);
+  background-color: var(--color-accent-primary);
+  box-shadow: 0 0 15px var(--color-accent-primary), 0 0 30px var(--color-accent-primary); /* Stronger glow on hover */
+  transform: translateY(-2px);
+}
+
+button:active, .button:active {
+  transform: translateY(0);
+  box-shadow: 0 0 5px var(--color-accent-primary);
+}
+
+/* Card-like elements (assuming a generic card style) */
+.card {
+  background-color: rgba(var(--color-border-subtle), 0.2); /* Semi-transparent background */
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  transition: all var(--transition-speed-normal) var(--transition-ease);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 20px rgba(var(--color-accent-primary), 0.3), 0 0 40px rgba(var(--color-accent-secondary), 0.1);
+  transform: translateY(-5px);
+}
+
+/* Utility classes for text colors */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-accent-primary { color: var(--color-accent-primary); }
+.text-accent-secondary { color: var(--color-accent-secondary); }
+
+/* Basic layout adjustments (if needed, otherwise Astro components handle this) */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  body {
+    font-size: 0.95rem;
+  }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
 }
