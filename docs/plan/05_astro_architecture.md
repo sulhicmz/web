@@ -53,7 +53,9 @@ src/
   middleware/
     authGuard.ts
   lib/
-    supabaseClient.ts
+    supabase/
+      browser.ts
+      server.ts
     paymentProvider.ts
 ``` 
 
@@ -61,7 +63,7 @@ src/
 - `astro.config.mjs`: aktifkan `integrations: [mdx(), sitemap(), image(), pagefind(), partytown()]`, output `server` untuk Cloudflare adapter.
 - `src/content/config.ts`: definisi schema collections MDX.
 - `wrangler.json`: binding lingkungan Cloudflare + secrets.
-- `supabase/config.ts`: helper env loader + guard role.
+- `supabase/README.md`: panduan konfigurasi lingkungan Supabase lokal & variabel env.
 - `package.json`: script build `astro build`, `astro sync`, `pnpm run lint`.
 
 ## Integrasi

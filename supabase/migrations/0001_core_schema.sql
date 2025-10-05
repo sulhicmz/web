@@ -13,19 +13,6 @@ create table if not exists public.clients (
   deleted_at timestamptz
 );
 
-create table if not exists public.users (
-  id uuid primary key,
-  client_id uuid references public.clients(id),
-  email text unique not null,
-  full_name text,
-  role text not null,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now(),
-  deleted_at timestamptz
-);
-
-create index if not exists users_client_id_idx on public.users(client_id);
-
 create table if not exists public.packages (
   id uuid primary key default uuid_generate_v4(),
   name text not null,
@@ -150,7 +137,7 @@ create table if not exists public.tickets (
   id uuid primary key default uuid_generate_v4(),
   client_id uuid references public.clients(id),
   project_id uuid references public.projects(id),
-  created_by uuid references public.users(id),
+  created_by uuid references public.user_profiles(id),
   subject text not null,
   category text,
   priority text,
@@ -203,7 +190,7 @@ create unique index if not exists kb_categories_client_slug_idx on public.kb_cat
 create table if not exists public.activity_events (
   id uuid primary key default uuid_generate_v4(),
   client_id uuid references public.clients(id),
-  actor_id uuid references public.users(id),
+  actor_id uuid references public.user_profiles(id),
   entity_type text,
   entity_id uuid,
   action text,
@@ -215,7 +202,7 @@ create index if not exists activity_events_client_id_idx on public.activity_even
 
 create table if not exists public.audit_logs (
   id uuid primary key default uuid_generate_v4(),
-  actor_id uuid references public.users(id),
+  actor_id uuid references public.user_profiles(id),
   client_id uuid references public.clients(id),
   action text not null,
   context jsonb,
@@ -236,6 +223,7 @@ create table if not exists public.user_profiles (
   updated_at timestamptz default now()
 );
 
+alter table public.clients enable row level security;
 alter table public.user_profiles enable row level security;
 alter table public.projects enable row level security;
 alter table public.invoices enable row level security;
@@ -289,6 +277,14 @@ returns boolean language sql stable as $$
 $$;
 
 -- Apply generic policies to client scoped tables
+drop policy if exists "tenant read clients" on public.clients;
+create policy "tenant read clients" on public.clients
+  for select using (public.allow_manage_for_owner_staff(id));
+drop policy if exists "tenant write clients" on public.clients;
+create policy "tenant write clients" on public.clients
+  for all using (public.allow_write_for_staff(id))
+  with check (public.allow_write_for_staff(id));
+
 drop policy if exists "tenant read projects" on public.projects;
 create policy "tenant read projects" on public.projects
   for select using (public.allow_manage_for_owner_staff(client_id));
