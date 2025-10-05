@@ -1,0 +1,181 @@
+---
+import type { astroHTML } from 'astro/types';
+
+type Variant = 'primary' | 'secondary' | 'ghost';
+type Size = 'sm' | 'md' | 'lg';
+
+type ButtonProps = (astroHTML.JSX.ButtonHTMLAttributes & astroHTML.JSX.AnchorHTMLAttributes) & {
+        href?: string;
+        variant?: Variant;
+        size?: Size;
+        fullWidth?: boolean;
+        loading?: boolean;
+};
+
+const {
+        href,
+        variant = 'primary',
+        size = 'md',
+        fullWidth = false,
+        loading = false,
+        disabled = false,
+        class: customClass = '',
+        type = 'button',
+        ...rest
+} = Astro.props as ButtonProps & Record<string, unknown>;
+
+const classes = [
+        'ui-button',
+        `ui-button--${variant}`,
+        `ui-button--${size}`,
+        fullWidth ? 'ui-button--full' : '',
+        disabled || loading ? 'is-disabled' : '',
+        typeof customClass === 'string' ? customClass : '',
+]
+        .filter(Boolean)
+        .join(' ');
+
+const isLink = typeof href === 'string' && href.length > 0;
+const relValue = isLink && 'rel' in rest && typeof rest.rel === 'string' ? rest.rel : undefined;
+const finalRel = relValue ?? (isLink && href?.startsWith('http') ? 'noreferrer' : undefined);
+---
+{isLink ? (
+        <a
+                {...rest}
+                class={classes}
+                href={href}
+                data-variant={variant}
+                data-size={size}
+                aria-disabled={disabled || loading ? 'true' : undefined}
+                tabindex={disabled || loading ? -1 : undefined}
+                rel={finalRel}
+        >
+                <span class="ui-button__content">
+                        <slot />
+                        {loading && <span class="ui-button__spinner" aria-hidden="true"></span>}
+                </span>
+        </a>
+) : (
+        <button
+                {...rest}
+                class={classes}
+                type={type as astroHTML.JSX.ButtonHTMLAttributes['type']}
+                disabled={disabled || loading}
+                data-variant={variant}
+                data-size={size}
+        >
+                <span class="ui-button__content">
+                        <slot />
+                        {loading && <span class="ui-button__spinner" aria-hidden="true"></span>}
+                </span>
+        </button>
+)}
+
+<style>
+        .ui-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                font-weight: 600;
+                border-radius: 999px;
+                border: 1px solid transparent;
+                cursor: pointer;
+                transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+                        box-shadow 0.2s ease, transform 0.2s ease;
+                text-decoration: none;
+                white-space: nowrap;
+                min-height: 2.5rem;
+                padding: 0.5rem 1.25rem;
+                background-color: var(--accent);
+                color: #fff;
+        }
+
+        .ui-button--secondary {
+                background-color: #fff;
+                color: rgb(var(--accent));
+                border-color: rgba(var(--accent), 0.35);
+        }
+
+        .ui-button--ghost {
+                background-color: transparent;
+                color: rgb(var(--gray-dark));
+                border-color: rgba(var(--gray), 0.3);
+        }
+
+        .ui-button--sm {
+                min-height: 2.25rem;
+                padding: 0.375rem 1rem;
+                font-size: 0.9rem;
+        }
+
+        .ui-button--md {
+                font-size: 1rem;
+        }
+
+        .ui-button--lg {
+                min-height: 3rem;
+                padding: 0.75rem 1.5rem;
+                font-size: 1.05rem;
+        }
+
+        .ui-button--full {
+                width: 100%;
+        }
+
+        .ui-button:hover,
+        .ui-button:focus-visible {
+                box-shadow: 0 6px 18px rgba(var(--accent), 0.2);
+                transform: translateY(-1px);
+        }
+
+        .ui-button:focus-visible {
+                outline: 3px solid rgba(var(--accent), 0.35);
+                outline-offset: 2px;
+        }
+
+        .ui-button[data-variant='secondary']:hover,
+        .ui-button[data-variant='secondary']:focus-visible {
+                background-color: rgba(var(--accent), 0.08);
+        }
+
+        .ui-button[data-variant='ghost'] {
+                background-color: transparent;
+        }
+
+        .ui-button[data-variant='ghost']:hover,
+        .ui-button[data-variant='ghost']:focus-visible {
+                background-color: rgba(var(--gray-light), 0.6);
+                border-color: rgba(var(--gray), 0.25);
+        }
+
+        .ui-button.is-disabled,
+        .ui-button[disabled],
+        .ui-button[aria-disabled='true'] {
+                cursor: not-allowed;
+                opacity: 0.6;
+                box-shadow: none;
+                transform: none;
+        }
+
+        .ui-button__content {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+        }
+
+        .ui-button__spinner {
+                width: 1em;
+                height: 1em;
+                border-radius: 50%;
+                border: 2px solid currentColor;
+                border-top-color: transparent;
+                animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+                to {
+                        transform: rotate(360deg);
+                }
+        }
+</style>

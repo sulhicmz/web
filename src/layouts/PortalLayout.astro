@@ -1,6 +1,7 @@
 ---
 import BaseHead from '../components/ui/BaseHead.astro';
 import PortalNav from '../components/portal/PortalNav.astro';
+import AnalyticsConsent from '../components/analytics/AnalyticsConsent.astro';
 import { SITE_TITLE } from '../consts';
 
 interface Props {
@@ -23,6 +24,7 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
                 <main class="portal-main">
                         <slot />
                 </main>
+                <AnalyticsConsent />
         </body>
 </html>
 

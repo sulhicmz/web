@@ -2,6 +2,7 @@
 import BaseHead from '../components/ui/BaseHead.astro';
 import MarketingHeader from '../components/marketing/MarketingHeader.astro';
 import MarketingFooter from '../components/marketing/MarketingFooter.astro';
+import AnalyticsConsent from '../components/analytics/AnalyticsConsent.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 interface Props {
@@ -23,6 +24,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props as Pr
                         <slot />
                 </main>
                 <MarketingFooter />
+                <AnalyticsConsent />
         </body>
 </html>
 
