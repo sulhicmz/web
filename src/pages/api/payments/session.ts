@@ -41,7 +41,7 @@ const isCheckoutPayload = (payload: unknown): payload is CheckoutPayload => {
         );
 };
 
-export const post: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request }) => {
         let rawPayload: unknown;
         try {
                 rawPayload = await request.json();

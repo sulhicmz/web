@@ -10,7 +10,7 @@ const json = (data: unknown, init: ResponseInit = {}) =>
                 },
         });
 
-export const post: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request }) => {
         const provider = new MidtransProvider({
                 serverKey: import.meta.env.MIDTRANS_SERVER_KEY,
                 environment: import.meta.env.PAYMENT_ENV as 'sandbox' | 'production',

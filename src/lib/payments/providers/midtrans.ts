@@ -1,4 +1,7 @@
-import { createHmac } from 'crypto';
+import { createHash } from 'crypto';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { getServiceClient } from '../../supabase/server';
 
 import type {
         CheckoutPayload,
@@ -31,6 +34,56 @@ const MIDTRANS_BASE = {
 
 const DEFAULT_EXPIRY_MINUTES = 30;
 
+type CouponRow = {
+        code: string;
+        amount_off?: unknown;
+        percent_off?: unknown;
+        is_active?: boolean | null;
+        expires_at?: string | null;
+        max_redemptions?: number | null;
+        redemption_count?: number | null;
+        metadata?: Record<string, unknown> | null;
+};
+
+type PackageRow = {
+        id: string;
+        code?: string | null;
+        name?: string | null;
+        price_monthly?: unknown;
+        price_setup?: unknown;
+        metadata?: Record<string, unknown> | null;
+};
+
+type AddonRow = {
+        id: string;
+        name?: string | null;
+        price?: unknown;
+        is_recurring?: boolean | null;
+};
+
+type MidtransSubscriptionResponse = {
+        id: string;
+        status: 'active' | 'inactive' | 'pending';
+        schedule?: {
+                interval?: number;
+                interval_unit?: 'day' | 'week' | 'month' | 'year';
+        };
+        va_numbers?: Array<{ bank?: string; va_number?: string }>;
+        metadata?: Record<string, unknown>;
+        [key: string]: unknown;
+};
+
+const toNumeric = (value: unknown): number => {
+        if (value === null || value === undefined) {
+                return 0;
+        }
+        if (typeof value === 'number') {
+                return Number.isFinite(value) ? value : 0;
+        }
+        const parsed = Number.parseFloat(String(value));
+        return Number.isFinite(parsed) ? parsed : 0;
+};
+
 const toAmount = (items: CheckoutPayload['items'], taxPercent?: number) => {
         const base = items.reduce((total, item) => total + item.price * item.quantity, 0);
         if (!taxPercent) return Math.round(base);
@@ -57,10 +110,16 @@ const mapStatus = (status: string): PaymentStatus => {
         }
 };
 
+const buildSignature = (reference: string, statusCode: string, grossAmount: string, serverKey: string) =>
+        createHash('sha512')
+                .update(`${reference}${statusCode}${grossAmount}${serverKey}`)
+                .digest('hex');
+
 export class MidtransProvider implements PaymentProvider {
         readonly name = 'midtrans';
         private readonly serverKey: string;
         private readonly environment: 'production' | 'sandbox';
+        private supabase?: SupabaseClient | null;
 
         constructor(options: MidtransOptions) {
                 if (!options.serverKey) {
@@ -77,6 +136,129 @@ export class MidtransProvider implements PaymentProvider {
         private authorizationHeader() {
                 const encoded = Buffer.from(`${this.serverKey}:`).toString('base64');
                 return `Basic ${encoded}`;
+        }
+
+        private getSupabaseClient(): SupabaseClient | null {
+                if (this.supabase !== undefined) {
+                        return this.supabase;
+                }
+
+                try {
+                        this.supabase = getServiceClient();
+                } catch (error) {
+                        const message =
+                                error instanceof Error ? error.message : 'Supabase service client tidak tersedia';
+                        console.warn('[MidtransProvider] Supabase service client unavailable', message);
+                        this.supabase = null;
+                }
+
+                return this.supabase;
+        }
+
+        private async fetchCouponRow(code: string): Promise<CouponRow | null> {
+                const supabase = this.getSupabaseClient();
+                if (!supabase) {
+                        return null;
+                }
+
+                const { data, error } = await supabase
+                        .from('coupons')
+                        .select('code, amount_off, percent_off, is_active, expires_at, max_redemptions, redemption_count, metadata')
+                        .eq('code', code)
+                        .maybeSingle();
+
+                if (error) {
+                        const message = error.message ?? 'unknown error';
+                        console.error('[MidtransProvider] gagal memuat kupon', message);
+                        return null;
+                }
+
+                return data ?? null;
+        }
+
+        private couponMetadataMessage(coupon: CouponRow, key: string): string | undefined {
+                if (!coupon.metadata || typeof coupon.metadata !== 'object') {
+                        return undefined;
+                }
+                const value = (coupon.metadata as Record<string, unknown>)[key];
+                return typeof value === 'string' ? value : undefined;
+        }
+
+        private async fetchPackageRow(identifier: string): Promise<PackageRow | null> {
+                const supabase = this.getSupabaseClient();
+                if (!supabase) {
+                        return null;
+                }
+
+                const selectColumns = 'id, code, name, price_monthly, price_setup, metadata';
+
+                const byId = await supabase
+                        .from('packages')
+                        .select(selectColumns)
+                        .eq('id', identifier)
+                        .maybeSingle();
+
+                if (!byId.error && byId.data) {
+                        return byId.data as PackageRow;
+                }
+
+                if (byId.error && byId.error.code && byId.error.code !== 'PGRST116') {
+                        const message = byId.error.message ?? 'unknown error';
+                        console.error('[MidtransProvider] gagal memuat paket (id)', message);
+                        return null;
+                }
+
+                const byCode = await supabase
+                        .from('packages')
+                        .select(selectColumns)
+                        .eq('code', identifier)
+                        .maybeSingle();
+
+                if (byCode.error) {
+                        const message = byCode.error.message ?? 'unknown error';
+                        console.error('[MidtransProvider] gagal memuat paket (code)', message);
+                        return null;
+                }
+
+                return (byCode.data as PackageRow | null) ?? null;
+        }
+
+        private async fetchAddonRows(ids: string[]): Promise<AddonRow[]> {
+                if (!ids || ids.length === 0) {
+                        return [];
+                }
+
+                const supabase = this.getSupabaseClient();
+                if (!supabase) {
+                        return [];
+                }
+
+                const { data, error } = await supabase
+                        .from('addons')
+                        .select('id, name, price, is_recurring')
+                        .in('id', ids);
+
+                if (error) {
+                        const message = error.message ?? 'unknown error';
+                        console.error('[MidtransProvider] gagal memuat addon', message);
+                        return [];
+                }
+
+                return (data as AddonRow[] | null) ?? [];
+        }
+
+        private resolveScheduleSettings(payload: SubscriptionPayload) {
+                const schedule = payload.schedule;
+                const intervalUnit = schedule?.intervalUnit ?? 'month';
+                const interval = schedule?.interval && schedule.interval > 0 ? schedule.interval : 1;
+                const maxIntervalDefault = intervalUnit === 'year' ? 5 : 12;
+
+                return {
+                        interval,
+                        intervalUnit,
+                        maxInterval: schedule?.maxInterval && schedule.maxInterval > 0 ? schedule.maxInterval : maxIntervalDefault,
+                        startAt: schedule?.startAt,
+                };
         }
 
         async createCheckoutSession(payload: CheckoutPayload): Promise<CheckoutSession> {
@@ -168,8 +350,25 @@ export class MidtransProvider implements PaymentProvider {
         }
 
         async createSubscription(payload: SubscriptionPayload): Promise<ProviderSubscription> {
-                // TODO: Fetch package details from the database
-                let amount = 100000; // TODO: Get amount from package details
+                const packageRow = await this.fetchPackageRow(payload.packageId);
+                if (!packageRow) {
+                        throw new Error('Paket langganan tidak ditemukan.');
+                }
+
+                const addonRows = await this.fetchAddonRows(payload.addons ?? []);
+
+                let amount = toNumeric(packageRow.price_monthly ?? packageRow.price_setup);
+
+                for (const addon of addonRows) {
+                        if (addon.is_recurring === false) {
+                                continue;
+                        }
+                        amount += toNumeric(addon.price);
+                }
+
+                if (!Number.isFinite(amount) || amount <= 0) {
+                        throw new Error('Nominal langganan tidak valid.');
+                }
 
                 if (payload.coupon) {
                         const coupon = await this.applyCoupon(payload.packageId, payload.coupon);
@@ -182,22 +381,54 @@ export class MidtransProvider implements PaymentProvider {
                         }
                 }
 
+                const normalizedAmount = Math.max(0, Math.round(amount));
+
+                if (normalizedAmount <= 0) {
+                        throw new Error('Nominal langganan tidak boleh nol.');
+                }
+
+                const paymentType = payload.payment?.type ?? 'credit_card';
+                if (paymentType !== 'credit_card') {
+                        throw new Error(`Metode pembayaran "${paymentType}" belum didukung.`);
+                }
+
+                const paymentToken = payload.payment?.token;
+                if (!paymentToken) {
+                        throw new Error('Token pembayaran wajib disediakan untuk langganan Midtrans.');
+                }
+
+                const scheduleSettings = this.resolveScheduleSettings(payload);
+
+                const schedulePayload: { interval: number; interval_unit: string; max_interval: number; start_time?: string } = {
+                        interval: scheduleSettings.interval,
+                        interval_unit: scheduleSettings.intervalUnit,
+                        max_interval: scheduleSettings.maxInterval,
+                };
+
+                if (scheduleSettings.startAt) {
+                        schedulePayload.start_time = scheduleSettings.startAt;
+                }
+
+                const metadataPayload = {
+                        package_id: packageRow.id,
+                        package_code: packageRow.code,
+                        addons: addonRows.map((addon) => addon.id),
+                        reference: payload.metadata?.reference ?? payload.packageId,
+                };
+
                 const body = {
-                        name: payload.packageId,
-                        amount,
+                        name: payload.metadata?.subscriptionName ?? packageRow.name ?? payload.packageId,
+                        amount: normalizedAmount,
                         currency: 'IDR',
-                        payment_type: 'credit_card', // TODO: Get payment_type from payload
-                        token: 'dummy_token', // TODO: Get token from customer
-                        schedule: {
-                                interval: 1,
-                                interval_unit: 'month',
-                                max_interval: 12,
-                        },
+                        payment_type: paymentType,
+                        token: paymentToken,
+                        schedule: schedulePayload,
                         customer_details: {
                                 first_name: payload.customer.name,
                                 email: payload.customer.email,
                                 phone: payload.customer.phone,
                         },
+                        metadata: metadataPayload,
                 };
 
                 const response = await fetch(`${this.endpoints.api}/subscriptions`, {
@@ -215,46 +446,116 @@ export class MidtransProvider implements PaymentProvider {
                         throw new Error(`Gagal membuat langganan: ${response.status} ${detail}`);
                 }
 
-                const data = (await response.json()) as { id: string; status: 'active' | 'inactive' | 'pending'; schedule: 'monthly' | 'yearly'; };
+                const data = (await response.json()) as MidtransSubscriptionResponse;
+                const intervalUnit = data.schedule?.interval_unit ?? scheduleSettings.intervalUnit;
+                const scheduleLabel: 'monthly' | 'yearly' = intervalUnit === 'year' ? 'yearly' : 'monthly';
+
+                const virtualAccount = Array.isArray(data.va_numbers) && data.va_numbers.length > 0
+                        ? data.va_numbers[0]?.va_number ?? undefined
+                        : undefined;
 
                 return {
                         id: data.id,
                         status: data.status,
-                        schedule: data.schedule,
+                        schedule: scheduleLabel,
+                        virtualAccount,
                         providerPayload: data,
                 };
         }
 
-        async applyCoupon(reference: string, code: string): Promise<CouponResult> {
-                // TODO: Implement this method
-                // This method should fetch the coupon details from the database
-                // and return the discount amount.
-                // For now, we'll just return a dummy response.
+        async applyCoupon(_reference: string, code: string): Promise<CouponResult> {
+                const normalizedCode = code.trim().toUpperCase();
+                const couponRow = await this.fetchCouponRow(normalizedCode);
+
+                if (!couponRow) {
+                        return {
+                                code: normalizedCode,
+                                valid: false,
+                                message: 'Kupon tidak ditemukan atau tidak dapat diproses.',
+                        };
+                }
+
+                if (couponRow.is_active === false) {
+                        return {
+                                code: normalizedCode,
+                                valid: false,
+                                message: 'Kupon sudah tidak aktif.',
+                        };
+                }
+
+                if (couponRow.expires_at) {
+                        const expiry = new Date(couponRow.expires_at);
+                        if (Number.isFinite(expiry.getTime()) && expiry.getTime() < Date.now()) {
+                                return {
+                                        code: normalizedCode,
+                                        valid: false,
+                                        message: 'Kupon telah kedaluwarsa.',
+                                };
+                        }
+                }
+
+                if (
+                        typeof couponRow.max_redemptions === 'number' &&
+                        typeof couponRow.redemption_count === 'number' &&
+                        couponRow.redemption_count >= couponRow.max_redemptions
+                ) {
+                        return {
+                                code: normalizedCode,
+                                valid: false,
+                                message: 'Kupon sudah mencapai batas penggunaan.',
+                        };
+                }
+
+                const amountOff = toNumeric(couponRow.amount_off);
+                const percentOff = toNumeric(couponRow.percent_off);
+
+                if (amountOff <= 0 && percentOff <= 0) {
+                        return {
+                                code: normalizedCode,
+                                valid: false,
+                                message: 'Kupon tidak memiliki nilai diskon yang berlaku.',
+                        };
+                }
+
+                const successMessage =
+                        this.couponMetadataMessage(couponRow, 'success_message') ?? 'Kupon berhasil diterapkan.';
+
                 return {
-                        code,
+                        code: normalizedCode,
                         valid: true,
-                        amountOff: 10000,
-                        percentOff: 0,
-                        message: 'Coupon applied successfully',
+                        amountOff: amountOff > 0 ? amountOff : undefined,
+                        percentOff: percentOff > 0 ? percentOff : undefined,
+                        message: successMessage,
                 };
         }
 
         verifyWebhook(payload: any, signature: string): boolean {
-                const body = JSON.stringify(payload);
-                const expectedSignature = createHmac('sha512', this.serverKey)
-                        .update(body)
-                        .digest('hex');
+                const reference = String(payload?.order_id ?? '');
+                const statusCode = String(payload?.status_code ?? '');
+                const grossAmount = String(payload?.gross_amount ?? '');
+
+                if (!reference || !statusCode || !grossAmount || !signature) {
+                        return false;
+                }
+
+                const expectedSignature = buildSignature(reference, statusCode, grossAmount, this.serverKey);
 
                 if (signature !== expectedSignature) {
                         return false;
                 }
 
-                const transactionTime = new Date(payload.transaction_time);
-                const now = new Date();
-                const fiveMinutes = 5 * 60 * 1000;
+                if (payload?.transaction_time) {
+                        const transactionTime = new Date(payload.transaction_time);
+                        const now = new Date();
+                        const fiveMinutes = 5 * 60 * 1000;
 
-                if (now.getTime() - transactionTime.getTime() > fiveMinutes) {
-                        return false;
+                        if (Number.isNaN(transactionTime.getTime())) {
+                                return false;
+                        }
+
+                        if (now.getTime() - transactionTime.getTime() > fiveMinutes) {
+                                return false;
+                        }
                 }
 
                 return true;
@@ -297,6 +598,7 @@ export class MidtransProvider implements PaymentProvider {
                         transaction_status?: string;
                         signature_key?: string;
                         gross_amount?: string;
+                        status_code?: string;
                 };
 
                 const reference = String(payload.order_id ?? '');
@@ -304,14 +606,13 @@ export class MidtransProvider implements PaymentProvider {
                         throw new Error('Payload webhook tidak memiliki order_id');
                 }
 
+                const statusCode = String(payload.status_code ?? '');
+                const grossAmount = String(payload.gross_amount ?? '');
                 const signatureHeader = headers['x-callback-token'] ?? headers['x-callback-signature'] ?? '';
-
                 const signature = payload.signature_key ?? signatureHeader;
-                const expectedSignature = createHmac('sha512', this.serverKey)
-                        .update(`${reference}${payload.status_code ?? ''}${payload.gross_amount ?? ''}${this.serverKey}`)
-                        .digest('hex');
 
-                const signatureValid = signature === expectedSignature;
+                const expectedSignature = buildSignature(reference, statusCode, grossAmount, this.serverKey);
+                const signatureValid = signature === expectedSignature && Boolean(signature);
                 const status = mapStatus(String(payload.transaction_status ?? 'failed'));
 
                 return {
