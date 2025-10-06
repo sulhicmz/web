@@ -86,11 +86,28 @@ export interface PaymentProvider {
         verifyWebhook(payload: unknown, signature: string): boolean;
 }
 
+export interface SubscriptionPaymentMethod {
+        type: 'credit_card' | 'bank_transfer' | string;
+        token?: string;
+        channel?: string;
+        metadata?: Record<string, unknown>;
+}
+
+export interface SubscriptionSchedule {
+        interval: number;
+        intervalUnit: 'day' | 'week' | 'month' | 'year';
+        maxInterval?: number;
+        startAt?: string;
+}
+
 export interface SubscriptionPayload {
         packageId: string;
         addons: string[];
         coupon?: string;
         customer: CustomerInfo;
+        payment: SubscriptionPaymentMethod;
+        schedule?: SubscriptionSchedule;
+        metadata?: Record<string, unknown>;
 }
 
 export interface ProviderSubscription {
