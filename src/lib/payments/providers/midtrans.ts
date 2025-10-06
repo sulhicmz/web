@@ -184,8 +184,7 @@ export class MidtransProvider implements PaymentProvider {
                 return typeof value === 'string' ? value : undefined;
         }
 
-        private async fetchPackageRow(identifier: string): Promise<PackageRow | null> {
-                const supabase = this.getSupabaseClient();
+        private async fetchPackageRow(identifier: string, supabase = this.getSupabaseClient()): Promise<PackageRow | null> {
                 if (!supabase) {
                         return null;
                 }
@@ -223,12 +222,11 @@ export class MidtransProvider implements PaymentProvider {
                 return (byCode.data as PackageRow | null) ?? null;
         }
 
-        private async fetchAddonRows(ids: string[]): Promise<AddonRow[]> {
+        private async fetchAddonRows(ids: string[], supabase = this.getSupabaseClient()): Promise<AddonRow[]> {
                 if (!ids || ids.length === 0) {
                         return [];
                 }
 
-                const supabase = this.getSupabaseClient();
                 if (!supabase) {
                         return [];
                 }
@@ -350,14 +348,40 @@ export class MidtransProvider implements PaymentProvider {
         }
 
         async createSubscription(payload: SubscriptionPayload): Promise<ProviderSubscription> {
-                const packageRow = await this.fetchPackageRow(payload.packageId);
-                if (!packageRow) {
-                        throw new Error('Paket langganan tidak ditemukan.');
+                const supabase = this.getSupabaseClient();
+                const metadataRecord = (payload.metadata ?? {}) as Record<string, unknown>;
+
+                const metadataAmount = toNumeric(metadataRecord.amount ?? metadataRecord.price);
+                const metadataPackageCode = typeof metadataRecord.packageCode === 'string' ? metadataRecord.packageCode : null;
+                const metadataPackageName =
+                        typeof metadataRecord.packageName === 'string' ? metadataRecord.packageName : undefined;
+                const metadataReference =
+                        typeof metadataRecord.reference === 'string' ? metadataRecord.reference : undefined;
+                const metadataSubscriptionName =
+                        typeof metadataRecord.subscriptionName === 'string'
+                                ? metadataRecord.subscriptionName
+                                : undefined;
+
+                const packageRow = supabase ? await this.fetchPackageRow(payload.packageId, supabase) : null;
+                const addonRows = supabase ? await this.fetchAddonRows(payload.addons ?? [], supabase) : [];
+
+                if (!packageRow && !supabase && metadataAmount <= 0) {
+                        throw new Error(
+                                'Paket langganan tidak ditemukan. Supabase tidak tersedia dan metadata.amount tidak disediakan.'
+                        );
                 }
 
-                const addonRows = await this.fetchAddonRows(payload.addons ?? []);
+                const resolvedPackage: PackageRow =
+                        packageRow ?? {
+                                id: payload.packageId,
+                                code: metadataPackageCode,
+                                name: metadataPackageName ?? payload.packageId,
+                                price_monthly: metadataAmount > 0 ? metadataAmount : undefined,
+                                price_setup: undefined,
+                                metadata: metadataRecord,
+                        };
 
-                let amount = toNumeric(packageRow.price_monthly ?? packageRow.price_setup);
+                let amount = toNumeric(resolvedPackage.price_monthly ?? resolvedPackage.price_setup);
 
                 for (const addon of addonRows) {
                         if (addon.is_recurring === false) {
@@ -367,7 +391,7 @@ export class MidtransProvider implements PaymentProvider {
                 }
 
                 if (!Number.isFinite(amount) || amount <= 0) {
-                        throw new Error('Nominal langganan tidak valid.');
+                        throw new Error('Nominal langganan tidak valid. Periksa data paket atau metadata.amount.');
                 }
 
                 if (payload.coupon) {
@@ -384,7 +408,7 @@ export class MidtransProvider implements PaymentProvider {
                 const normalizedAmount = Math.max(0, Math.round(amount));
 
                 if (normalizedAmount <= 0) {
-                        throw new Error('Nominal langganan tidak boleh nol.');
+                        throw new Error('Nominal langganan tidak boleh nol. Periksa data paket atau metadata.amount.');
                 }
 
                 const paymentType = payload.payment?.type ?? 'credit_card';
@@ -410,14 +434,14 @@ export class MidtransProvider implements PaymentProvider {
                 }
 
                 const metadataPayload = {
-                        package_id: packageRow.id,
-                        package_code: packageRow.code,
+                        package_id: resolvedPackage.id,
+                        package_code: resolvedPackage.code,
                         addons: addonRows.map((addon) => addon.id),
-                        reference: payload.metadata?.reference ?? payload.packageId,
+                        reference: metadataReference ?? payload.packageId,
                 };
 
                 const body = {
-                        name: payload.metadata?.subscriptionName ?? packageRow.name ?? payload.packageId,
+                        name: metadataSubscriptionName ?? resolvedPackage.name ?? payload.packageId,
                         amount: normalizedAmount,
                         currency: 'IDR',
                         payment_type: paymentType,

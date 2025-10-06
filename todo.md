@@ -23,9 +23,10 @@
 - [x] Implementasikan webhook & template WhatsApp Business API sesuai `docs/plan/12_whatsapp_integration.md` (notifikasi invoice/tiket/deploy).
 - [ ] (MEDIUM) Lengkapi handler WhatsApp Business API (`src/pages/api/notifications/whatsapp.ts`) dengan logging, retry, dan opt-out.
 - [x] (MEDIUM) Tambahkan validasi body untuk `POST /api/payments/subscription` agar hanya payload sah yang diteruskan ke provider.
-- [ ] (MEDIUM) Tambahkan fallback ketika Supabase tidak tersedia pada `MidtransProvider.createSubscription` agar error lebih informatif.
+- [x] (MEDIUM) Tambahkan fallback ketika Supabase tidak tersedia pada `MidtransProvider.createSubscription` agar error lebih informatif.
 - [ ] (MEDIUM) Jalankan `npm run check` pada workflow CI (`.github/workflows/ci.yml`) agar build, TypeScript, dan wrangler dry-run tervalidasi.
 - [ ] (MEDIUM) Perbarui `.github/workflows/deploy.yml` untuk memakai `actions/setup-node@v4` + `npm ci` dan hilangkan cache `node_modules` yang rapuh.
+- [ ] (LOW) Audit perubahan visual besar (Cyberpunk Noir) dengan screenshot regression test manual.
 
 ## Prioritas Rendah
 - [x] Dokumentasikan runbook insiden detail dan lampirkan di `docs/`.
