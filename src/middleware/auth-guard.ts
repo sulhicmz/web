@@ -50,7 +50,7 @@ const PUBLIC_ROUTES = [
 
 // Authentication middleware
 export const authGuard: MiddlewareHandler = async (context, next) => {
-  const { locals, request, cookies, redirect } = context;
+  const { locals, request, cookies, redirect } = context as any;
   const url = new URL(request.url);
   const pathname = url.pathname;
 

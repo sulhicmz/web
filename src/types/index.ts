@@ -291,7 +291,7 @@ export type DeepPartial<T> = {
 // Constants Types (from consts.ts)
 export type ProjectStatus = 'active' | 'completed' | 'on_hold' | 'cancelled';
 export type PriorityLevel = 'low' | 'medium' | 'high' | 'urgent';
-export type UserRole = 'admin' | 'client' | 'team_member';
+export type UserRole = 'admin' | 'client' | 'team_member' | 'owner' | 'staff' | 'manager';
 export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
 export type SupportTicketStatus = 'open' | 'in_progress' | 'waiting_for_response' | 'resolved' | 'closed';
 

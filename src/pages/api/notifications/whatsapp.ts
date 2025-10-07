@@ -212,7 +212,8 @@ export const POST: APIRoute = async ({ request }) => {
 
         const optOutNumbers = new Set<string>();
         for (const message of messages) {
-                const type = (message as Record<string, unknown>).type as string;
+                const messageObj = message as Record<string, unknown>;
+                const type = (messageObj?.type as string) || 'unknown';
                 if (type === 'text') {
                         const from = typeof message.from === 'string' ? message.from : null;
                         const textBody = ((message.text as Record<string, unknown> | undefined)?.body as string | undefined) ?? '';
