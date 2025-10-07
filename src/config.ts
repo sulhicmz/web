@@ -149,6 +149,14 @@ export const ANALYTICS_CONFIG = {
   ENABLED: import.meta.env.PUBLIC_ENABLE_ANALYTICS === 'true',
 };
 
+// Site Configuration (for BaseHead, etc.)
+export const SITE = {
+  title: APP_CONFIG.name,
+  description: APP_CONFIG.description,
+  url: APP_CONFIG.url,
+  twitterHandle: '@AstroProDigital', // Ganti dengan handle resmi jika ada
+};
+
 // Export validation functions
 export function validateEnvironment(): void {
   const requiredEnvVars = [
@@ -178,4 +186,5 @@ export const CONFIG = {
   rateLimit: RATE_LIMIT_CONFIG,
   security: SECURITY_CONFIG,
   analytics: ANALYTICS_CONFIG,
+  site: SITE, // Tambahkan SITE ke objek CONFIG jika diinginkan
 };
