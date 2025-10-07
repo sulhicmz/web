@@ -61,7 +61,6 @@ pids
 # Temporary folders
 tmp/
 temp/
-!dist/
 
 # System
 .DS_Store
