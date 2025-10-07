@@ -1,9 +1,7 @@
 ---
-import type { astroHTML } from 'astro/types';
-
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
-interface ToastProps extends astroHTML.JSX.HTMLAttributes<'div'> {
+interface ToastProps extends AstroHTML.JSX.HTMLAttributes<'div'> {
     type?: ToastType;
     title?: string;
     message: string;
@@ -124,13 +122,13 @@ const getColors = (type: ToastType) => {
         z-index: var(--z-toast);
         display: flex;
         align-items: flex-start;
-        gap: var(--space-3);
-        padding: var(--space-4);
-        background: var(--gradient-surface);
-        backdrop-filter: blur(10px);
+        gap: var(--toast-padding-x);
+        padding: var(--toast-padding-y);
+        background: var(--color-surface-elevated);
+        backdrop-filter: blur(20px);
         border: 1px solid var(--color-border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-lg);
+        border-radius: var(--toast-radius);
+        box-shadow: var(--toast-shadow);
         max-width: 400px;
         min-width: 300px;
         opacity: 0;
@@ -261,7 +259,7 @@ const getColors = (type: ToastType) => {
         }
     }
 
-    /* Types dengan dynamic colors */
+    /* Types dengan design tokens */
     .toast--success {
         background: rgba(16, 185, 129, 0.1);
         border-color: rgba(16, 185, 129, 0.3);

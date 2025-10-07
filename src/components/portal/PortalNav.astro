@@ -22,54 +22,58 @@ import NavLink from '../marketing/NavLink.astro';
 </nav>
 
 <style>
-        .portal-nav {
-                background: transparent;
-                color: #f5f7fb;
-                padding: clamp(1.5rem, 4vw, 2.25rem) clamp(1.4rem, 4vw, 2.25rem);
-                display: grid;
-                gap: clamp(1.5rem, 4vw, 2.2rem);
-        }
+         .portal-nav {
+                 background: var(--color-surface);
+                 color: var(--color-text-primary);
+                 padding: var(--space-6) var(--space-6);
+                 display: grid;
+                 gap: var(--space-6);
+                 border-right: 1px solid var(--color-border);
+                 min-height: 100vh;
+         }
 
-        .portal-nav__header {
-                position: relative;
-                padding: 1rem 1.25rem;
-                border-radius: 1.25rem;
-                background: rgba(15, 20, 36, 0.78);
-                border: 1px solid rgba(108, 126, 171, 0.22);
-                box-shadow: 0 0 24px rgba(34, 156, 235, 0.18);
-                overflow: hidden;
-        }
+         .portal-nav__header {
+                 position: relative;
+                 padding: var(--space-4) var(--space-5);
+                 border-radius: var(--radius-lg);
+                 background: var(--color-surface-elevated);
+                 border: 1px solid var(--color-border);
+                 box-shadow: var(--shadow-sm);
+                 overflow: hidden;
+         }
 
-        .logo-burst {
-                position: absolute;
-                inset: -30% auto auto -30%;
-                width: 160px;
-                height: 160px;
-                background: radial-gradient(circle, rgba(90, 209, 255, 0.3), transparent 70%);
-                filter: blur(8px);
-                opacity: 0.8;
-        }
+         .logo-burst {
+                 position: absolute;
+                 inset: -30% auto auto -30%;
+                 width: 160px;
+                 height: 160px;
+                 background: radial-gradient(circle, rgba(124, 58, 237, 0.15), transparent 70%);
+                 filter: blur(20px);
+                 opacity: 0.6;
+         }
 
-        .portal-nav__title {
-                margin: 0;
-                font-size: 1rem;
-                font-weight: 700;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-        }
+         .portal-nav__title {
+                 margin: 0;
+                 font-size: var(--text-base);
+                 font-weight: var(--font-bold);
+                 letter-spacing: var(--tracking-wide);
+                 text-transform: uppercase;
+                 color: var(--color-text-primary);
+         }
 
-        .portal-nav__subtitle {
-                margin: 0.4rem 0 0;
-                font-size: 0.85rem;
-                color: rgba(245, 247, 251, 0.65);
-        }
+         .portal-nav__subtitle {
+                 margin: var(--space-1) 0 0;
+                 font-size: var(--text-sm);
+                 color: var(--color-text-secondary);
+                 line-height: var(--leading-relaxed);
+         }
 
         ul {
                 margin: 0;
                 padding: 0;
                 list-style: none;
                 display: grid;
-                gap: 0.4rem;
+                gap: var(--space-2);
         }
 
         li {
@@ -77,21 +81,25 @@ import NavLink from '../marketing/NavLink.astro';
         }
 
         a {
-                color: inherit;
+                color: var(--color-text-primary);
                 text-decoration: none;
                 display: inline-flex;
                 align-items: center;
                 width: 100%;
-                padding: 0.65rem 1rem;
-                border-radius: 0.95rem;
-                transition: background var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+                padding: var(--space-3) var(--space-4);
+                border-radius: var(--radius-lg);
+                transition: all var(--transition-base);
+                font-size: var(--text-base);
+                font-weight: var(--font-medium);
         }
 
         a:hover,
         a:focus-visible,
         a.active {
-                background: rgba(90, 209, 255, 0.18);
-                box-shadow: 0 0 18px rgba(34, 156, 235, 0.22);
+                background: rgba(124, 58, 237, 0.1);
+                color: var(--color-primary);
+                box-shadow: var(--shadow-sm);
                 text-decoration: none;
+                transform: translateX(2px);
         }
 </style>

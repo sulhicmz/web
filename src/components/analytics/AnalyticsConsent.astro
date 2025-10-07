@@ -24,9 +24,9 @@ const shouldRender = Boolean(domain);
                         </div>
                 </div>
                 <script type="module">
-                        const consentStorageKey = ${JSON.stringify(consentKey)};
-                        const plausibleDomain = ${JSON.stringify(domain)};
-                        const plausibleSrc = ${JSON.stringify(scriptSrc)};
+                         const consentStorageKey = '${consentKey}';
+                         const plausibleDomain = '${domain}';
+                         const plausibleSrc = '${scriptSrc}';
 
                         const ensureScript = () => {
                                 if (document.querySelector("script[data-analytics='plausible']")) {

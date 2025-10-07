@@ -7,8 +7,33 @@
     "directory": "./dist",
     "binding": "ASSETS"
   },
+  "bindings": {
+    "SESSION": {
+      "type": "KVNamespace",
+      "id": "astropro_session_kv",
+      "preview_id": "astropro_session_kv_preview"
+    }
+  },
   "observability": {
     "enabled": true
   },
-  "upload_source_maps": true
+  "upload_source_maps": true,
+  "env": {
+    "development": {
+      "bindings": {
+        "SESSION": {
+          "type": "KVNamespace",
+          "id": "astropro_session_kv_preview"
+        }
+      }
+    },
+    "production": {
+      "bindings": {
+        "SESSION": {
+          "type": "KVNamespace",
+          "id": "astropro_session_kv"
+        }
+      }
+    }
+  }
 }

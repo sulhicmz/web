@@ -1,10 +1,8 @@
 ---
-import type { astroHTML } from 'astro/types';
-
 type Variant = 'primary' | 'secondary' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
 
-type ButtonProps = (astroHTML.JSX.ButtonHTMLAttributes & astroHTML.JSX.AnchorHTMLAttributes) & {
+type ButtonProps = (AstroHTML.JSX.ButtonHTMLAttributes & AstroHTML.JSX.AnchorHTMLAttributes) & {
         href?: string;
         variant?: Variant;
         size?: Size;
@@ -59,7 +57,7 @@ const finalRel = relValue ?? (isLink && href?.startsWith('http') ? 'noreferrer' 
         <button
                 {...rest}
                 class={classes}
-                type={type as astroHTML.JSX.ButtonHTMLAttributes['type']}
+                type={type as AstroHTML.JSX.ButtonHTMLAttributes['type']}
                 disabled={disabled || loading}
                 data-variant={variant}
                 data-size={size}
