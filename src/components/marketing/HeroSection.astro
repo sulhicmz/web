@@ -1,0 +1,502 @@
+---
+import type { astroHTML } from 'astro/types';
+
+interface HeroSectionProps extends astroHTML.JSX.HTMLAttributes<'section'> {
+    title: string;
+    subtitle: string;
+    primaryCTA: {
+        text: string;
+        href: string;
+    };
+    secondaryCTA?: {
+        text: string;
+        href: string;
+    };
+    backgroundPattern?: 'gradient' | 'dots' | 'mesh';
+}
+
+const {
+    title,
+    subtitle,
+    primaryCTA,
+    secondaryCTA,
+    backgroundPattern = 'gradient',
+    class: customClass = '',
+    ...rest
+} = Astro.props as HeroSectionProps & Record<string, unknown>;
+
+const classes = [
+    'hero-section',
+    `hero-section--${backgroundPattern}`,
+    typeof customClass === 'string' ? customClass : ''
+].filter(Boolean).join(' ');
+
+// Animation delay helpers untuk staggered animations
+const getAnimationDelay = (index: number): string => `${index * 0.1}s`;
+---
+
+<section class={`hero-section ${classes}`} {...rest}>
+    <div class="hero-section__background">
+        <!-- Animated background elements -->
+        <div class="hero-bg-shape hero-bg-shape--1" aria-hidden="true"></div>
+        <div class="hero-bg-shape hero-bg-shape--2" aria-hidden="true"></div>
+        <div class="hero-bg-shape hero-bg-shape--3" aria-hidden="true"></div>
+    </div>
+
+    <div class="hero-section__container">
+        <div class="hero-section__content">
+            <div class="hero-section__text">
+                <h1 class="hero-section__title">
+                    <span class="hero-section__title-line" style={`animation-delay: ${getAnimationDelay(0)}`}>
+                        {title}
+                    </span>
+                </h1>
+
+                <p class="hero-section__subtitle" style={`animation-delay: ${getAnimationDelay(1)}`}>
+                    {subtitle}
+                </p>
+
+                <div class="hero-section__cta" style={`animation-delay: ${getAnimationDelay(2)}`}>
+                    <a href={primaryCTA.href} class="btn btn--hero-primary">
+                        {primaryCTA.text}
+                        <span class="btn__icon" aria-hidden="true">→</span>
+                    </a>
+
+                    {secondaryCTA && (
+                        <a href={secondaryCTA.href} class="btn btn--hero-secondary">
+                            {secondaryCTA.text}
+                        </a>
+                    )}
+                </div>
+            </div>
+
+            <!-- Feature highlights -->
+            <div class="hero-section__features" style={`animation-delay: ${getAnimationDelay(3)}`}>
+                <div class="feature-highlight">
+                    <div class="feature-highlight__icon" aria-hidden="true">⚡</div>
+                    <div class="feature-highlight__content">
+                        <div class="feature-highlight__title">Setup Cepat</div>
+                        <div class="feature-highlight__desc">Deploy dalam hitungan menit</div>
+                    </div>
+                </div>
+
+                <div class="feature-highlight">
+                    <div class="feature-highlight__icon" aria-hidden="true">🔒</div>
+                    <div class="feature-highlight__content">
+                        <div class="feature-highlight__title">Enterprise Security</div>
+                        <div class="feature-highlight__desc">RBAC dan enkripsi end-to-end</div>
+                    </div>
+                </div>
+
+                <div class="feature-highlight">
+                    <div class="feature-highlight__icon" aria-hidden="true">💳</div>
+                    <div class="feature-highlight__content">
+                        <div class="feature-highlight__title">Payment Ready</div>
+                        <div class="feature-highlight__desc">Midtrans terintegrasi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="hero-section__scroll-indicator" aria-hidden="true">
+        <div class="scroll-indicator">
+            <div class="scroll-indicator__line"></div>
+            <div class="scroll-indicator__text">Scroll</div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .hero-section {
+        position: relative;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    }
+
+    /* Background Patterns */
+    .hero-section--gradient {
+        background: var(--hero-gradient, linear-gradient(135deg, #7C3AED 0%, #3B82F6 50%, #F87171 100%));
+    }
+
+    .hero-section--dots {
+        background: var(--hero-gradient);
+        background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+        background-size: 20px 20px;
+    }
+
+    .hero-section--mesh {
+        background: var(--hero-gradient);
+        background-image:
+            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    .hero-section__background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+    }
+
+    .hero-bg-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(1px);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-bg-shape--1 {
+        width: 200px;
+        height: 200px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .hero-bg-shape--2 {
+        width: 150px;
+        height: 150px;
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .hero-bg-shape--3 {
+        width: 100px;
+        height: 100px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    .hero-section__container {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--space-6);
+    }
+
+    .hero-section__content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: var(--space-16);
+        align-items: center;
+        min-height: 70vh;
+    }
+
+    .hero-section__text {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+    }
+
+    .hero-section__title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: var(--font-bold);
+        line-height: var(--leading-tight);
+        margin: 0;
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 50%, #E2E8F0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        opacity: 0;
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .hero-section__subtitle {
+        font-size: var(--text-xl);
+        line-height: var(--leading-relaxed);
+        color: rgba(248, 250, 252, 0.9);
+        margin: 0;
+        max-width: 600px;
+        opacity: 0;
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .hero-section__cta {
+        display: flex;
+        gap: var(--space-4);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    /* Hero Buttons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--hero-cta-padding, 1rem 2rem);
+        border-radius: var(--radius-full);
+        font-size: var(--text-lg);
+        font-weight: var(--font-semibold);
+        text-decoration: none;
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .btn--hero-primary {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn--hero-primary:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn--hero-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn--hero-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .btn__icon {
+        transition: transform var(--transition-base);
+    }
+
+    .btn:hover .btn__icon {
+        transform: translateX(4px);
+    }
+
+    /* Feature Highlights */
+    .hero-section__features {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        opacity: 0;
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .feature-highlight {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius-lg);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all var(--transition-base);
+    }
+
+    .feature-highlight:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(4px);
+    }
+
+    .feature-highlight__icon {
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: var(--gradient-primary);
+        border-radius: var(--radius-md);
+    }
+
+    .feature-highlight__content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+
+    .feature-highlight__title {
+        font-size: var(--text-sm);
+        font-weight: var(--font-semibold);
+        color: white;
+        margin: 0;
+    }
+
+    .feature-highlight__desc {
+        font-size: var(--text-xs);
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+    }
+
+    /* Scroll Indicator */
+    .hero-section__scroll-indicator {
+        position: absolute;
+        bottom: var(--space-8);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+    }
+
+    .scroll-indicator {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-2);
+        color: rgba(255, 255, 255, 0.6);
+        font-size: var(--text-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .scroll-indicator__line {
+        width: 1px;
+        height: 30px;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), transparent);
+        animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    @keyframes scrollPulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 100vh;
+            padding: var(--space-8) 0;
+        }
+
+        .hero-section__content {
+            grid-template-columns: 1fr;
+            gap: var(--space-8);
+            text-align: center;
+            min-height: auto;
+        }
+
+        .hero-section__text {
+            gap: var(--space-4);
+        }
+
+        .hero-section__cta {
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 280px;
+            justify-content: center;
+        }
+
+        .hero-bg-shape--1,
+        .hero-bg-shape--2,
+        .hero-bg-shape--3 {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-section__container {
+            padding: 0 var(--space-4);
+        }
+
+        .hero-section__cta {
+            gap: var(--space-2);
+        }
+
+        .feature-highlight {
+            padding: var(--space-2);
+            gap: var(--space-2);
+        }
+
+        .feature-highlight__icon {
+            width: 2rem;
+            height: 2rem;
+            font-size: 1.25rem;
+        }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        .hero-section__title,
+        .hero-section__subtitle,
+        .hero-section__cta,
+        .hero-section__features {
+            animation: none;
+            opacity: 1;
+        }
+
+        .hero-bg-shape {
+            animation: none;
+        }
+
+        .scroll-indicator__line {
+            animation: none;
+        }
+
+        .btn__icon {
+            transition: none;
+        }
+
+        .btn:hover .btn__icon {
+            transform: none;
+        }
+
+        .feature-highlight:hover {
+            transform: none;
+        }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+        .hero-section {
+            background: var(--color-surface);
+        }
+
+        .btn--hero-primary,
+        .btn--hero-secondary {
+            border-width: 2px;
+        }
+
+        .feature-highlight {
+            border-width: 2px;
+        }
+    }
+
+    /* Focus Styles for Accessibility */
+    .btn:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.8);
+        outline-offset: 2px;
+    }
+</style>

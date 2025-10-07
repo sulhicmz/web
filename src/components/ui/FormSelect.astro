@@ -1,0 +1,348 @@
+---
+import type { astroHTML } from 'astro/types';
+
+interface SelectOption {
+    value: string;
+    label: string;
+    disabled?: boolean;
+}
+
+interface FormSelectProps extends astroHTML.JSX.SelectHTMLAttributes {
+    label?: string;
+    description?: string;
+    error?: string;
+    success?: boolean;
+    placeholder?: string;
+    options: SelectOption[];
+    variant?: 'default' | 'underline';
+    size?: 'sm' | 'md' | 'lg';
+    fullWidth?: boolean;
+    searchable?: boolean;
+    multiple?: boolean;
+}
+
+const {
+    label,
+    description,
+    error,
+    success = false,
+    placeholder = 'Pilih opsi...',
+    options = [],
+    variant = 'default',
+    size = 'md',
+    fullWidth = true,
+    searchable = false,
+    multiple = false,
+    class: customClass = '',
+    id,
+    required,
+    disabled,
+    ...rest
+} = Astro.props as FormSelectProps & Record<string, unknown>;
+
+const classes = [
+    'form-select',
+    `form-select--${variant}`,
+    `form-select--${size}`,
+    fullWidth ? 'form-select--full-width' : '',
+    error ? 'form-select--error' : '',
+    success ? 'form-select--success' : '',
+    disabled ? 'form-select--disabled' : '',
+    typeof customClass === 'string' ? customClass : ''
+].filter(Boolean).join(' ');
+
+// Generate unique ID jika tidak disediakan
+const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+const descriptionId = description ? `${selectId}-description` : undefined;
+const errorId = error ? `${selectId}-error` : undefined;
+---
+
+<div class={`form-select-wrapper ${fullWidth ? 'form-select-wrapper--full-width' : ''}`}>
+    {label && (
+        <label class="form-select__label" for={selectId}>
+            {label}
+            {required && <span class="form-select__required" aria-label="required">*</span>}
+        </label>
+    )}
+
+    <div class="form-select__container">
+        <select
+            {...rest}
+            class={classes}
+            id={selectId}
+            aria-describedby={[descriptionId, errorId].filter(Boolean).join(' ') || undefined}
+            aria-invalid={error ? 'true' : undefined}
+            disabled={disabled}
+            multiple={multiple}
+        >
+            {!multiple && (
+                <option value="" disabled selected={!rest.value}>
+                    {placeholder}
+                </option>
+            )}
+            {options.map((option) => (
+                <option
+                    value={option.value}
+                    disabled={option.disabled}
+                >
+                    {option.label}
+                </option>
+            ))}
+        </select>
+
+        <!-- Dropdown arrow -->
+        <div class="form-select__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                    d="M4 6L8 10L12 6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </svg>
+        </div>
+
+        {/* Error/Success icons */}
+        {error && (
+            <div class="form-select__status-icon form-select__status-icon--error" aria-hidden="true">
+                ⚠️
+            </div>
+        )}
+        {success && !error && (
+            <div class="form-select__status-icon form-select__status-icon--success" aria-hidden="true">
+                ✅
+            </div>
+        )}
+    </div>
+
+    {description && (
+        <div class="form-select__description" id={descriptionId}>
+            {description}
+        </div>
+    )}
+
+    {error && (
+        <div class="form-select__error" id={errorId} role="alert">
+            {error}
+        </div>
+    )}
+</div>
+
+<style>
+    .form-select-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .form-select-wrapper--full-width {
+        width: 100%;
+    }
+
+    .form-select__label {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        font-size: var(--text-sm);
+        font-weight: var(--font-medium);
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-1);
+    }
+
+    .form-select__required {
+        color: var(--color-error);
+        font-weight: var(--font-bold);
+    }
+
+    .form-select__container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-select {
+        width: 100%;
+        font-family: var(--font-primary);
+        font-size: var(--text-base);
+        line-height: var(--leading-normal);
+        color: var(--color-text-primary);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
+        transition: all var(--transition-base);
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+        appearance: none; /* Remove default styling */
+    }
+
+    /* Arrow positioning */
+    .form-select__arrow {
+        position: absolute;
+        right: var(--space-3);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-secondary);
+        pointer-events: none;
+    }
+
+    /* Status icon positioning */
+    .form-select__status-icon {
+        position: absolute;
+        right: calc(var(--space-8) + var(--space-3));
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    /* Variants */
+    .form-select--underline {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid var(--color-border);
+        border-radius: 0;
+        padding-left: 0;
+    }
+
+    /* Sizes */
+    .form-select--sm {
+        font-size: var(--text-sm);
+        padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
+    }
+
+    .form-select--sm .form-select__arrow {
+        right: var(--space-2);
+    }
+
+    .form-select--sm .form-select__status-icon {
+        right: calc(var(--space-6) + var(--space-2));
+    }
+
+    .form-select--lg {
+        font-size: var(--text-lg);
+        padding: var(--space-4) var(--space-12) var(--space-4) var(--space-5);
+    }
+
+    .form-select--lg .form-select__arrow {
+        right: var(--space-4);
+    }
+
+    .form-select--lg .form-select__status-icon {
+        right: calc(var(--space-10) + var(--space-4));
+    }
+
+    /* States */
+    .form-select:hover {
+        border-color: rgba(124, 58, 237, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: var(--form-focus-ring);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .form-select--error {
+        border-color: var(--color-error);
+        background: rgba(239, 68, 68, 0.05);
+    }
+
+    .form-select--error:focus {
+        border-color: var(--color-error);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    .form-select--success {
+        border-color: var(--color-success);
+        background: rgba(16, 185, 129, 0.05);
+    }
+
+    .form-select--success:focus {
+        border-color: var(--color-success);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .form-select--disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .form-select--disabled:hover,
+    .form-select--disabled:focus {
+        border-color: var(--color-border);
+        background: rgba(255, 255, 255, 0.02);
+        box-shadow: none;
+    }
+
+    /* Option styling (limited support in Astro) */
+    option {
+        background: var(--color-surface);
+        color: var(--color-text-primary);
+        padding: var(--space-2);
+    }
+
+    /* Helper Text */
+    .form-select__description {
+        font-size: var(--text-xs);
+        color: var(--color-text-secondary);
+        line-height: var(--leading-relaxed);
+        margin-top: var(--space-1);
+    }
+
+    .form-select__error {
+        font-size: var(--text-xs);
+        color: var(--color-error);
+        line-height: var(--leading-relaxed);
+        margin-top: var(--space-1);
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-1);
+    }
+
+    .form-select__error::before {
+        content: '⚠️';
+        font-size: 0.875em;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-select {
+            font-size: 16px; /* Prevent zoom on iOS */
+        }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        .form-select {
+            transition: none;
+        }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+        .form-select {
+            border-width: 2px;
+        }
+
+        .form-select--error,
+        .form-select--success {
+            border-width: 3px;
+        }
+    }
+
+    /* Focus Styles for Accessibility */
+    .form-select:focus {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+</style>

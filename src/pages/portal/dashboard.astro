@@ -1,10 +1,193 @@
 ---
 import PortalLayout from '../../layouts/PortalLayout.astro';
+import StatsCard from '../../components/ui/StatsCard.astro';
+import ProjectCard from '../../components/ui/ProjectCard.astro';
 export const prerender = false;
+
+// Mock data untuk demonstrasi - nanti akan diganti dengan data dari Supabase
+const statsData = [
+    {
+        title: 'Proyek Aktif',
+        value: 12,
+        change: { value: 8, type: 'increase' as const, label: 'dari bulan lalu' },
+        icon: 'projects',
+        variant: 'primary' as const
+    },
+    {
+        title: 'Total Revenue',
+        value: 125000000,
+        change: { value: 15, type: 'increase' as const, label: 'dari bulan lalu' },
+        icon: 'revenue',
+        variant: 'success' as const
+    },
+    {
+        title: 'Tiket Support',
+        value: 3,
+        change: { value: 25, type: 'decrease' as const, label: 'dari minggu lalu' },
+        icon: 'tickets',
+        variant: 'secondary' as const
+    },
+    {
+        title: 'Client Satisfaction',
+        value: 94,
+        change: { value: 2, type: 'increase' as const, label: 'poin' },
+        icon: 'growth',
+        variant: 'primary' as const
+    }
+];
+
+const projectsData = [
+    {
+        title: 'Website E-commerce TokoBagus',
+        description: 'Pengembangan platform e-commerce dengan integrasi payment gateway dan sistem inventory management.',
+        status: 'active' as const,
+        progress: 75,
+        priority: 'high' as const,
+        dueDate: '2024-12-15',
+        client: 'TokoBagus Indonesia',
+        teamMembers: [
+            { name: 'Ahmad', role: 'Frontend Dev' },
+            { name: 'Sari', role: 'UI/UX Designer' },
+            { name: 'Budi', role: 'Backend Dev' }
+        ],
+        budget: 50000000,
+        tags: ['E-commerce', 'Payment Gateway', 'Inventory']
+    },
+    {
+        title: 'Mobile App GoFitness',
+        description: 'Aplikasi mobile untuk fitness tracking dengan social features dan integration wearable devices.',
+        status: 'active' as const,
+        progress: 45,
+        priority: 'medium' as const,
+        dueDate: '2024-12-30',
+        client: 'GoFitness Studio',
+        teamMembers: [
+            { name: 'Rina', role: 'Mobile Dev' },
+            { name: 'Doni', role: 'Product Manager' }
+        ],
+        budget: 35000000,
+        tags: ['Mobile App', 'Health Tech', 'Social']
+    },
+    {
+        title: 'Dashboard Analytics DataCorp',
+        description: 'Dashboard analytics untuk monitoring KPI bisnis real-time dengan reporting otomatis.',
+        status: 'completed' as const,
+        progress: 100,
+        priority: 'medium' as const,
+        dueDate: '2024-11-20',
+        client: 'DataCorp Solutions',
+        teamMembers: [
+            { name: 'Eko', role: 'Fullstack Dev' },
+            { name: 'Maya', role: 'Data Analyst' }
+        ],
+        budget: 75000000,
+        tags: ['Analytics', 'Dashboard', 'Reporting']
+    }
+];
 ---
 
 <PortalLayout title="Dashboard Portal" description="Ringkasan proyek, tagihan, dan notifikasi terbaru.">
-        <h1>Dashboard</h1>
+        <div class="dashboard">
+                <div class="dashboard__header">
+                        <h1>Dashboard Overview</h1>
+                        <p class="dashboard__subtitle">Selamat datang kembali! Berikut ringkasan aktivitas dan proyek terbaru Anda.</p>
+                </div>
+
+                <!-- Stats Overview -->
+                <section class="dashboard__stats" aria-label="Ringkasan statistik">
+                        <h2 class="visually-hidden">Statistik Proyek</h2>
+                        <div class="stats-grid">
+                                {statsData.map((stat) => (
+                                        <StatsCard
+                                                title={stat.title}
+                                                value={stat.value}
+                                                change={stat.change}
+                                                icon={stat.icon}
+                                                variant={stat.variant}
+                                        />
+                                ))}
+                        </div>
+                </section>
+
+                <!-- Projects Overview -->
+                <section class="dashboard__projects" aria-label="Ringkasan proyek">
+                        <div class="section-header">
+                                <h2>Proyek Terbaru</h2>
+                                <a href="/portal/projects" class="section-link">
+                                        Lihat Semua
+                                        <span aria-hidden="true">→</span>
+                                </a>
+                        </div>
+
+                        <div class="projects-grid">
+                                {projectsData.map((project) => (
+                                        <ProjectCard
+                                                title={project.title}
+                                                description={project.description}
+                                                status={project.status}
+                                                progress={project.progress}
+                                                priority={project.priority}
+                                                dueDate={project.dueDate}
+                                                client={project.client}
+                                                teamMembers={project.teamMembers}
+                                                budget={project.budget}
+                                                tags={project.tags}
+                                                variant="detailed"
+                                                href={`/portal/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}`}
+                                        >
+                                                <div slot="actions" class="project-actions">
+                                                        <button class="btn btn--sm btn--ghost">
+                                                                <span aria-hidden="true">👁</span>
+                                                                Preview
+                                                        </button>
+                                                        <button class="btn btn--sm btn--primary">
+                                                                <span aria-hidden="true">⚙</span>
+                                                                Manage
+                                                        </button>
+                                                </div>
+                                        </ProjectCard>
+                                ))}
+                        </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="dashboard__actions" aria-label="Aksi cepat">
+                        <h2>Aksi Cepat</h2>
+                        <div class="actions-grid">
+                                <a href="/portal/projects/new" class="action-card">
+                                        <div class="action-card__icon" aria-hidden="true">➕</div>
+                                        <div class="action-card__content">
+                                                <h3>Proyek Baru</h3>
+                                                <p>Mulai proyek baru untuk klien</p>
+                                        </div>
+                                </a>
+
+                                <a href="/portal/support/new" class="action-card">
+                                        <div class="action-card__icon" aria-hidden="true">🎫</div>
+                                        <div class="action-card__content">
+                                                <h3>Tiket Support</h3>
+                                                <p>Ajukan tiket dukungan teknis</p>
+                                        </div>
+                                </a>
+
+                                <a href="/portal/billing/invoices" class="action-card">
+                                        <div class="action-card__icon" aria-hidden="true">🧾</div>
+                                        <div class="action-card__content">
+                                                <h3>Invoice</h3>
+                                                <p>Lihat dan kelola invoice</p>
+                                        </div>
+                                </a>
+
+                                <a href="/portal/knowledge-base" class="action-card">
+                                        <div class="action-card__icon" aria-hidden="true">📚</div>
+                                        <div class="action-card__content">
+                                                <h3>Knowledge Base</h3>
+                                                <p>Akses dokumentasi dan panduan</p>
+                                        </div>
+                                </a>
+                        </div>
+                </section>
+        </div>
         <section class="cards">
                 <article>
                         <h2>Proyek Aktif</h2>
@@ -22,29 +205,321 @@ export const prerender = false;
 </PortalLayout>
 
 <style>
-        h1 {
-                margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
-                font-size: clamp(1.8rem, 3vw, 2.4rem);
+        /* Dashboard Layout */
+        .dashboard {
+                display: flex;
+                flex-direction: column;
+                gap: var(--space-8);
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: var(--space-6);
         }
 
-        .cards {
+        .dashboard__header {
+                text-align: center;
+                margin-bottom: var(--space-4);
+        }
+
+        .dashboard__header h1 {
+                font-size: var(--text-3xl);
+                font-weight: var(--font-bold);
+                margin-bottom: var(--space-3);
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+        }
+
+        .dashboard__subtitle {
+                font-size: var(--text-lg);
+                color: var(--color-text-secondary);
+                margin: 0;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+        }
+
+        /* Utility Classes */
+        .visually-hidden {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                white-space: nowrap;
+                border: 0;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
                 display: grid;
-                gap: clamp(1.25rem, 3vw, 1.75rem);
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: var(--space-6);
+                margin-bottom: var(--space-8);
         }
 
-        article {
-                background: rgba(17, 22, 36, 0.8);
-                border-radius: 1.35rem;
-                padding: 1.75rem;
-                border: 1px solid rgba(108, 126, 171, 0.2);
-                box-shadow: 0 0 30px rgba(12, 18, 36, 0.36), 0 0 22px rgba(34, 156, 235, 0.18);
-                transition: transform var(--transition-base), box-shadow var(--transition-base);
+        /* Section Headers */
+        .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: var(--space-6);
+                padding-bottom: var(--space-4);
+                border-bottom: 1px solid var(--color-border);
         }
 
-        article:hover,
-        article:focus-within {
-                transform: translateY(-4px);
-                box-shadow: 0 0 32px rgba(34, 156, 235, 0.22);
+        .section-header h2 {
+                font-size: var(--text-2xl);
+                font-weight: var(--font-semibold);
+                margin: 0;
+                color: var(--color-text-primary);
+        }
+
+        .section-link {
+                display: flex;
+                align-items: center;
+                gap: var(--space-2);
+                color: var(--color-primary);
+                text-decoration: none;
+                font-size: var(--text-sm);
+                font-weight: var(--font-medium);
+                padding: var(--space-2) var(--space-4);
+                border-radius: var(--radius-md);
+                border: 1px solid rgba(124, 58, 237, 0.3);
+                transition: all var(--transition-base);
+        }
+
+        .section-link:hover,
+        .section-link:focus-visible {
+                background: rgba(124, 58, 237, 0.1);
+                border-color: var(--color-primary);
+                transform: translateY(-1px);
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                gap: var(--space-6);
+                margin-bottom: var(--space-8);
+        }
+
+        /* Quick Actions */
+        .actions-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: var(--space-4);
+        }
+
+        .action-card {
+                display: flex;
+                align-items: center;
+                gap: var(--space-4);
+                padding: var(--space-6);
+                background: var(--gradient-surface);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-lg);
+                text-decoration: none;
+                color: inherit;
+                transition: all var(--transition-base);
+                position: relative;
+                overflow: hidden;
+        }
+
+        .action-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: var(--gradient-primary);
+                opacity: 0;
+                transition: opacity var(--transition-base);
+        }
+
+        .action-card:hover::before,
+        .action-card:focus-visible::before {
+                opacity: 1;
+        }
+
+        .action-card:hover,
+        .action-card:focus-visible {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-gradient);
+                border-color: rgba(124, 58, 237, 0.3);
+        }
+
+        .action-card__icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 3rem;
+                height: 3rem;
+                background: var(--gradient-primary);
+                border-radius: var(--radius-lg);
+                font-size: 1.5rem;
+        }
+
+        .action-card__content {
+                flex: 1;
+        }
+
+        .action-card__content h3 {
+                font-size: var(--text-lg);
+                font-weight: var(--font-semibold);
+                margin: 0 0 var(--space-1) 0;
+                color: var(--color-text-primary);
+        }
+
+        .action-card__content p {
+                font-size: var(--text-sm);
+                color: var(--color-text-secondary);
+                margin: 0;
+        }
+
+        /* Button Styles for Project Actions */
+        .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-2);
+                padding: var(--space-2) var(--space-3);
+                border-radius: var(--radius-md);
+                font-size: var(--text-sm);
+                font-weight: var(--font-medium);
+                text-decoration: none;
+                border: none;
+                cursor: pointer;
+                transition: all var(--transition-base);
+                white-space: nowrap;
+        }
+
+        .btn--sm {
+                padding: var(--space-1) var(--space-2);
+                font-size: var(--text-xs);
+        }
+
+        .btn--primary {
+                background: var(--gradient-primary);
+                color: white;
+        }
+
+        .btn--primary:hover,
+        .btn--primary:focus-visible {
+                transform: translateY(-1px);
+                box-shadow: var(--shadow-gradient);
+        }
+
+        .btn--ghost {
+                background: transparent;
+                color: var(--color-text-secondary);
+                border: 1px solid var(--color-border);
+        }
+
+        .btn--ghost:hover,
+        .btn--ghost:focus-visible {
+                background: rgba(124, 58, 237, 0.1);
+                color: var(--color-primary);
+                border-color: var(--color-primary);
+        }
+
+        .project-actions {
+                display: flex;
+                gap: var(--space-2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+                .dashboard {
+                        padding: var(--space-4);
+                        gap: var(--space-6);
+                }
+
+                .dashboard__header h1 {
+                        font-size: var(--text-2xl);
+                }
+
+                .stats-grid {
+                        grid-template-columns: 1fr;
+                        gap: var(--space-4);
+                }
+
+                .projects-grid {
+                        grid-template-columns: 1fr;
+                        gap: var(--space-4);
+                }
+
+                .actions-grid {
+                        grid-template-columns: 1fr;
+                        gap: var(--space-3);
+                }
+
+                .section-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: var(--space-3);
+                }
+
+                .action-card {
+                        flex-direction: column;
+                        text-align: center;
+                        gap: var(--space-3);
+                }
+
+                .action-card__icon {
+                        width: 2.5rem;
+                        height: 2.5rem;
+                }
+        }
+
+        @media (max-width: 480px) {
+                .dashboard {
+                        padding: var(--space-3);
+                }
+
+                .section-link {
+                        padding: var(--space-1) var(--space-2);
+                        font-size: var(--text-xs);
+                }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+                .action-card,
+                .section-link,
+                .btn {
+                        transition: none;
+                }
+
+                .action-card:hover,
+                .action-card:focus-visible,
+                .section-link:hover,
+                .section-link:focus-visible,
+                .btn:hover,
+                .btn:focus-visible {
+                        transform: none;
+                }
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+                .action-card,
+                .project-card,
+                .stats-card {
+                        border-width: 2px;
+                }
+
+                .section-link {
+                        border-width: 2px;
+                }
+        }
+
+        /* Focus Styles for Accessibility */
+        .section-link:focus-visible,
+        .action-card:focus-visible {
+                outline: var(--focus-ring-width) solid var(--focus-ring-color);
+                outline-offset: var(--focus-ring-offset);
         }
 </style>

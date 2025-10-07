@@ -1,0 +1,322 @@
+---
+import type { astroHTML } from 'astro/types';
+
+interface StatsCardProps extends astroHTML.JSX.HTMLAttributes<'div'> {
+    title: string;
+    value: string | number;
+    change?: {
+        value: number;
+        type: 'increase' | 'decrease' | 'neutral';
+        label?: string;
+    };
+    icon?: string;
+    variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+    size?: 'sm' | 'md' | 'lg';
+    loading?: boolean;
+}
+
+const {
+    title,
+    value,
+    change,
+    icon,
+    variant = 'primary',
+    size = 'md',
+    loading = false,
+    class: customClass = '',
+    ...rest
+} = Astro.props as StatsCardProps & Record<string, unknown>;
+
+const classes = [
+    'stats-card',
+    `stats-card--${variant}`,
+    `stats-card--${size}`,
+    loading ? 'stats-card--loading' : '',
+    typeof customClass === 'string' ? customClass : ''
+].filter(Boolean).join(' ');
+
+// Format nilai untuk display
+const formatValue = (val: string | number): string => {
+    if (typeof val === 'number') {
+        if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+        if (val >= 1000) return `${(val / 1000).toFixed(1)}K`;
+        return val.toString();
+    }
+    return val;
+};
+
+// Hitung persentase perubahan
+const formatChange = (changeVal: number): string => {
+    const sign = changeVal > 0 ? '+' : '';
+    return `${sign}${changeVal}%`;
+};
+
+// Icon mapping untuk berbagai jenis stats
+const getIcon = (iconName?: string): string => {
+    const icons: Record<string, string> = {
+        'users': '👥',
+        'projects': '📁',
+        'revenue': '💰',
+        'tickets': '🎫',
+        'tasks': '✅',
+        'growth': '📈',
+        'activity': '⚡',
+        'default': '📊'
+    };
+    return icons[iconName || 'default'] || icons.default;
+};
+---
+
+<div class={`stats-card ${classes}`} {...rest}>
+    <div class="stats-card__header">
+        <div class="stats-card__icon-wrapper">
+            {icon && <span class="stats-card__icon" aria-hidden="true">{getIcon(icon)}</span>}
+        </div>
+        {change && (
+            <div class={`stats-card__change stats-card__change--${change.type}`}>
+                <span class="stats-card__change-icon" aria-hidden="true">
+                    {change.type === 'increase' ? '↗' : change.type === 'decrease' ? '↘' : '→'}
+                </span>
+                <span class="stats-card__change-text">
+                    {formatChange(change.value)}
+                    {change.label && <span class="stats-card__change-label">{change.label}</span>}
+                </span>
+            </div>
+        )}
+    </div>
+
+    <div class="stats-card__content">
+        <div class="stats-card__value">
+            {loading ? (
+                <div class="stats-card__skeleton" aria-label="Loading..."></div>
+            ) : (
+                formatValue(value)
+            )}
+        </div>
+        <div class="stats-card__title">{title}</div>
+    </div>
+</div>
+
+<style>
+    .stats-card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        background: var(--gradient-surface);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-border);
+        border-radius: var(--card-radius);
+        padding: var(--card-padding-md);
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: opacity var(--transition-base);
+    }
+
+    .stats-card:hover::before,
+    .stats-card:focus-within::before {
+        opacity: 1;
+    }
+
+    .stats-card:hover,
+    .stats-card:focus-within {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-gradient);
+        border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    /* Variants */
+    .stats-card--primary {
+        background: linear-gradient(145deg, rgba(124, 58, 237, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    }
+
+    .stats-card--secondary {
+        background: linear-gradient(145deg, rgba(59, 130, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+    }
+
+    .stats-card--success {
+        background: linear-gradient(145deg, rgba(16, 185, 129, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+    }
+
+    .stats-card--warning {
+        background: linear-gradient(145deg, rgba(245, 158, 11, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+    }
+
+    .stats-card--error {
+        background: linear-gradient(145deg, rgba(239, 68, 68, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+    }
+
+    /* Sizes */
+    .stats-card--sm {
+        padding: var(--card-padding-sm);
+        gap: var(--space-3);
+    }
+
+    .stats-card--lg {
+        padding: var(--card-padding-lg);
+        gap: var(--space-6);
+    }
+
+    /* Header */
+    .stats-card__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .stats-card__icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--stats-card-icon-size);
+        height: var(--stats-card-icon-size);
+        border-radius: var(--radius-md);
+        background: var(--gradient-primary);
+        opacity: 0.1;
+    }
+
+    .stats-card__icon {
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Change Indicator */
+    .stats-card__change {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        font-size: var(--text-xs);
+        font-weight: var(--font-medium);
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+    }
+
+    .stats-card__change--increase {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--color-success);
+    }
+
+    .stats-card__change--decrease {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--color-error);
+    }
+
+    .stats-card__change--neutral {
+        background: rgba(148, 163, 184, 0.1);
+        color: var(--color-text-secondary);
+    }
+
+    .stats-card__change-icon {
+        font-size: 0.75em;
+    }
+
+    .stats-card__change-text {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+    }
+
+    .stats-card__change-label {
+        opacity: 0.8;
+    }
+
+    /* Content */
+    .stats-card__content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .stats-card__value {
+        font-size: var(--text-2xl);
+        font-weight: var(--font-bold);
+        line-height: var(--leading-tight);
+        color: var(--color-text-primary);
+        font-family: var(--font-primary);
+    }
+
+    .stats-card__title {
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+        font-weight: var(--font-medium);
+        line-height: var(--leading-normal);
+    }
+
+    /* Loading State */
+    .stats-card--loading {
+        opacity: 0.7;
+    }
+
+    .stats-card__skeleton {
+        height: 1.5em;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+        background-size: 200% 100%;
+        animation: loading-shimmer 1.5s infinite;
+        border-radius: var(--radius-sm);
+    }
+
+    @keyframes loading-shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .stats-card {
+            padding: var(--card-padding-sm);
+        }
+
+        .stats-card__value {
+            font-size: var(--text-xl);
+        }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .stats-card {
+            border-width: 2px;
+        }
+
+        .stats-card__change {
+            background: var(--color-surface-elevated);
+            border: 1px solid var(--color-text-primary);
+        }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        .stats-card {
+            transition: none;
+        }
+
+        .stats-card:hover,
+        .stats-card:focus-within {
+            transform: none;
+        }
+
+        .stats-card__skeleton {
+            animation: none;
+            background: rgba(255, 255, 255, 0.1);
+        }
+    }
+
+    /* Focus styles for accessibility */
+    .stats-card:focus-visible {
+        outline: var(--focus-ring-width) solid var(--focus-ring-color);
+        outline-offset: var(--focus-ring-offset);
+    }
+</style>

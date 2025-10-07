@@ -1,12 +1,199 @@
 ---
 import MarketingLayout from '../layouts/MarketingLayout.astro';
+import HeroSection from '../components/marketing/HeroSection.astro';
+import FeatureCard from '../components/marketing/FeatureCard.astro';
+import TestimonialCard from '../components/marketing/TestimonialCard.astro';
 import { buildWhatsappLink } from '../consts';
 
-const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website');
+const heroWhatsappLink = buildWhatsappLink('Halo, saya tertarik dengan layanan digital agency');
 ---
 
 <MarketingLayout title="Jasa Website Astro + Portal Klien" description="Bangun situs pemasaran, portofolio, blog, dan portal klien terpadu dengan arsitektur Astro yang cepat dan aman.">
-        <section class="hero" data-animate>
+        <!-- Hero Section -->
+        <HeroSection
+                title="Platform Agency Modern untuk Masa Depan Digital"
+                subtitle="Satukan marketing site, client portal, dan operasional dalam satu platform terpadu. Dibangun dengan Astro, Supabase, dan Cloudflare untuk performa dan skalabilitas maksimal."
+                primaryCTA={{
+                        text: "Mulai Konsultasi",
+                        href: heroWhatsappLink
+                }}
+                secondaryCTA={{
+                        text: "Lihat Demo",
+                        href: "/portal"
+                }}
+                backgroundPattern="gradient"
+        />
+
+        <!-- Features Section -->
+        <section class="features-section" aria-label="Fitur utama platform">
+                <div class="container">
+                        <div class="section-header">
+                                <h2>Mengapa Memilih AstroPro Digital?</h2>
+                                <p class="section-subtitle">Platform terintegrasi yang dirancang khusus untuk kebutuhan agensi digital modern</p>
+                        </div>
+
+                        <div class="features-grid">
+                                <FeatureCard
+                                        title="Marketing Site Modern"
+                                        description="Website pemasaran yang cepat, SEO-friendly, dan conversion-optimized dengan konten dinamis."
+                                        icon="globe"
+                                        benefits={[
+                                                "SSG untuk performa maksimal",
+                                                "Content collections dengan MDX",
+                                                "SEO dan analytics terintegrasi",
+                                                "Responsive design untuk semua device"
+                                        ]}
+                                        ctaText="Lihat Fitur"
+                                        ctaHref="/layanan"
+                                        variant="detailed"
+                                />
+
+                                <FeatureCard
+                                        title="Client Portal Terpadu"
+                                        description="Dashboard klien dengan manajemen proyek, billing, dan support system yang user-friendly."
+                                        icon="users"
+                                        benefits={[
+                                                "SSR untuk interaktivitas real-time",
+                                                "RBAC dengan Supabase Auth",
+                                                "Multi-tenant architecture",
+                                                "Real-time notifications"
+                                        ]}
+                                        ctaText="Coba Portal"
+                                        ctaHref="/portal"
+                                        variant="detailed"
+                                />
+
+                                <FeatureCard
+                                        title="Payment & Billing"
+                                        description="Sistem pembayaran terintegrasi dengan Midtrans untuk transaksi yang aman dan mudah."
+                                        icon="payment"
+                                        benefits={[
+                                                "Midtrans payment gateway",
+                                                "Invoice otomatis",
+                                                "Webhook validation",
+                                                "Multi-currency support"
+                                        ]}
+                                        ctaText="Lihat Pricing"
+                                        ctaHref="/layanan"
+                                        variant="detailed"
+                                />
+
+                                <FeatureCard
+                                        title="Operational Automation"
+                                        description="Otomasi operasional dengan CI/CD, monitoring, dan runbook untuk efisiensi tim."
+                                        icon="automation"
+                                        benefits={[
+                                                "Cloudflare Workers deployment",
+                                                "Automated testing & QA",
+                                                "Performance monitoring",
+                                                "Incident response runbooks"
+                                        ]}
+                                        ctaText="Pelajari Lebih Lanjut"
+                                        ctaHref="/about"
+                                        variant="detailed"
+                                />
+                        </div>
+                </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section" aria-label="Testimoni klien">
+                <div class="container">
+                        <div class="section-header">
+                                <h2>Yang Dikatakan Klien Kami</h2>
+                                <p class="section-subtitle">Bergabunglah dengan ratusan agensi yang telah mentransformasi bisnis mereka</p>
+                        </div>
+
+                        <div class="testimonials-grid">
+                                <TestimonialCard
+                                        quote="Platform ini benar-benar mengubah cara kami mengelola proyek dan klien. Setup cepat, fitur lengkap, dan support yang responsif. Sangat recommended untuk agensi modern."
+                                        author={{
+                                                name: "Sarah Wijaya",
+                                                role: "CEO",
+                                                company: "DigitalCraft Agency"
+                                        }}
+                                        rating={5}
+                                        metrics={[
+                                                { label: "Proyek Selesai", value: "150+" },
+                                                { label: "Client Satisfaction", value: "98%" }
+                                        ]}
+                                        variant="featured"
+                                />
+
+                                <TestimonialCard
+                                        quote="Dari yang manual menjadi automated. Portal klien yang profesional dan marketing site yang convert. Best investment untuk bisnis kami tahun ini."
+                                        author={{
+                                                name: "Budi Santoso",
+                                                role: "Founder",
+                                                company: "TechVantage Solutions"
+                                        }}
+                                        rating={5}
+                                        metrics={[
+                                                { label: "Revenue Increase", value: "+45%" },
+                                                { label: "Time Saved", value: "20h/week" }
+                                        ]}
+                                        variant="featured"
+                                />
+
+                                <TestimonialCard
+                                        quote="Integrasi pembayaran dan sistem support yang seamless. Tim development kami jadi lebih fokus ke inovasi, bukan maintenance."
+                                        author={{
+                                                name: "Maya Putri",
+                                                role: "CTO",
+                                                company: "InnovateHub"
+                                        }}
+                                        rating={5}
+                                        metrics={[
+                                                { label: "Dev Productivity", value: "+60%" },
+                                                { label: "Support Tickets", value: "-80%" }
+                                        ]}
+                                        variant="featured"
+                                />
+                        </div>
+                </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section" aria-label="Call to action">
+                <div class="container">
+                        <div class="cta-content">
+                                <h2>Siap Transformasi Digital Agency Anda?</h2>
+                                <p class="cta-description">
+                                        Bergabunglah dengan agensi modern lainnya. Konsultasi gratis, demo langsung,
+                                        dan roadmap implementasi yang terstruktur untuk kesuksesan bisnis Anda.
+                                </p>
+
+                                <div class="cta-actions">
+                                        <a href={heroWhatsappLink} class="btn btn--cta-primary" target="_blank" rel="noreferrer">
+                                                Konsultasi Sekarang
+                                                <span aria-hidden="true">→</span>
+                                        </a>
+                                        <a href="/kontak" class="btn btn--cta-secondary">
+                                                Jadwalkan Demo
+                                                <span aria-hidden="true">📅</span>
+                                        </a>
+                                </div>
+
+                                <div class="cta-features">
+                                        <div class="cta-feature">
+                                                <span class="cta-feature__icon" aria-hidden="true">⚡</span>
+                                                <span class="cta-feature__text">Setup dalam 1 hari</span>
+                                        </div>
+                                        <div class="cta-feature">
+                                                <span class="cta-feature__icon" aria-hidden="true">🔒</span>
+                                                <span class="cta-feature__text">Security enterprise-grade</span>
+                                        </div>
+                                        <div class="cta-feature">
+                                                <span class="cta-feature__icon" aria-hidden="true">🎯</span>
+                                                <span class="cta-feature__text">Support 24/7</span>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        </section>
+
+        <!-- Original sections as backup -->
+        <!-- <section class="hero" data-animate>
                 <div class="hero-content">
                         <span class="eyebrow">Digital sprint terpadu</span>
                         <h1>Bangun pengalaman digital futuristik yang tetap mudah dioperasikan.</h1>
@@ -115,6 +302,263 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
 </MarketingLayout>
 
 <style>
+        /* ==========================================================================
+           AstroPro Digital - Homepage Styles
+           Modern marketing site dengan komponen terbaru
+           ========================================================================== */
+
+        /* Container utility */
+        .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 var(--space-6);
+        }
+
+        /* Section Headers */
+        .section-header {
+                text-align: center;
+                margin-bottom: var(--space-16);
+        }
+
+        .section-header h2 {
+                font-size: var(--text-3xl);
+                font-weight: var(--font-bold);
+                margin-bottom: var(--space-4);
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+        }
+
+        .section-subtitle {
+                font-size: var(--text-lg);
+                color: var(--color-text-secondary);
+                margin: 0;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+        }
+
+        /* Features Section */
+        .features-section {
+                padding: var(--space-20) 0;
+                background: rgba(15, 23, 42, 0.5);
+        }
+
+        .features-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: var(--space-8);
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+                padding: var(--space-20) 0;
+                background: var(--gradient-surface);
+                position: relative;
+        }
+
+        .testimonials-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+                pointer-events: none;
+        }
+
+        .testimonials-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                gap: var(--space-8);
+                position: relative;
+                z-index: 1;
+        }
+
+        /* CTA Section */
+        .cta-section {
+                padding: var(--space-20) 0;
+                background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+                border-top: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        .cta-content {
+                text-align: center;
+                max-width: 800px;
+                margin: 0 auto;
+        }
+
+        .cta-content h2 {
+                font-size: var(--text-3xl);
+                font-weight: var(--font-bold);
+                margin-bottom: var(--space-4);
+                color: var(--color-text-primary);
+        }
+
+        .cta-description {
+                font-size: var(--text-lg);
+                color: var(--color-text-secondary);
+                margin-bottom: var(--space-8);
+                line-height: var(--leading-relaxed);
+        }
+
+        .cta-actions {
+                display: flex;
+                gap: var(--space-4);
+                justify-content: center;
+                align-items: center;
+                margin-bottom: var(--space-8);
+                flex-wrap: wrap;
+        }
+
+        .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-2);
+                padding: var(--space-4) var(--space-8);
+                border-radius: var(--radius-full);
+                font-size: var(--text-lg);
+                font-weight: var(--font-semibold);
+                text-decoration: none;
+                transition: all var(--transition-base);
+                position: relative;
+                overflow: hidden;
+        }
+
+        .btn--cta-primary {
+                background: var(--gradient-primary);
+                color: white;
+                box-shadow: var(--shadow-gradient);
+        }
+
+        .btn--cta-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 30px rgba(124, 58, 237, 0.4);
+                background: linear-gradient(135deg, #6D28D9 0%, #1E40AF 100%);
+        }
+
+        .btn--cta-secondary {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn--cta-secondary:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .cta-features {
+                display: flex;
+                justify-content: center;
+                gap: var(--space-8);
+                flex-wrap: wrap;
+        }
+
+        .cta-feature {
+                display: flex;
+                align-items: center;
+                gap: var(--space-2);
+                font-size: var(--text-sm);
+                color: var(--color-text-secondary);
+        }
+
+        .cta-feature__icon {
+                font-size: 1.25rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+                .features-section,
+                .testimonials-section,
+                .cta-section {
+                        padding: var(--space-16) 0;
+                }
+
+                .features-grid,
+                .testimonials-grid {
+                        grid-template-columns: 1fr;
+                        gap: var(--space-6);
+                }
+
+                .section-header {
+                        margin-bottom: var(--space-12);
+                }
+
+                .section-header h2 {
+                        font-size: var(--text-2xl);
+                }
+
+                .cta-actions {
+                        flex-direction: column;
+                        gap: var(--space-3);
+                }
+
+                .btn {
+                        width: 100%;
+                        max-width: 280px;
+                        justify-content: center;
+                }
+
+                .cta-features {
+                        gap: var(--space-4);
+                        flex-direction: column;
+                        align-items: center;
+                }
+        }
+
+        @media (max-width: 480px) {
+                .container {
+                        padding: 0 var(--space-4);
+                }
+
+                .cta-content h2 {
+                        font-size: var(--text-2xl);
+                }
+
+                .cta-description {
+                        font-size: var(--text-base);
+                }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+                .btn {
+                        transition: none;
+                }
+
+                .btn:hover {
+                        transform: none;
+                }
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+                .btn--cta-primary,
+                .btn--cta-secondary {
+                        border-width: 2px;
+                }
+
+                .cta-features {
+                        gap: var(--space-6);
+                }
+        }
+
+        /* Focus Styles for Accessibility */
+        .btn:focus-visible {
+                outline: 2px solid rgba(255, 255, 255, 0.8);
+                outline-offset: 2px;
+        }
+
+        /* ==========================================================================
+           Legacy Styles (untuk backup jika diperlukan)
+           ========================================================================== */
+
+        /* Commented out original styles for reference */
+        /*
         .hero {
                 position: relative;
                 display: grid;
@@ -363,4 +807,9 @@ const heroWhatsappLink = buildWhatsappLink('Halo, saya butuh konsultasi website'
                         justify-content: center;
                 }
         }
+        */
+
+        /* ==========================================================================
+           End of Legacy Styles
+           ========================================================================== */
 </style>

@@ -1,0 +1,197 @@
+/* ==========================================================================
+   AstroPro Digital - Design Tokens
+   Modern gradient-based design system untuk creative agencies
+   ========================================================================== */
+
+/* -------------------------------------------------------------------------- *
+   CSS Custom Properties (Design Tokens)
+   * -------------------------------------------------------------------------- */
+
+/* Primary Colors */
+--color-primary: #7C3AED;        /* Purple */
+--color-primary-dark: #6D28D9;   /* Darker purple */
+--color-secondary: #3B82F6;      /* Blue */
+--color-accent: #F87171;         /* Coral */
+
+/* Gradients */
+--gradient-primary: linear-gradient(135deg, #7C3AED 0%, #3B82F6 100%);
+--gradient-secondary: linear-gradient(135deg, #F87171 0%, #FB7185 100%);
+--gradient-surface: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+
+/* Neutral Colors */
+--color-surface: #0F172A;        /* Dark blue-gray */
+--color-surface-elevated: #1E293B;
+--color-border: rgba(148, 163, 184, 0.2);
+--color-text-primary: #F8FAFC;
+--color-text-secondary: #94A3B8;
+--color-text-muted: #64748B;
+
+/* Semantic Colors */
+--color-success: #10B981;
+--color-warning: #F59E0B;
+--color-error: #EF4444;
+--color-info: #3B82F6;
+
+/* -------------------------------------------------------------------------- *
+   Typography Scale (Fluid Typography)
+   * -------------------------------------------------------------------------- */
+
+/* Font Families */
+--font-primary: 'Geist', system-ui, -apple-system, sans-serif;
+--font-secondary: 'Nunito', system-ui, -apple-system, sans-serif;
+
+/* Font Sizes - Fluid Typography */
+--text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+--text-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+--text-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+--text-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+--text-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+--text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+--text-3xl: clamp(1.875rem, 1.6rem + 1.375vw, 2.5rem);
+
+/* Font Weights */
+--font-light: 300;
+--font-normal: 400;
+--font-medium: 500;
+--font-semibold: 600;
+--font-bold: 700;
+
+/* Line Heights */
+--leading-tight: 1.25;
+--leading-snug: 1.375;
+--leading-normal: 1.5;
+--leading-relaxed: 1.625;
+--leading-loose: 2;
+
+/* -------------------------------------------------------------------------- *
+   Spacing Scale (8px base)
+   * -------------------------------------------------------------------------- */
+
+--space-1: 0.25rem;    /* 4px */
+--space-2: 0.5rem;     /* 8px */
+--space-3: 0.75rem;    /* 12px */
+--space-4: 1rem;       /* 16px */
+--space-5: 1.25rem;    /* 20px */
+--space-6: 1.5rem;     /* 24px */
+--space-8: 2rem;       /* 32px */
+--space-10: 2.5rem;    /* 40px */
+--space-12: 3rem;      /* 48px */
+--space-16: 4rem;      /* 64px */
+--space-20: 5rem;      /* 80px */
+--space-24: 6rem;      /* 96px */
+
+/* -------------------------------------------------------------------------- *
+   Border Radius Scale
+   * -------------------------------------------------------------------------- */
+
+--radius-sm: 0.5rem;    /* 8px */
+--radius-md: 0.75rem;   /* 12px */
+--radius-lg: 1rem;      /* 16px */
+--radius-xl: 1.5rem;    /* 24px */
+--radius-2xl: 2rem;     /* 32px */
+--radius-full: 9999px;  /* Full rounded */
+
+/* -------------------------------------------------------------------------- *
+   Shadow Scale
+   * -------------------------------------------------------------------------- */
+
+--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+--shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+/* Gradient Shadows */
+--shadow-gradient: 0 10px 30px rgba(124, 58, 237, 0.3);
+--shadow-gradient-lg: 0 20px 40px rgba(124, 58, 237, 0.15);
+
+/* -------------------------------------------------------------------------- *
+   Animation & Motion
+   * -------------------------------------------------------------------------- */
+
+/* Transition Timing */
+--transition-fast: 150ms ease-in-out;
+--transition-base: 200ms ease-in-out;
+--transition-slow: 300ms ease-in-out;
+
+/* Easing Functions */
+--ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+--ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+/* -------------------------------------------------------------------------- *
+   Breakpoints (for reference in media queries)
+   * -------------------------------------------------------------------------- */
+
+--breakpoint-sm: 640px;
+--breakpoint-md: 768px;
+--breakpoint-lg: 1024px;
+--breakpoint-xl: 1280px;
+--breakpoint-2xl: 1536px;
+
+/* -------------------------------------------------------------------------- *
+   Z-Index Scale
+   * -------------------------------------------------------------------------- */
+
+--z-dropdown: 1000;
+--z-sticky: 1020;
+--z-fixed: 1030;
+--z-modal-backdrop: 1040;
+--z-modal: 1050;
+--z-popover: 1060;
+--z-tooltip: 1070;
+--z-toast: 1080;
+
+/* -------------------------------------------------------------------------- *
+   Component-specific Tokens
+   * -------------------------------------------------------------------------- */
+
+/* Button Tokens */
+--button-height-sm: 2.25rem;
+--button-height-md: 2.5rem;
+--button-height-lg: 3rem;
+--button-padding-x-sm: 1rem;
+--button-padding-x-md: 1.5rem;
+--button-padding-x-lg: 2rem;
+
+/* Card Tokens */
+--card-padding-sm: 1rem;
+--card-padding-md: 1.5rem;
+--card-padding-lg: 2rem;
+--card-radius: var(--radius-xl);
+
+/* Input Tokens */
+--input-height: 2.5rem;
+--input-padding-x: 0.75rem;
+--input-border-width: 1px;
+--input-focus-ring: 0 0 0 3px rgba(124, 58, 237, 0.1);
+
+/* Stats Card Tokens */
+--stats-card-icon-size: 2rem;
+--stats-card-trend-size: 1rem;
+
+/* -------------------------------------------------------------------------- *
+   Dark Mode Support (Auto-detect)
+   * -------------------------------------------------------------------------- */
+
+/* Note: These will be overridden by dark mode classes if needed */
+/* Current design is dark-first, so these are the defaults */
+
+/* -------------------------------------------------------------------------- *
+   Accessibility Tokens
+   * -------------------------------------------------------------------------- */
+
+/* Focus ring colors */
+--focus-ring-color: rgba(124, 58, 237, 0.5);
+--focus-ring-width: 2px;
+--focus-ring-offset: 2px;
+
+/* High contrast mode support */
+--color-text-high-contrast: #FFFFFF;
+--color-bg-high-contrast: #000000;
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  --transition-fast: 0ms;
+  --transition-base: 0ms;
+  --transition-slow: 0ms;
+}

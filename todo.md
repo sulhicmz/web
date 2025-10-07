@@ -1,36 +1,111 @@
-# TODO
+# AstroPro Digital - Design & UX Task List
 
-## Prioritas Tinggi
-- [x] Susun ulang dokumen perencanaan agar mengikuti panduan terbaru dan verifikasi konsistensi format.
-- [x] Implementasikan struktur awal proyek Astro sesuai arsitektur yang telah dirancang dalam dokumen plan.
-- [x] Siapkan konfigurasi Supabase (auth, RLS, skema) di lingkungan pengembangan.
-- [x] Validasi signature webhook Midtrans sebelum mengembalikan 200 (lihat `src/pages/api/payments/webhook.ts`).
-- [x] Implementasikan middleware `authGuard` untuk portal sesuai desain RBAC di `docs/plan/05_astro_architecture.md`.
-- [x] Buat fungsionalitas logout untuk portal.
-- [x] Lengkapi implementasi `PaymentProvider` agar mendukung skenario checkout + langganan, kupon, dan idempotensi sesuai `docs/plan/11_payment_integration.md`.
-- [x] Tambahkan validasi webhook lanjutan (secret/timestamp) agar sejalan dengan blueprint `docs/plan/11_payment_integration.md`.
-- [x] Bangun pipeline GitHub Actions (lint/build/deploy) sebagaimana digariskan di `docs/plan/15_ci_cd.md`.
-- [x] (HIGH) Perbaiki `verifyWebhook` di `src/lib/payments/providers/midtrans.ts` agar menggunakan algoritme signature Midtrans (`order_id + status_code + gross_amount + server_key`).
-- [x] (HIGH) Sesuaikan ekspor handler HTTP di `src/pages/api/payments/session.ts` dan `src/pages/api/payments/webhook.ts` menjadi `POST` agar route Astro berfungsi.
-- [x] (HIGH) Implementasikan `applyCoupon` di `MidtransProvider` agar memvalidasi kupon sesungguhnya dan tidak selalu mengembalikan diskon tetap.
-- [x] (HIGH) Selesaikan logika `createSubscription` di `MidtransProvider` (ambil harga paket, tipe pembayaran, token pelanggan) agar permintaan tidak gagal.
+> Berdasarkan analisis desain dan pengalaman pengguna menyeluruh terhadap proyek
 
-## Prioritas Menengah
-- [x] Membuat komponen UI dasar (Button, Card, PricingTable) di codebase Astro.
-- [x] Mengintegrasikan analitik ringan (mis. Plausible) dengan menghormati consent pengguna.
-- [x] Mendesain alur checkout dengan antarmuka abstraksi gateway pembayaran.
-- [x] Perbaiki logika active state `NavLink` agar menu portal tersorot sesuai halaman (cek `src/components/marketing/NavLink.astro`).
-- [x] Implementasikan webhook & template WhatsApp Business API sesuai `docs/plan/12_whatsapp_integration.md` (notifikasi invoice/tiket/deploy).
-- [x] (MEDIUM) Lengkapi handler WhatsApp Business API (`src/pages/api/notifications/whatsapp.ts`) dengan logging, retry, dan opt-out.
-- [x] (MEDIUM) Tambahkan validasi body untuk `POST /api/payments/subscription` agar hanya payload sah yang diteruskan ke provider.
-- [x] (MEDIUM) Tambahkan fallback ketika Supabase tidak tersedia pada `MidtransProvider.createSubscription` agar error lebih informatif.
-- [x] (MEDIUM) Jalankan `npm run check` pada workflow CI (`.github/workflows/ci.yml`) agar build, TypeScript, dan wrangler dry-run tervalidasi.
-- [ ] (MEDIUM) Perbarui `.github/workflows/deploy.yml` untuk memakai `actions/setup-node@v4` + `npm ci` dan hilangkan cache `node_modules` yang rapuh.
-- [ ] (LOW) Audit perubahan visual besar (Cyberpunk Noir) dengan screenshot regression test manual.
+## 1. Visual Identity & Branding
+- [ ] Desain logo dan brand mark untuk AstroPro Digital
+- [ ] Buat brand guidelines lengkap (warna, tipografi, ikon, suara/tonjolan)
+- [ ] Konsolidasi skema warna antara `global.css` dan `design_tokens.json`
+- [ ] Buat palet warna primer dan sekunder yang konsisten
+- [ ] Desain visual identity untuk halaman landing
 
-## Prioritas Rendah
-- [x] Dokumentasikan runbook insiden detail dan lampirkan di `docs/`.
-- [x] Menyusun template email notifikasi untuk tiket dukungan dan status proyek.
-- [x] Mengevaluasi opsi pengujian regresi visual untuk komponen utama.
-- [x] Konsolidasikan detail kontak (email/WhatsApp) yang tersebar ke satu sumber konfigurasi sehingga mudah diganti.
-- [ ] (LOW) Tambahkan `dependabot.yml` untuk memantau pembaruan npm dan GitHub Actions.
+## 2. Sistem Desain
+- [ ] Ekspansi komponen UI sesuai kebutuhan (form, navigation, modal, etc.)
+- [ ] Implementasi komponen untuk client portal khusus
+- [ ] Buat dokumentasi komponen UI (Storybook atau dokumentasi internal)
+- [ ] Perbaiki konsistensi warna antara file CSS dan design tokens
+- [ ] Tambahkan komponen untuk alur autentikasi dan manajemen akun
+
+## 3. Pengalaman Pengguna (UX)
+- [ ] Rancang alur onboarding pengguna baru
+- [ ] Buat prototype awal untuk pengalaman pertama kali (first-time experience)
+- [ ] Desain dashboard client portal yang intuitif
+- [ ] Implementasi alur pembayaran yang mulus
+- [ ] Tambahkan fitur notifikasi dan komunikasi internal dalam portal
+
+## 4. Aksesibilitas & UX Responsif
+- [ ] Audit aksesibilitas menyeluruh (WCAG compliance)
+- [ ] Pastikan semua komponen UI mendukung keyboard navigation
+- [ ] Optimasi UX untuk perangkat mobile (mobile-first approach)
+- [ ] Perbaiki ukuran sentuhan minimum (44x44px) di semua tombol penting
+- [ ] Implementasi loading states untuk semua interaksi asinkron
+
+## 5. Content & Visual Assets
+- [ ] Ganti placeholder gambar dengan desain atau foto asli
+- [ ] Buat template konten untuk halaman marketing
+- [ ] Desain ilustrasi untuk membantu komunikasi fitur
+- [ ] Tambahkan icon library yang konsisten
+- [ ] Rancang template email untuk notifikasi dan komunikasi
+
+## 6. Pengalaman Klien Portal
+- [ ] Buat wireframe untuk dashboard klien
+- [ ] Desain alur manajemen proyek dalam portal
+- [ ] Implementasi sistem notifikasi dan pesan
+- [ ] Desain halaman manajemen pembayaran dan faktur
+- [ ] Rancang sistem tiket dukungan teknis
+
+## 7. Testing & Validasi UX
+- [ ] Implementasi testing visual regression (Playwright)
+- [ ] Buat user journey maps untuk pengguna utama
+- [ ] Lakukan user testing untuk alur kritis (pembayaran, login, dashboard)
+- [ ] Validasi aksesibilitas dengan alat otomatis dan manual
+- [ ] Desain sistem feedback untuk pengguna
+
+## 8. Dokumentasi UX
+- [ ] Tambahkan panduan UX dalam dokumentasi
+- [ ] Buat template untuk feedback UX
+- [ ] Dokumentasi alur pengguna untuk pengembang
+- [ ] Buat style guide UI untuk kontributor
+- [ ] Tambahkan rekomendasi UX dalam CONTRIBUTING.md
+
+## 9. Performance & Loading UX
+- [ ] Desain loading states untuk semua interaksi
+- [ ] Implementasi skeleton screens untuk konten yang sedang dimuat
+- [ ] Tambahkan indikator progress untuk proses yang memakan waktu
+- [ ] Optimasi ukuran aset visual tanpa mengorbankan kualitas
+- [ ] Rancang strategi error handling yang ramah pengguna
+
+## 10. Analytics & Privacy UX
+- [ ] Rancang sistem consent yang lebih informatif
+- [ ] Tambahkan opsi manajemen cookie yang lebih rinci
+- [ ] Desain UX untuk fitur analytics internal
+- [ ] Implementasi transparansi data untuk pengguna
+- [ ] Buat dokumentasi tentang kebijakan privasi dalam UI
+
+## 11. Keamanan & Kinerja (Performance)
+- [ ] Hapus semua sisa logging development (console.warn, console.error) dari kode production
+- [ ] Tambahkan validasi input eksternal untuk API Midtrans
+- [ ] Optimasi efek CSS yang berat (glow, blur) untuk performa rendering
+- [ ] Implementasi retry mechanism untuk panggilan API eksternal (WhatsApp API)
+- [ ] Tambahkan fallback untuk panggilan API yang gagal
+- [ ] Tambahkan mekanisme rate limiting untuk endpoint pembayaran
+- [ ] Implementasi sanitasi input untuk mencegah XSS
+
+## 12. SEO & Struktur HTML
+- [ ] Tambahkan struktur HTML lengkap dengan semantic markup
+- [ ] Implementasi Open Graph meta tags untuk social sharing
+- [ ] Tambahkan structured data (JSON-LD) untuk organisasi
+- [ ] Implementasi canonical URL tags
+- [ ] Tambahkan sitemap.xml otomatis dari @astrojs/sitemap
+- [ ] Optimasi loading font untuk performa Core Web Vitals
+- [ ] Tambahkan lazy loading untuk gambar dan konten di luar viewport
+
+## 13. Bug Fixes & Error Handling
+- [ ] Perbaiki kesalahan pada komponen `AnalyticsConsent.astro` terkait penggunaan JSON.stringify di dalam template literal
+- [ ] Tambahkan pengecekan null safety untuk variabel `logoutButton`, `errorMessage`, dan `form` di berbagai komponen
+- [ ] Tambahkan pengecekan untuk nilai environment variable sebelum digunakan (PUBLIC_SUPABASE_URL, MIDTRANS_SERVER_KEY, dll.)
+- [ ] Perbaiki import type `astroHTML` di komponen Button.astro dan Card.astro
+- [ ] Perbaiki import type `MiddlewareResponseHandler` di middleware/auth-guard.ts (gunakan `MiddlewareHandler` sebagai gantinya)
+- [ ] Tambahkan type annotation untuk parameter di middleware/auth-guard.ts
+- [ ] Perbaiki logika pengecekan pathname di NavLink.astro untuk menangani nilai undefined
+- [ ] Tambahkan pengecekan untuk properti yang mungkin tidak ada di objek WhatsApp webhook
+- [ ] Tambahkan type annotation untuk objek `changes` di webhook handler
+- [ ] Perbaiki akses ke properti `user` di locals yang mungkin tidak tersedia
+- [ ] Perbaiki error type di WhatsApp webhook handler terkait properti 'type' yang tidak dikenal
+- [ ] Tambahkan type annotation yang tepat untuk parameter fungsi di auth-guard middleware
+
+## 14. Build & Konfigurasi
+- [ ] Tambahkan binding \"SESSION\" KV ke konfigurasi wrangler untuk produksi
+- [ ] Tambahkan modul \"crypto\" ke environments.ssr.external di konfigurasi Vite
+- [ ] Tambahkan handler untuk metode GET di endpoint API (whatsapp, payments/session, payments/subscription, payments/webhook) atau pastikan hanya menerima metode yang sesuai
+- [ ] Konfigurasi imageService: \"compile\" untuk optimasi gambar di lingkungan Cloudflare

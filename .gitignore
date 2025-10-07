@@ -27,5 +27,93 @@ pnpm-debug.log*
 .wrangler
 .dev.vars
 
+# firebase
+.firebase/
+firebase-debug.log
+.firebaserc
+
+# astro
+.vercel
+.netlify/
+
+# testing
+coverage/
+.nyc_output/
+*.lcov
+
+# misc
+*.tgz
+*.tar.gz
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# temporary files
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+
+# logs (additional patterns)
+*.log
+logs/
+
+# runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# optional npm cache directory
+.npm
+
+# optional eslint cache
+.eslintcache
+
+# microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# optional REPL history
+.node_repl_history
+
+# output folders
+output/
+out/
+
+# parcel-bundler cache (https://parceljs.org/)
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build / generate output
+.nuxt
+dist
+
+# vuepress build output
+.vuepress/dist
+
+# serverless directories
+.serverless/
+
+# fusebox cache
+.fusebox/
+
+# dynamoDB local files
+.dynamodb/
+
+# IDE
+.vscode/settings.json
+.vscode/launch.json
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
 .gemini/
 gha-creds-*.json

@@ -1,0 +1,457 @@
+---
+import type { astroHTML } from 'astro/types';
+
+interface FeatureCardProps extends astroHTML.JSX.HTMLAttributes<'article'> {
+    title: string;
+    description: string;
+    icon?: string;
+    image?: string;
+    benefits?: string[];
+    ctaText?: string;
+    ctaHref?: string;
+    variant?: 'default' | 'compact' | 'detailed';
+    orientation?: 'left' | 'right' | 'center';
+}
+
+const {
+    title,
+    description,
+    icon,
+    image,
+    benefits = [],
+    ctaText,
+    ctaHref,
+    variant = 'default',
+    orientation = 'center',
+    class: customClass = '',
+    ...rest
+} = Astro.props as FeatureCardProps & Record<string, unknown>;
+
+const classes = [
+    'feature-card',
+    `feature-card--${variant}`,
+    `feature-card--${orientation}`,
+    typeof customClass === 'string' ? customClass : ''
+].filter(Boolean).join(' ');
+
+// Icon mapping untuk berbagai fitur
+const getIcon = (iconName?: string): string => {
+    const icons: Record<string, string> = {
+        'rocket': '🚀',
+        'shield': '🛡️',
+        'zap': '⚡',
+        'users': '👥',
+        'chart': '📊',
+        'lock': '🔒',
+        'globe': '🌐',
+        'payment': '💳',
+        'support': '🎧',
+        'automation': '🤖',
+        'analytics': '📈',
+        'integration': '🔗',
+        'default': '✨'
+    };
+    return icons[iconName || 'default'] || icons.default;
+};
+
+// Benefit icons untuk list
+const getBenefitIcon = (index: number): string => {
+    const icons = ['✅', '🎯', '💡', '🔥', '⭐'];
+    return icons[index % icons.length];
+};
+---
+
+<article class={`feature-card ${classes}`} {...rest}>
+    <div class="feature-card__visual">
+        {image ? (
+            <div class="feature-card__image-wrapper">
+                <img
+                    src={image}
+                    alt=""
+                    class="feature-card__image"
+                    loading="lazy"
+                />
+                <div class="feature-card__image-overlay"></div>
+            </div>
+        ) : (
+            <div class="feature-card__icon-wrapper">
+                <div class="feature-card__icon" aria-hidden="true">
+                    {getIcon(icon)}
+                </div>
+                <div class="feature-card__icon-bg"></div>
+            </div>
+        )}
+    </div>
+
+    <div class="feature-card__content">
+        <header class="feature-card__header">
+            <h3 class="feature-card__title">{title}</h3>
+            <p class="feature-card__description">{description}</p>
+        </header>
+
+        {benefits.length > 0 && (
+            <div class="feature-card__benefits">
+                <ul class="benefits-list">
+                    {benefits.map((benefit, index) => (
+                        <li class="benefits-list__item">
+                            <span class="benefits-list__icon" aria-hidden="true">
+                                {getBenefitIcon(index)}
+                            </span>
+                            <span class="benefits-list__text">{benefit}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        )}
+
+        {ctaText && ctaHref && (
+            <div class="feature-card__cta">
+                <a href={ctaHref} class="feature-card__cta-btn">
+                    {ctaText}
+                    <span class="feature-card__cta-icon" aria-hidden="true">→</span>
+                </a>
+            </div>
+        )}
+    </div>
+</article>
+
+<style>
+    .feature-card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+        background: var(--gradient-surface);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: opacity var(--transition-base);
+    }
+
+    .feature-card:hover::before,
+    .feature-card:focus-within::before {
+        opacity: 1;
+    }
+
+    .feature-card:hover,
+    .feature-card:focus-within {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-gradient);
+        border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    /* Variants */
+    .feature-card--compact {
+        padding: var(--space-6);
+        gap: var(--space-4);
+    }
+
+    .feature-card--detailed {
+        padding: var(--space-10);
+        gap: var(--space-8);
+    }
+
+    /* Orientation variants untuk layout yang berbeda */
+    .feature-card--left {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .feature-card--right {
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+
+    .feature-card--center {
+        text-align: center;
+    }
+
+    /* Visual Section */
+    .feature-card__visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .feature-card__icon-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .feature-card__icon {
+        position: relative;
+        z-index: 2;
+        font-size: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 5rem;
+        height: 5rem;
+        background: var(--gradient-primary);
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-gradient);
+    }
+
+    .feature-card__icon-bg {
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: var(--gradient-primary);
+        opacity: 0.1;
+        border-radius: var(--radius-2xl);
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    .feature-card__image-wrapper {
+        position: relative;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-xl);
+    }
+
+    .feature-card__image {
+        width: 100%;
+        height: auto;
+        max-width: 300px;
+        border-radius: var(--radius-lg);
+        transition: transform var(--transition-slow);
+    }
+
+    .feature-card__image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: opacity var(--transition-base);
+    }
+
+    .feature-card:hover .feature-card__image {
+        transform: scale(1.05);
+    }
+
+    .feature-card:hover .feature-card__image-overlay {
+        opacity: 0.1;
+    }
+
+    /* Content Section */
+    .feature-card__content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    .feature-card__header {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    .feature-card__title {
+        font-size: var(--text-2xl);
+        font-weight: var(--font-bold);
+        line-height: var(--leading-tight);
+        margin: 0;
+        color: var(--color-text-primary);
+    }
+
+    .feature-card__description {
+        font-size: var(--text-base);
+        line-height: var(--leading-relaxed);
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    /* Benefits List */
+    .feature-card__benefits {
+        margin: var(--space-2) 0;
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    .benefits-list__item {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        padding: var(--space-2) 0;
+    }
+
+    .benefits-list__icon {
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+
+    .benefits-list__text {
+        font-size: var(--text-sm);
+        line-height: var(--leading-relaxed);
+        color: var(--color-text-primary);
+    }
+
+    /* CTA Section */
+    .feature-card__cta {
+        margin-top: var(--space-2);
+    }
+
+    .feature-card__cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-6);
+        background: var(--gradient-primary);
+        color: white;
+        text-decoration: none;
+        border-radius: var(--radius-full);
+        font-size: var(--text-sm);
+        font-weight: var(--font-semibold);
+        transition: all var(--transition-base);
+        box-shadow: var(--shadow-gradient);
+    }
+
+    .feature-card__cta-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+        background: linear-gradient(135deg, #6D28D9 0%, #1E40AF 100%);
+    }
+
+    .feature-card__cta-icon {
+        transition: transform var(--transition-base);
+    }
+
+    .feature-card__cta-btn:hover .feature-card__cta-icon {
+        transform: translateX(4px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .feature-card {
+            padding: var(--space-6);
+            gap: var(--space-4);
+        }
+
+        .feature-card--left,
+        .feature-card--right {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .feature-card__icon {
+            width: 4rem;
+            height: 4rem;
+            font-size: 2.5rem;
+        }
+
+        .feature-card__title {
+            font-size: var(--text-xl);
+        }
+
+        .feature-card__description {
+            font-size: var(--text-sm);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .feature-card {
+            padding: var(--space-4);
+            gap: var(--space-3);
+        }
+
+        .feature-card__icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            font-size: 2rem;
+        }
+
+        .benefits-list__item {
+            gap: var(--space-2);
+        }
+
+        .benefits-list__text {
+            font-size: var(--text-xs);
+        }
+    }
+
+    /* Animations */
+    @keyframes pulse {
+        0%, 100% { opacity: 0.1; transform: scale(1); }
+        50% { opacity: 0.2; transform: scale(1.05); }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        .feature-card {
+            transition: none;
+        }
+
+        .feature-card:hover,
+        .feature-card:focus-within {
+            transform: none;
+        }
+
+        .feature-card__icon-bg {
+            animation: none;
+        }
+
+        .feature-card__image {
+            transition: none;
+        }
+
+        .feature-card__cta-btn:hover {
+            transform: none;
+        }
+
+        .feature-card__cta-btn:hover .feature-card__cta-icon {
+            transform: none;
+        }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+        .feature-card {
+            border-width: 2px;
+        }
+
+        .benefits-list__item {
+            border-bottom: 1px solid var(--color-border);
+        }
+    }
+
+    /* Focus Styles for Accessibility */
+    .feature-card:focus-visible {
+        outline: var(--focus-ring-width) solid var(--focus-ring-color);
+        outline-offset: var(--focus-ring-offset);
+    }
+
+    .feature-card__cta-btn:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.8);
+        outline-offset: 2px;
+    }
+</style>

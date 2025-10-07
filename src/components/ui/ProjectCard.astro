@@ -1,0 +1,610 @@
+---
+import type { astroHTML } from 'astro/types';
+
+type ProjectStatus = 'active' | 'completed' | 'on-hold' | 'draft' | 'cancelled';
+type ProjectPriority = 'low' | 'medium' | 'high' | 'urgent';
+
+interface TeamMember {
+    name: string;
+    avatar?: string;
+    role?: string;
+}
+
+interface ProjectCardProps extends astroHTML.JSX.HTMLAttributes<'article'> {
+    title: string;
+    description: string;
+    status: ProjectStatus;
+    progress: number;
+    priority?: ProjectPriority;
+    dueDate?: Date | string;
+    startDate?: Date | string;
+    teamMembers?: TeamMember[];
+    budget?: string | number;
+    client?: string;
+    tags?: string[];
+    href?: string;
+    variant?: 'default' | 'compact' | 'detailed';
+}
+
+const {
+    title,
+    description,
+    status,
+    progress,
+    priority = 'medium',
+    dueDate,
+    startDate,
+    teamMembers = [],
+    budget,
+    client,
+    tags = [],
+    href,
+    variant = 'default',
+    class: customClass = '',
+    ...rest
+} = Astro.props as ProjectCardProps & Record<string, unknown>;
+
+const classes = [
+    'project-card',
+    `project-card--${variant}`,
+    `project-card--${status}`,
+    `project-card--${priority}`,
+    typeof customClass === 'string' ? customClass : ''
+].filter(Boolean).join(' ');
+
+// Status configuration
+const statusConfig = {
+    active: { label: 'Aktif', color: 'var(--color-success)' },
+    completed: { label: 'Selesai', color: 'var(--color-text-secondary)' },
+    'on-hold': { label: 'Ditunda', color: 'var(--color-warning)' },
+    draft: { label: 'Draft', color: 'var(--color-text-muted)' },
+    cancelled: { label: 'Dibatalkan', color: 'var(--color-error)' }
+};
+
+// Priority configuration
+const priorityConfig = {
+    low: { label: 'Rendah', color: 'var(--color-text-muted)' },
+    medium: { label: 'Sedang', color: 'var(--color-info)' },
+    high: { label: 'Tinggi', color: 'var(--color-warning)' },
+    urgent: { label: 'Urgent', color: 'var(--color-error)' }
+};
+
+// Format tanggal
+const formatDate = (date: Date | string): string => {
+    if (!date) return '';
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    });
+};
+
+// Hitung hari tersisa
+const getDaysRemaining = (dueDate: Date | string): number | null => {
+    if (!dueDate) return null;
+    const due = typeof dueDate === 'string' ? new Date(dueDate) : dueDate;
+    const today = new Date();
+    const diffTime = due.getTime() - today.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
+
+// Progress bar color berdasarkan status dan progress
+const getProgressColor = (): string => {
+    if (status === 'completed') return 'var(--color-success)';
+    if (status === 'cancelled') return 'var(--color-error)';
+    if (progress >= 80) return 'var(--color-success)';
+    if (progress >= 50) return 'var(--color-info)';
+    if (progress >= 25) return 'var(--color-warning)';
+    return 'var(--color-text-muted)';
+};
+
+const isClickable = typeof href === 'string' && href.length > 0;
+const Tag = isClickable ? 'a' : 'article';
+---
+
+<{Tag} class={`project-card ${classes}`} {...(isClickable ? { href } : {})} {...rest}>
+    <!-- Header -->
+    <header class="project-card__header">
+        <div class="project-card__title-wrapper">
+            <h3 class="project-card__title">{title}</h3>
+            {client && <p class="project-card__client">👤 {client}</p>}
+        </div>
+
+        <div class="project-card__badges">
+            <span class={`project-card__status status-badge status-badge--${status}`}>
+                {statusConfig[status].label}
+            </span>
+            {priority !== 'medium' && (
+                <span class={`project-card__priority priority-badge priority-badge--${priority}`}>
+                    {priorityConfig[priority].label}
+                </span>
+            )}
+        </div>
+    </header>
+
+    <!-- Description -->
+    {variant !== 'compact' && (
+        <div class="project-card__description">
+            <p>{description}</p>
+        </div>
+    )}
+
+    <!-- Progress -->
+    <div class="project-card__progress">
+        <div class="project-card__progress-header">
+            <span class="project-card__progress-label">Progress</span>
+            <span class="project-card__progress-value">{progress}%</span>
+        </div>
+        <div class="project-card__progress-bar">
+            <div
+                class="project-card__progress-fill"
+                style={`width: ${Math.min(progress, 100)}%; background: ${getProgressColor()}`}
+                role="progressbar"
+                aria-valuenow={progress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`Progress: ${progress}%`}
+            ></div>
+        </div>
+    </div>
+
+    <!-- Meta Information -->
+    {(variant === 'detailed' || teamMembers.length > 0 || dueDate || budget) && (
+        <div class="project-card__meta">
+            {dueDate && (
+                <div class="project-card__meta-item">
+                    <span class="project-card__meta-icon" aria-hidden="true">📅</span>
+                    <span class="project-card__meta-text">
+                        {formatDate(dueDate)}
+                        {(() => {
+                            const days = getDaysRemaining(dueDate);
+                            if (days === null || days > 7) return '';
+                            if (days === 0) return ' (Hari ini)';
+                            if (days < 0) return ` (Terlambat ${Math.abs(days)} hari)`;
+                            return ` (${days} hari lagi)`;
+                        })()}
+                    </span>
+                </div>
+            )}
+
+            {budget && variant === 'detailed' && (
+                <div class="project-card__meta-item">
+                    <span class="project-card__meta-icon" aria-hidden="true">💰</span>
+                    <span class="project-card__meta-text">
+                        {typeof budget === 'number' ? `Rp ${budget.toLocaleString('id-ID')}` : budget}
+                    </span>
+                </div>
+            )}
+
+            {startDate && variant === 'detailed' && (
+                <div class="project-card__meta-item">
+                    <span class="project-card__meta-icon" aria-hidden="true">🚀</span>
+                    <span class="project-card__meta-text">Dimulai {formatDate(startDate)}</span>
+                </div>
+            )}
+        </div>
+    )}
+
+    <!-- Team Members -->
+    {teamMembers.length > 0 && (
+        <div class="project-card__team">
+            <div class="project-card__team-avatars">
+                {teamMembers.slice(0, 3).map((member, index) => (
+                    <div
+                        class="project-card__avatar"
+                        style={`background: var(--gradient-primary); z-index: ${3 - index}`}
+                        title={member.name}
+                    >
+                        {member.avatar ? (
+                            <img src={member.avatar} alt={member.name} />
+                        ) : (
+                            member.name.charAt(0).toUpperCase()
+                        )}
+                    </div>
+                ))}
+                {teamMembers.length > 3 && (
+                    <div class="project-card__avatar project-card__avatar--more">
+                        +{teamMembers.length - 3}
+                    </div>
+                )}
+            </div>
+        </div>
+    )}
+
+    <!-- Tags -->
+    {tags.length > 0 && variant === 'detailed' && (
+        <div class="project-card__tags">
+            {tags.map(tag => (
+                <span class="project-card__tag">{tag}</span>
+            ))}
+        </div>
+    )}
+
+    <!-- Footer -->
+    <div class="project-card__footer">
+        <div class="project-card__actions">
+            <slot name="actions" />
+        </div>
+    </div>
+</{Tag}>
+
+<style>
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        background: var(--gradient-surface);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-border);
+        border-radius: var(--card-radius);
+        padding: var(--card-padding-md);
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .project-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: opacity var(--transition-base);
+    }
+
+    .project-card:hover::before,
+    .project-card:focus-visible::before {
+        opacity: 1;
+    }
+
+    .project-card:hover,
+    .project-card:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-gradient);
+        border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    .project-card:focus-visible {
+        outline: var(--focus-ring-width) solid var(--focus-ring-color);
+        outline-offset: var(--focus-ring-offset);
+    }
+
+    /* Variants */
+    .project-card--compact {
+        padding: var(--card-padding-sm);
+        gap: var(--space-3);
+    }
+
+    .project-card--detailed {
+        padding: var(--card-padding-lg);
+    }
+
+    /* Status-based styling */
+    .project-card--completed {
+        opacity: 0.8;
+    }
+
+    .project-card--cancelled {
+        opacity: 0.6;
+    }
+
+    /* Header */
+    .project-card__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--space-3);
+    }
+
+    .project-card__title-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        flex: 1;
+        min-width: 0;
+    }
+
+    .project-card__title {
+        font-size: var(--text-lg);
+        font-weight: var(--font-semibold);
+        line-height: var(--leading-tight);
+        margin: 0;
+        color: var(--color-text-primary);
+    }
+
+    .project-card__client {
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    .project-card__badges {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        align-items: flex-end;
+    }
+
+    /* Status and Priority Badges */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        font-size: var(--text-xs);
+        font-weight: var(--font-medium);
+        white-space: nowrap;
+    }
+
+    .status-badge--active {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--color-success);
+    }
+
+    .status-badge--completed {
+        background: rgba(148, 163, 184, 0.1);
+        color: var(--color-text-secondary);
+    }
+
+    .status-badge--on-hold {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--color-warning);
+    }
+
+    .status-badge--draft {
+        background: rgba(148, 163, 184, 0.1);
+        color: var(--color-text-muted);
+    }
+
+    .status-badge--cancelled {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--color-error);
+    }
+
+    .priority-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        font-size: var(--text-xs);
+        font-weight: var(--font-medium);
+        white-space: nowrap;
+    }
+
+    .priority-badge--low {
+        background: rgba(148, 163, 184, 0.1);
+        color: var(--color-text-muted);
+    }
+
+    .priority-badge--medium {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--color-info);
+    }
+
+    .priority-badge--high {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--color-warning);
+    }
+
+    .priority-badge--urgent {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--color-error);
+    }
+
+    /* Description */
+    .project-card__description {
+        margin: 0;
+    }
+
+    .project-card__description p {
+        font-size: var(--text-sm);
+        line-height: var(--leading-relaxed);
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    /* Progress */
+    .project-card__progress {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .project-card__progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .project-card__progress-label {
+        font-size: var(--text-xs);
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .project-card__progress-value {
+        font-size: var(--text-sm);
+        font-weight: var(--font-medium);
+        color: var(--color-text-primary);
+    }
+
+    .project-card__progress-bar {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+    }
+
+    .project-card__progress-fill {
+        height: 100%;
+        border-radius: var(--radius-full);
+        transition: width var(--transition-slow);
+        position: relative;
+    }
+
+    .project-card__progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        animation: progress-shine 2s infinite;
+    }
+
+    @keyframes progress-shine {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* Meta Information */
+    .project-card__meta {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .project-card__meta-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .project-card__meta-icon {
+        font-size: 0.875em;
+        opacity: 0.7;
+    }
+
+    .project-card__meta-text {
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+    }
+
+    /* Team Members */
+    .project-card__team {
+        display: flex;
+        align-items: center;
+    }
+
+    .project-card__team-avatars {
+        display: flex;
+        align-items: center;
+    }
+
+    .project-card__avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: var(--radius-full);
+        background: var(--gradient-primary);
+        color: white;
+        font-size: var(--text-xs);
+        font-weight: var(--font-medium);
+        border: 2px solid var(--color-surface);
+        position: relative;
+        margin-left: -0.5rem;
+    }
+
+    .project-card__avatar:first-child {
+        margin-left: 0;
+    }
+
+    .project-card__avatar img {
+        width: 100%;
+        height: 100%;
+        border-radius: var(--radius-full);
+        object-fit: cover;
+    }
+
+    .project-card__avatar--more {
+        background: var(--color-surface-elevated);
+        color: var(--color-text-secondary);
+        font-size: var(--text-xs);
+    }
+
+    /* Tags */
+    .project-card__tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-1);
+    }
+
+    .project-card__tag {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--space-1) var(--space-2);
+        background: rgba(124, 58, 237, 0.1);
+        color: var(--color-primary);
+        font-size: var(--text-xs);
+        border-radius: var(--radius-sm);
+        border: 1px solid rgba(124, 58, 237, 0.2);
+    }
+
+    /* Footer */
+    .project-card__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+    }
+
+    .project-card__actions {
+        display: flex;
+        gap: var(--space-2);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .project-card {
+            padding: var(--card-padding-sm);
+        }
+
+        .project-card__header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-2);
+        }
+
+        .project-card__badges {
+            align-items: flex-start;
+        }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        .project-card {
+            transition: none;
+        }
+
+        .project-card:hover,
+        .project-card:focus-visible {
+            transform: none;
+        }
+
+        .project-card__progress-fill::after {
+            animation: none;
+        }
+    }
+
+    /* High contrast mode */
+    @media (prefers-contrast: high) {
+        .project-card {
+            border-width: 2px;
+        }
+
+        .status-badge,
+        .priority-badge {
+            border: 1px solid currentColor;
+        }
+    }
+</style>

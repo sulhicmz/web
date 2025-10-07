@@ -1,0 +1,418 @@
+---
+import type { astroHTML } from 'astro/types';
+
+interface ModalProps extends astroHTML.JSX.HTMLAttributes<'div'> {
+    isOpen: boolean;
+    title?: string;
+    description?: string;
+    size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
+    variant?: 'default' | 'sidebar' | 'drawer';
+    position?: 'center' | 'top' | 'bottom' | 'left' | 'right';
+    closeOnBackdrop?: boolean;
+    closeOnEscape?: boolean;
+    showCloseButton?: boolean;
+    preventScroll?: boolean;
+}
+
+const {
+    isOpen,
+    title,
+    description,
+    size = 'md',
+    variant = 'default',
+    position = 'center',
+    closeOnBackdrop = true,
+    closeOnEscape = true,
+    showCloseButton = true,
+    preventScroll = true,
+    class: customClass = '',
+    ...rest
+} = Astro.props as ModalProps & Record<string, unknown>;
+
+const classes = [
+    'modal',
+    `modal--${size}`,
+    `modal--${variant}`,
+    `modal--${position}`,
+    isOpen ? 'modal--open' : '',
+    typeof customClass === 'string' ? customClass : ''
+].filter(Boolean).join(' ');
+
+// Handle escape key
+const handleKeydown = (event: KeyboardEvent) => {
+    if (closeOnEscape && event.key === 'Escape') {
+        // Dispatch custom event for parent to handle
+        window.dispatchEvent(new CustomEvent('modal:close'));
+    }
+};
+
+// Prevent scroll when modal is open
+if (isOpen && preventScroll && typeof window !== 'undefined') {
+    document.body.style.overflow = 'hidden';
+} else if (typeof window !== 'undefined') {
+    document.body.style.overflow = '';
+}
+---
+
+{isOpen && (
+    <div class={classes} role="dialog" aria-modal="true" aria-labelledby={title ? 'modal-title' : undefined} aria-describedby={description ? 'modal-description' : undefined} {...rest}>
+        <!-- Backdrop -->
+        <div
+            class="modal__backdrop"
+            onclick={closeOnBackdrop ? () => window.dispatchEvent(new CustomEvent('modal:close')) : undefined}
+        ></div>
+
+        <!-- Modal Content -->
+        <div class="modal__content">
+            <!-- Close Button -->
+            {showCloseButton && (
+                <button
+                    class="modal__close"
+                    onclick={() => window.dispatchEvent(new CustomEvent('modal:close'))}
+                    aria-label="Tutup modal"
+                >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M18 6L6 18M6 6L18 18"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                    </svg>
+                </button>
+            )}
+
+            <!-- Header -->
+            {(title || description) && (
+                <header class="modal__header">
+                    {title && (
+                        <h2 class="modal__title" id="modal-title">
+                            {title}
+                        </h2>
+                    )}
+                    {description && (
+                        <p class="modal__description" id="modal-description">
+                            {description}
+                        </p>
+                    )}
+                </header>
+            )}
+
+            <!-- Body -->
+            <div class="modal__body">
+                <slot />
+            </div>
+
+            <!-- Footer (if provided) -->
+            <footer class="modal__footer">
+                <slot name="footer" />
+            </footer>
+        </div>
+    </div>
+)}
+
+<script>
+    // Add escape key listener when modal is open
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            // Dispatch custom event for parent component to handle
+            window.dispatchEvent(new CustomEvent('modal:close'));
+        }
+    });
+
+    // Cleanup scroll prevention when component is removed
+    document.addEventListener('astro:before-swap', () => {
+        document.body.style.overflow = '';
+    });
+</script>
+
+<style>
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: var(--z-modal);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-base), visibility var(--transition-base);
+    }
+
+    .modal--open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Backdrop */
+    .modal__backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        transition: opacity var(--transition-base);
+    }
+
+    /* Content Container */
+    .modal__content {
+        position: relative;
+        background: var(--gradient-surface);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-2xl);
+        max-height: 90vh;
+        overflow: hidden;
+        transform: scale(0.95) translateY(20px);
+        transition: transform var(--transition-base);
+        z-index: 2;
+    }
+
+    .modal--open .modal__content {
+        transform: scale(1) translateY(0);
+    }
+
+    /* Close Button */
+    .modal__close {
+        position: absolute;
+        top: var(--space-4);
+        right: var(--space-4);
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-full);
+        color: var(--color-text-primary);
+        cursor: pointer;
+        transition: all var(--transition-base);
+    }
+
+    .modal__close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .modal__close:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+
+    /* Sizes */
+    .modal--sm .modal__content {
+        width: 90vw;
+        max-width: 400px;
+    }
+
+    .modal--md .modal__content {
+        width: 90vw;
+        max-width: 500px;
+    }
+
+    .modal--lg .modal__content {
+        width: 90vw;
+        max-width: 700px;
+    }
+
+    .modal--xl .modal__content {
+        width: 90vw;
+        max-width: 900px;
+    }
+
+    .modal--fullscreen .modal__content {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+    }
+
+    /* Variants */
+    .modal--sidebar {
+        align-items: stretch;
+        justify-content: flex-end;
+    }
+
+    .modal--sidebar .modal__content {
+        height: 100vh;
+        max-height: none;
+        border-radius: 0;
+        border-left: 1px solid var(--color-border);
+    }
+
+    .modal--drawer {
+        align-items: flex-end;
+        justify-content: stretch;
+    }
+
+    .modal--drawer .modal__content {
+        width: 100vw;
+        max-width: none;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+
+    /* Positions */
+    .modal--top {
+        align-items: flex-start;
+    }
+
+    .modal--top .modal__content {
+        margin-top: var(--space-4);
+    }
+
+    .modal--bottom {
+        align-items: flex-end;
+    }
+
+    .modal--bottom .modal__content {
+        margin-bottom: var(--space-4);
+    }
+
+    .modal--left {
+        justify-content: flex-start;
+    }
+
+    .modal--left .modal__content {
+        margin-left: var(--space-4);
+    }
+
+    .modal--right {
+        justify-content: flex-end;
+    }
+
+    .modal--right .modal__content {
+        margin-right: var(--space-4);
+    }
+
+    /* Header */
+    .modal__header {
+        padding: var(--space-6) var(--space-6) var(--space-4);
+        border-bottom: 1px solid var(--color-border);
+        margin-bottom: var(--space-4);
+    }
+
+    .modal__title {
+        font-size: var(--text-xl);
+        font-weight: var(--font-bold);
+        color: var(--color-text-primary);
+        margin: 0 0 var(--space-2) 0;
+    }
+
+    .modal__description {
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+        margin: 0;
+        line-height: var(--leading-relaxed);
+    }
+
+    /* Body */
+    .modal__body {
+        padding: 0 var(--space-6);
+        overflow-y: auto;
+        max-height: calc(90vh - 200px);
+    }
+
+    /* Footer */
+    .modal__footer {
+        padding: var(--space-4) var(--space-6) var(--space-6);
+        border-top: 1px solid var(--color-border);
+        margin-top: var(--space-4);
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--space-3);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .modal__content {
+            margin: var(--space-4);
+            width: calc(100vw - var(--space-8));
+        }
+
+        .modal--sidebar .modal__content,
+        .modal--drawer .modal__content {
+            margin: 0;
+            width: 100vw;
+        }
+
+        .modal__header {
+            padding: var(--space-4) var(--space-4) var(--space-3);
+        }
+
+        .modal__body {
+            padding: 0 var(--space-4);
+            max-height: calc(90vh - 150px);
+        }
+
+        .modal__footer {
+            padding: var(--space-3) var(--space-4) var(--space-4);
+            flex-direction: column-reverse;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .modal__content {
+            margin: var(--space-2);
+            width: calc(100vw - var(--space-4));
+        }
+
+        .modal__title {
+            font-size: var(--text-lg);
+        }
+
+        .modal__description {
+            font-size: var(--text-xs);
+        }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        .modal {
+            transition: none;
+        }
+
+        .modal__content {
+            transition: none;
+        }
+
+        .modal__backdrop {
+            transition: none;
+        }
+
+        .modal__close {
+            transition: none;
+        }
+
+        .modal__close:hover {
+            transform: none;
+        }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+        .modal__content {
+            border-width: 2px;
+        }
+
+        .modal__backdrop {
+            background: rgba(0, 0, 0, 0.8);
+        }
+    }
+
+    /* Focus Trap (visual indicator) */
+    .modal:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 4px;
+    }
+</style>

@@ -1,0 +1,333 @@
+---
+import type { astroHTML } from 'astro/types';
+
+interface FormInputProps extends astroHTML.JSX.InputHTMLAttributes {
+    label?: string;
+    description?: string;
+    error?: string;
+    success?: boolean;
+    icon?: string;
+    variant?: 'default' | 'floating' | 'underline';
+    size?: 'sm' | 'md' | 'lg';
+    fullWidth?: boolean;
+}
+
+const {
+    label,
+    description,
+    error,
+    success = false,
+    icon,
+    variant = 'default',
+    size = 'md',
+    fullWidth = true,
+    class: customClass = '',
+    id,
+    required,
+    disabled,
+    ...rest
+} = Astro.props as FormInputProps & Record<string, unknown>;
+
+const classes = [
+    'form-input',
+    `form-input--${variant}`,
+    `form-input--${size}`,
+    fullWidth ? 'form-input--full-width' : '',
+    error ? 'form-input--error' : '',
+    success ? 'form-input--success' : '',
+    disabled ? 'form-input--disabled' : '',
+    typeof customClass === 'string' ? customClass : ''
+].filter(Boolean).join(' ');
+
+// Generate unique ID jika tidak disediakan
+const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+const descriptionId = description ? `${inputId}-description` : undefined;
+const errorId = error ? `${inputId}-error` : undefined;
+
+// Icon mapping untuk berbagai jenis input
+const getIcon = (iconName?: string): string => {
+    const icons: Record<string, string> = {
+        'user': '👤',
+        'email': '📧',
+        'password': '🔒',
+        'phone': '📱',
+        'company': '🏢',
+        'website': '🌐',
+        'search': '🔍',
+        'calendar': '📅',
+        'location': '📍',
+        'default': ''
+    };
+    return icons[iconName || 'default'] || '';
+};
+---
+
+<div class={`form-input-wrapper ${fullWidth ? 'form-input-wrapper--full-width' : ''}`}>
+    {label && (
+        <label class="form-input__label" for={inputId}>
+            {label}
+            {required && <span class="form-input__required" aria-label="required">*</span>}
+        </label>
+    )}
+
+    <div class="form-input__container">
+        {icon && (
+            <div class="form-input__icon-wrapper">
+                <span class="form-input__icon" aria-hidden="true">{getIcon(icon)}</span>
+            </div>
+        )}
+
+        <input
+            {...rest}
+            class={classes}
+            id={inputId}
+            aria-describedby={[descriptionId, errorId].filter(Boolean).join(' ') || undefined}
+            aria-invalid={error ? 'true' : undefined}
+            disabled={disabled}
+        />
+
+        {/* Success/Error icons */}
+        {error && (
+            <div class="form-input__status-icon form-input__status-icon--error" aria-hidden="true">
+                ⚠️
+            </div>
+        )}
+        {success && !error && (
+            <div class="form-input__status-icon form-input__status-icon--success" aria-hidden="true">
+                ✅
+            </div>
+        )}
+    </div>
+
+    {description && (
+        <div class="form-input__description" id={descriptionId}>
+            {description}
+        </div>
+    )}
+
+    {error && (
+        <div class="form-input__error" id={errorId} role="alert">
+            {error}
+        </div>
+    )}
+</div>
+
+<style>
+    .form-input-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .form-input-wrapper--full-width {
+        width: 100%;
+    }
+
+    .form-input__label {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        font-size: var(--text-sm);
+        font-weight: var(--font-medium);
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-1);
+    }
+
+    .form-input__required {
+        color: var(--color-error);
+        font-weight: var(--font-bold);
+    }
+
+    .form-input__container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-input__icon-wrapper {
+        position: absolute;
+        left: var(--space-3);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-secondary);
+        pointer-events: none;
+    }
+
+    .form-input {
+        width: 100%;
+        font-family: var(--font-primary);
+        font-size: var(--text-base);
+        line-height: var(--leading-normal);
+        color: var(--color-text-primary);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-3) var(--space-4);
+        transition: all var(--transition-base);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Icon padding adjustment */
+    .form-input__container:has(.form-input__icon-wrapper) .form-input {
+        padding-left: calc(var(--space-10) + var(--space-2));
+    }
+
+    /* Status icon positioning */
+    .form-input__status-icon {
+        position: absolute;
+        right: var(--space-3);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    .form-input__container:has(.form-input__status-icon) .form-input {
+        padding-right: calc(var(--space-8) + var(--space-2));
+    }
+
+    /* Variants */
+    .form-input--floating {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid var(--color-border);
+        border-radius: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .form-input--underline {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid var(--color-border);
+        border-radius: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Sizes */
+    .form-input--sm {
+        font-size: var(--text-sm);
+        padding: var(--space-2) var(--space-3);
+    }
+
+    .form-input--sm.form-input__container:has(.form-input__icon-wrapper) .form-input {
+        padding-left: calc(var(--space-8) + var(--space-1));
+    }
+
+    .form-input--lg {
+        font-size: var(--text-lg);
+        padding: var(--space-4) var(--space-5);
+    }
+
+    .form-input--lg.form-input__container:has(.form-input__icon-wrapper) .form-input {
+        padding-left: calc(var(--space-12) + var(--space-2));
+    }
+
+    /* States */
+    .form-input:hover {
+        border-color: rgba(124, 58, 237, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: var(--form-focus-ring);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .form-input--error {
+        border-color: var(--color-error);
+        background: rgba(239, 68, 68, 0.05);
+    }
+
+    .form-input--error:focus {
+        border-color: var(--color-error);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    .form-input--success {
+        border-color: var(--color-success);
+        background: rgba(16, 185, 129, 0.05);
+    }
+
+    .form-input--success:focus {
+        border-color: var(--color-success);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .form-input--disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .form-input--disabled:hover,
+    .form-input--disabled:focus {
+        border-color: var(--color-border);
+        background: rgba(255, 255, 255, 0.02);
+        box-shadow: none;
+    }
+
+    /* Helper Text */
+    .form-input__description {
+        font-size: var(--text-xs);
+        color: var(--color-text-secondary);
+        line-height: var(--leading-relaxed);
+        margin-top: var(--space-1);
+    }
+
+    .form-input__error {
+        font-size: var(--text-xs);
+        color: var(--color-error);
+        line-height: var(--leading-relaxed);
+        margin-top: var(--space-1);
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-1);
+    }
+
+    .form-input__error::before {
+        content: '⚠️';
+        font-size: 0.875em;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-input {
+            font-size: 16px; /* Prevent zoom on iOS */
+        }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        .form-input {
+            transition: none;
+        }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+        .form-input {
+            border-width: 2px;
+        }
+
+        .form-input--error,
+        .form-input--success {
+            border-width: 3px;
+        }
+    }
+
+    /* Dark Mode Specific Adjustments */
+    @media (prefers-color-scheme: dark) {
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+        }
+    }
+</style>

@@ -1,0 +1,402 @@
+---
+import type { astroHTML } from 'astro/types';
+
+type ToastType = 'success' | 'error' | 'warning' | 'info';
+
+interface ToastProps extends astroHTML.JSX.HTMLAttributes<'div'> {
+    type?: ToastType;
+    title?: string;
+    message: string;
+    duration?: number;
+    showCloseButton?: boolean;
+    position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
+    isVisible?: boolean;
+}
+
+const {
+    type = 'info',
+    title,
+    message,
+    duration = 5000,
+    showCloseButton = true,
+    position = 'top-right',
+    isVisible = true,
+    class: customClass = '',
+    ...rest
+} = Astro.props as ToastProps & Record<string, unknown>;
+
+const classes = [
+    'toast',
+    `toast--${type}`,
+    `toast--${position}`,
+    isVisible ? 'toast--visible' : '',
+    typeof customClass === 'string' ? customClass : ''
+].filter(Boolean).join(' ');
+
+// Icon mapping untuk berbagai tipe toast
+const getIcon = (type: ToastType): string => {
+    const icons: Record<ToastType, string> = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+    };
+    return icons[type];
+};
+
+// Color mapping untuk berbagai tipe toast
+const getColors = (type: ToastType) => {
+    const colors: Record<ToastType, { bg: string; border: string; icon: string }> = {
+        success: {
+            bg: 'rgba(16, 185, 129, 0.1)',
+            border: 'rgba(16, 185, 129, 0.3)',
+            icon: 'var(--color-success)'
+        },
+        error: {
+            bg: 'rgba(239, 68, 68, 0.1)',
+            border: 'rgba(239, 68, 68, 0.3)',
+            icon: 'var(--color-error)'
+        },
+        warning: {
+            bg: 'rgba(245, 158, 11, 0.1)',
+            border: 'rgba(245, 158, 11, 0.3)',
+            icon: 'var(--color-warning)'
+        },
+        info: {
+            bg: 'rgba(59, 130, 246, 0.1)',
+            border: 'rgba(59, 130, 246, 0.3)',
+            icon: 'var(--color-info)'
+        }
+    };
+    return colors[type];
+};
+---
+
+{isVisible && (
+    <div
+        class={classes}
+        style={`--toast-duration: ${duration}ms`}
+        role="alert"
+        aria-live="polite"
+        {...rest}
+    >
+        <div class="toast__icon" aria-hidden="true">
+            {getIcon(type)}
+        </div>
+
+        <div class="toast__content">
+            {title && (
+                <div class="toast__title">
+                    {title}
+                </div>
+            )}
+            <div class="toast__message">
+                {message}
+            </div>
+        </div>
+
+        {showCloseButton && (
+            <button
+                class="toast__close"
+                onclick={`this.parentElement.style.display = 'none'`}
+                aria-label="Tutup notifikasi"
+            >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                        d="M12 4L4 12M4 4L12 12"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+            </button>
+        )}
+
+        <!-- Progress bar untuk auto-dismiss -->
+        <div class="toast__progress" style={`animation-duration: ${duration}ms`}></div>
+    </div>
+)}
+
+<style>
+    .toast {
+        position: fixed;
+        z-index: var(--z-toast);
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        padding: var(--space-4);
+        background: var(--gradient-surface);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        max-width: 400px;
+        min-width: 300px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all var(--transition-base);
+    }
+
+    .toast--visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Positions */
+    .toast--top-left {
+        top: var(--space-4);
+        left: var(--space-4);
+    }
+
+    .toast--top-right {
+        top: var(--space-4);
+        right: var(--space-4);
+    }
+
+    .toast--bottom-left {
+        bottom: var(--space-4);
+        left: var(--space-4);
+    }
+
+    .toast--bottom-right {
+        bottom: var(--space-4);
+        right: var(--space-4);
+    }
+
+    .toast--top-center {
+        top: var(--space-4);
+        left: 50%;
+        transform: translateX(-50%) translateX(100%);
+    }
+
+    .toast--top-center.toast--visible {
+        transform: translateX(-50%) translateX(0);
+    }
+
+    .toast--bottom-center {
+        bottom: var(--space-4);
+        left: 50%;
+        transform: translateX(-50%) translateX(100%);
+    }
+
+    .toast--bottom-center.toast--visible {
+        transform: translateX(-50%) translateX(0);
+    }
+
+    /* Toast Icon */
+    .toast__icon {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+
+    /* Content */
+    .toast__content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+
+    .toast__title {
+        font-size: var(--text-sm);
+        font-weight: var(--font-semibold);
+        color: var(--color-text-primary);
+        line-height: var(--leading-tight);
+    }
+
+    .toast__message {
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+        line-height: var(--leading-relaxed);
+    }
+
+    /* Close Button */
+    .toast__close {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: transparent;
+        border: none;
+        border-radius: var(--radius-sm);
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        margin-left: var(--space-2);
+    }
+
+    .toast__close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--color-text-primary);
+    }
+
+    .toast__close:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+
+    /* Progress Bar */
+    .toast__progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--color-primary);
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        animation: toast-progress var(--toast-duration) linear forwards;
+        transform-origin: left;
+    }
+
+    @keyframes toast-progress {
+        from {
+            transform: scaleX(1);
+        }
+        to {
+            transform: scaleX(0);
+        }
+    }
+
+    /* Types dengan dynamic colors */
+    .toast--success {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .toast--success .toast__icon {
+        color: var(--color-success);
+    }
+
+    .toast--success .toast__progress {
+        background: var(--color-success);
+    }
+
+    .toast--error {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .toast--error .toast__icon {
+        color: var(--color-error);
+    }
+
+    .toast--error .toast__progress {
+        background: var(--color-error);
+    }
+
+    .toast--warning {
+        background: rgba(245, 158, 11, 0.1);
+        border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .toast--warning .toast__icon {
+        color: var(--color-warning);
+    }
+
+    .toast--warning .toast__progress {
+        background: var(--color-warning);
+    }
+
+    .toast--info {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .toast--info .toast__icon {
+        color: var(--color-info);
+    }
+
+    .toast--info .toast__progress {
+        background: var(--color-info);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .toast {
+            max-width: calc(100vw - var(--space-8));
+            min-width: 280px;
+            margin: 0 var(--space-4);
+        }
+
+        .toast--top-center,
+        .toast--bottom-center {
+            left: var(--space-4);
+            right: var(--space-4);
+            transform: translateX(0) translateY(100%);
+        }
+
+        .toast--top-center.toast--visible,
+        .toast--bottom-center.toast--visible {
+            transform: translateX(0) translateY(0);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .toast {
+            padding: var(--space-3);
+            gap: var(--space-2);
+        }
+
+        .toast__title {
+            font-size: var(--text-xs);
+        }
+
+        .toast__message {
+            font-size: var(--text-xs);
+        }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        .toast {
+            transition: none;
+        }
+
+        .toast__close {
+            transition: none;
+        }
+
+        .toast__progress {
+            animation: none;
+        }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+        .toast {
+            border-width: 2px;
+        }
+
+        .toast__progress {
+            height: 4px;
+        }
+    }
+
+    /* Focus Styles for Accessibility */
+    .toast:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+</style>
+
+<script>
+    // Auto-dismiss toast after duration
+    document.addEventListener('DOMContentLoaded', () => {
+        const toasts = document.querySelectorAll('.toast--visible');
+
+        toasts.forEach((toast) => {
+            const duration = toast.style.getPropertyValue('--toast-duration') || '5000ms';
+            const durationMs = parseInt(duration);
+
+            if (durationMs > 0) {
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, durationMs);
+            }
+        });
+    });
+</script>

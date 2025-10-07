@@ -1,0 +1,765 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import FormInput from '../../components/ui/FormInput.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
+import Modal from '../../components/ui/Modal.astro';
+import Toast from '../../components/ui/Toast.astro';
+
+export const prerender = false;
+
+// Form steps
+const steps = [
+    { id: 'basic', title: 'Informasi Dasar', description: 'Detail proyek dan klien' },
+    { id: 'team', title: 'Tim & Budget', description: 'Anggota tim dan anggaran' },
+    { id: 'timeline', title: 'Timeline', description: 'Jadwal dan milestones' },
+    { id: 'review', title: 'Review', description: 'Konfirmasi dan submit' }
+];
+
+// Mock data untuk form options
+const projectTypes = [
+    { value: 'website', label: 'Website Development' },
+    { value: 'mobile', label: 'Mobile App' },
+    { value: 'ecommerce', label: 'E-commerce Platform' },
+    { value: 'dashboard', label: 'Dashboard/Analytics' },
+    { value: 'maintenance', label: 'Maintenance & Support' }
+];
+
+const priorities = [
+    { value: 'low', label: 'Rendah' },
+    { value: 'medium', label: 'Sedang' },
+    { value: 'high', label: 'Tinggi' },
+    { value: 'urgent', label: 'Urgent' }
+];
+
+const teamMembers = [
+    { value: 'ahmad', label: 'Ahmad - Frontend Developer' },
+    { value: 'sari', label: 'Sari - UI/UX Designer' },
+    { value: 'budi', label: 'Budi - Backend Developer' },
+    { value: 'rina', label: 'Rina - Mobile Developer' },
+    { value: 'eko', label: 'Eko - Fullstack Developer' }
+];
+---
+
+<PortalLayout title="Buat Proyek Baru" description="Form wizard untuk membuat proyek baru dengan informasi lengkap.">
+    <div class="project-creation">
+        <div class="project-header">
+            <h1>Buat Proyek Baru</h1>
+            <p class="project-subtitle">Lengkapi informasi berikut untuk memulai proyek baru</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-steps">
+                {steps.map((step, index) => (
+                    <div class={`progress-step ${index === 0 ? 'progress-step--active' : ''}`}>
+                        <div class="progress-step__number">{index + 1}</div>
+                        <div class="progress-step__content">
+                            <div class="progress-step__title">{step.title}</div>
+                            <div class="progress-step__description">{step.description}</div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <div class="progress-bar">
+                <div class="progress-bar__fill" style="width: 25%"></div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <!-- Step 1: Basic Information -->
+            <section class="form-step form-step--active" data-step="basic">
+                <h2>Informasi Dasar Proyek</h2>
+
+                <div class="form-grid">
+                    <FormInput
+                        label="Nama Proyek"
+                        type="text"
+                        name="projectName"
+                        placeholder="Contoh: Website E-commerce TokoBagus"
+                        required
+                        fullWidth
+                    />
+
+                    <FormSelect
+                        label="Tipe Proyek"
+                        name="projectType"
+                        options={projectTypes}
+                        placeholder="Pilih tipe proyek"
+                        required
+                        fullWidth
+                    />
+
+                    <FormInput
+                        label="Nama Klien"
+                        type="text"
+                        name="clientName"
+                        placeholder="Nama perusahaan atau individu"
+                        required
+                        fullWidth
+                    />
+
+                    <FormInput
+                        label="Email Klien"
+                        type="email"
+                        name="clientEmail"
+                        placeholder="email@klien.com"
+                        required
+                        fullWidth
+                    />
+
+                    <FormInput
+                        label="Deskripsi Proyek"
+                        type="textarea"
+                        name="projectDescription"
+                        placeholder="Jelaskan scope, objectives, dan deliverables proyek..."
+                        required
+                        fullWidth
+                    />
+                </div>
+            </section>
+
+            <!-- Step 2: Team & Budget -->
+            <section class="form-step" data-step="team">
+                <h2>Tim & Anggaran</h2>
+
+                <div class="form-grid">
+                    <FormSelect
+                        label="Prioritas Proyek"
+                        name="priority"
+                        options={priorities}
+                        placeholder="Pilih prioritas"
+                        required
+                        fullWidth
+                    />
+
+                    <FormInput
+                        label="Anggaran Proyek"
+                        type="number"
+                        name="budget"
+                        placeholder="50000000"
+                        description="Dalam Rupiah"
+                        required
+                        fullWidth
+                    />
+
+                    <FormSelect
+                        label="Anggota Tim"
+                        name="teamMembers"
+                        options={teamMembers}
+                        placeholder="Pilih anggota tim"
+                        multiple
+                        fullWidth
+                    />
+
+                    <FormInput
+                        label="Tech Stack"
+                        type="text"
+                        name="techStack"
+                        placeholder="React, Node.js, PostgreSQL, dll"
+                        description="Teknologi yang akan digunakan"
+                        fullWidth
+                    />
+                </div>
+            </section>
+
+            <!-- Step 3: Timeline -->
+            <section class="form-step" data-step="timeline">
+                <h2>Jadwal & Timeline</h2>
+
+                <div class="form-grid">
+                    <FormInput
+                        label="Tanggal Mulai"
+                        type="date"
+                        name="startDate"
+                        required
+                        fullWidth
+                    />
+
+                    <FormInput
+                        label="Deadline Proyek"
+                        type="date"
+                        name="deadline"
+                        required
+                        fullWidth
+                    />
+
+                    <FormInput
+                        label="Milestones"
+                        type="textarea"
+                        name="milestones"
+                        placeholder="Sprint 1: Setup & Planning&#10;Sprint 2: Frontend Development&#10;Sprint 3: Backend Integration&#10;Sprint 4: Testing & Deployment"
+                        description="Timeline dan milestones utama"
+                        fullWidth
+                    />
+                </div>
+            </section>
+
+            <!-- Step 4: Review -->
+            <section class="form-step" data-step="review">
+                <h2>Review & Konfirmasi</h2>
+
+                <div class="review-summary">
+                    <div class="review-section">
+                        <h3>Informasi Proyek</h3>
+                        <div class="review-grid">
+                            <div class="review-item">
+                                <label>Nama Proyek:</label>
+                                <span data-field="projectName">Belum diisi</span>
+                            </div>
+                            <div class="review-item">
+                                <label>Tipe Proyek:</label>
+                                <span data-field="projectType">Belum diisi</span>
+                            </div>
+                            <div class="review-item">
+                                <label>Klien:</label>
+                                <span data-field="clientName">Belum diisi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review-section">
+                        <h3>Tim & Budget</h3>
+                        <div class="review-grid">
+                            <div class="review-item">
+                                <label>Anggaran:</label>
+                                <span data-field="budget">Belum diisi</span>
+                            </div>
+                            <div class="review-item">
+                                <label>Tim:</label>
+                                <span data-field="teamMembers">Belum diisi</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Form Navigation -->
+        <div class="form-navigation">
+            <button type="button" class="btn btn--secondary" id="prevBtn" disabled>
+                ← Sebelumnya
+            </button>
+
+            <div class="form-progress">
+                <span>Step <span id="currentStep">1</span> dari <span id="totalSteps">{steps.length}</span></span>
+            </div>
+
+            <button type="button" class="btn btn--primary" id="nextBtn">
+                Selanjutnya →
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <Modal
+        isOpen={false}
+        title="Proyek Berhasil Dibuat!"
+        description="Proyek baru telah berhasil dibuat dan tim telah diberitahu"
+        size="md"
+        id="successModal"
+    >
+        <div class="success-content">
+            <div class="success-icon" aria-hidden="true">🎉</div>
+            <p>Proyek Anda sekarang aktif dan dapat diakses di dashboard. Tim akan segera memulai pekerjaan sesuai timeline yang telah ditetapkan.</p>
+        </div>
+
+        <div slot="footer" class="modal-actions">
+            <a href="/portal/dashboard" class="btn btn--primary">Lihat Dashboard</a>
+            <a href="/portal/projects" class="btn btn--secondary">Lihat Semua Proyek</a>
+        </div>
+    </Modal>
+</PortalLayout>
+
+<style>
+    .project-creation {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: var(--space-6);
+    }
+
+    .project-header {
+        text-align: center;
+        margin-bottom: var(--space-8);
+    }
+
+    .project-header h1 {
+        font-size: var(--text-3xl);
+        font-weight: var(--font-bold);
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: var(--space-3);
+    }
+
+    .project-subtitle {
+        font-size: var(--text-lg);
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    /* Progress Indicator */
+    .progress-indicator {
+        margin-bottom: var(--space-8);
+    }
+
+    .progress-steps {
+        display: flex;
+        justify-content: between;
+        margin-bottom: var(--space-4);
+        position: relative;
+    }
+
+    .progress-step {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        flex: 1;
+        position: relative;
+    }
+
+    .progress-step::after {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 24px;
+        right: -50%;
+        height: 2px;
+        background: var(--color-border);
+        z-index: 1;
+    }
+
+    .progress-step:last-child::after {
+        display: none;
+    }
+
+    .progress-step--active::after {
+        background: var(--gradient-primary);
+    }
+
+    .progress-step__number {
+        width: 2rem;
+        height: 2rem;
+        border-radius: var(--radius-full);
+        background: var(--color-border);
+        color: var(--color-text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--text-sm);
+        font-weight: var(--font-semibold);
+        position: relative;
+        z-index: 2;
+    }
+
+    .progress-step--active .progress-step__number {
+        background: var(--gradient-primary);
+        color: white;
+    }
+
+    .progress-step__content {
+        flex: 1;
+    }
+
+    .progress-step__title {
+        font-size: var(--text-sm);
+        font-weight: var(--font-semibold);
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-1);
+    }
+
+    .progress-step__description {
+        font-size: var(--text-xs);
+        color: var(--color-text-secondary);
+    }
+
+    .progress-bar {
+        height: 2px;
+        background: var(--color-border);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+    }
+
+    .progress-bar__fill {
+        height: 100%;
+        background: var(--gradient-primary);
+        transition: width var(--transition-slow);
+        border-radius: var(--radius-full);
+    }
+
+    /* Form Container */
+    .form-container {
+        background: var(--gradient-surface);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        margin-bottom: var(--space-8);
+    }
+
+    .form-step {
+        display: none;
+    }
+
+    .form-step--active {
+        display: block;
+    }
+
+    .form-step h2 {
+        font-size: var(--text-2xl);
+        font-weight: var(--font-bold);
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-6);
+    }
+
+    .form-grid {
+        display: grid;
+        gap: var(--space-6);
+    }
+
+    /* Review Summary */
+    .review-summary {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+    }
+
+    .review-section h3 {
+        font-size: var(--text-lg);
+        font-weight: var(--font-semibold);
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-2);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .review-grid {
+        display: grid;
+        gap: var(--space-4);
+    }
+
+    .review-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-3);
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: var(--radius-md);
+    }
+
+    .review-item label {
+        font-size: var(--text-sm);
+        font-weight: var(--font-medium);
+        color: var(--color-text-secondary);
+    }
+
+    .review-item span {
+        font-size: var(--text-sm);
+        color: var(--color-text-primary);
+        font-weight: var(--font-semibold);
+    }
+
+    /* Success Content */
+    .success-content {
+        text-align: center;
+    }
+
+    .success-icon {
+        font-size: 4rem;
+        margin-bottom: var(--space-4);
+    }
+
+    /* Form Navigation */
+    .form-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-6);
+        background: var(--gradient-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+    }
+
+    .form-progress {
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--radius-full);
+        font-size: var(--text-base);
+        font-weight: var(--font-semibold);
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all var(--transition-base);
+    }
+
+    .btn--primary {
+        background: var(--gradient-primary);
+        color: white;
+    }
+
+    .btn--primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-gradient);
+        background: linear-gradient(135deg, #6D28D9 0%, #1E40AF 100%);
+    }
+
+    .btn--secondary {
+        background: transparent;
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
+
+    .btn--secondary:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--color-text-primary);
+        border-color: var(--color-primary);
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    /* Modal Actions */
+    .modal-actions {
+        display: flex;
+        gap: var(--space-3);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .project-creation {
+            padding: var(--space-4);
+        }
+
+        .progress-steps {
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .progress-step::after {
+            display: none;
+        }
+
+        .form-container {
+            padding: var(--space-6);
+        }
+
+        .form-navigation {
+            flex-direction: column;
+            gap: var(--space-3);
+            padding: var(--space-4);
+        }
+
+        .form-navigation .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modal-actions {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .form-container {
+            padding: var(--space-4);
+        }
+
+        .form-step h2 {
+            font-size: var(--text-xl);
+        }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        .btn {
+            transition: none;
+        }
+
+        .btn:hover {
+            transform: none;
+        }
+
+        .progress-bar__fill {
+            transition: none;
+        }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+        .form-container {
+            border-width: 2px;
+        }
+
+        .progress-step__number {
+            border: 2px solid var(--color-text-primary);
+        }
+    }
+
+    /* Focus Styles for Accessibility */
+    .btn:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+</style>
+
+<script>
+    class ProjectCreationWizard {
+        private currentStep = 0;
+        private steps = ['basic', 'team', 'timeline', 'review'];
+        private formData: Record<string, any> = {};
+
+        constructor() {
+            this.init();
+        }
+
+        init() {
+            this.bindEvents();
+            this.updateProgress();
+        }
+
+        bindEvents() {
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+
+            nextBtn?.addEventListener('click', () => this.nextStep());
+            prevBtn?.addEventListener('click', () => this.prevStep());
+
+            // Form validation on input change
+            document.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('change', () => this.validateCurrentStep());
+            });
+        }
+
+        nextStep() {
+            if (this.validateCurrentStep()) {
+                if (this.currentStep < this.steps.length - 1) {
+                    this.currentStep++;
+                    this.updateProgress();
+                } else {
+                    this.submitForm();
+                }
+            }
+        }
+
+        prevStep() {
+            if (this.currentStep > 0) {
+                this.currentStep--;
+                this.updateProgress();
+            }
+        }
+
+        updateProgress() {
+            // Update step indicators
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.toggle('progress-step--active', index === this.currentStep);
+            });
+
+            // Update progress bar
+            const progress = ((this.currentStep + 1) / this.steps.length) * 100;
+            document.querySelector('.progress-bar__fill')?.setAttribute('style', `width: ${progress}%`);
+
+            // Show current form step
+            document.querySelectorAll('.form-step').forEach((step, index) => {
+                step.classList.toggle('form-step--active', index === this.currentStep);
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (prevBtn) prevBtn.disabled = this.currentStep === 0;
+            if (nextBtn) {
+                nextBtn.textContent = this.currentStep === this.steps.length - 1 ? 'Buat Proyek' : 'Selanjutnya →';
+            }
+
+            // Update step counter
+            document.getElementById('currentStep')!.textContent = (this.currentStep + 1).toString();
+
+            // Update review summary if on review step
+            if (this.currentStep === this.steps.length - 1) {
+                this.updateReviewSummary();
+            }
+        }
+
+        validateCurrentStep(): boolean {
+            const currentStepElement = document.querySelector(`[data-step="${this.steps[this.currentStep]}"]`);
+            const requiredFields = currentStepElement?.querySelectorAll('[required]') || [];
+
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                const input = field as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+                if (!input.value.trim()) {
+                    input.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    input.removeAttribute('aria-invalid');
+                }
+            });
+
+            return isValid;
+        }
+
+        updateReviewSummary() {
+            const form = document.querySelector('.form-step--active');
+            if (!form) return;
+
+            const formData = new FormData(form.querySelector('form') || form);
+
+            // Update review fields
+            document.querySelector('[data-field="projectName"]')!.textContent = formData.get('projectName') || 'Belum diisi';
+            document.querySelector('[data-field="projectType"]')!.textContent = formData.get('projectType') || 'Belum diisi';
+            document.querySelector('[data-field="clientName"]')!.textContent = formData.get('clientName') || 'Belum diisi';
+            document.querySelector('[data-field="budget"]')!.textContent = formData.get('budget') || 'Belum diisi';
+            document.querySelector('[data-field="teamMembers"]')!.textContent = formData.get('teamMembers') || 'Belum diisi';
+        }
+
+        async submitForm() {
+            try {
+                // Show loading state
+                const nextBtn = document.getElementById('nextBtn');
+                if (nextBtn) {
+                    nextBtn.textContent = 'Membuat Proyek...';
+                    nextBtn.disabled = true;
+                }
+
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Show success modal
+                const modal = document.getElementById('successModal') as any;
+                if (modal) {
+                    modal.setAttribute('is-open', 'true');
+                }
+
+            } catch (error) {
+                console.error('Error creating project:', error);
+                alert('Terjadi kesalahan saat membuat proyek. Silakan coba lagi.');
+            } finally {
+                // Reset button state
+                const nextBtn = document.getElementById('nextBtn');
+                if (nextBtn) {
+                    nextBtn.textContent = 'Buat Proyek';
+                    nextBtn.disabled = false;
+                }
+            }
+        }
+    }
+
+    // Initialize wizard when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        new ProjectCreationWizard();
+    });
+</script>
