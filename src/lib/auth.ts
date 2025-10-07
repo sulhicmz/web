@@ -311,7 +311,7 @@ export const rbac = {
    */
   isAdmin(user: AuthUser | null): boolean {
     const role = user?.profile?.role;
-    return role === 'admin' || role === 'owner' || role === 'staff';
+    return role === 'admin' || role === 'owner' || role === 'staff' || role === 'manager';
   },
 
   /**

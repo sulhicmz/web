@@ -21,6 +21,7 @@ export interface UserProfile extends BaseEntity {
   company?: string;
   phone?: string;
   is_active: boolean;
+  client_id?: string;
 }
 
 export interface AuthUser extends User {

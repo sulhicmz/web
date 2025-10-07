@@ -123,29 +123,29 @@ function getRouteConfig(pathname: string) {
 }
 
 async function authenticateUser(cookies: any) {
-   const accessToken = cookies.get('sb-access-token');
+    const accessToken = cookies.get('sb-access-token');
 
-   if (!accessToken) {
-     return { success: false };
-   }
+    if (!accessToken) {
+      return { success: false, user: null, role: null, permissions: [] };
+    }
 
-   try {
-     // For now, we'll implement a simpler authentication check
-     // TODO: Implement proper server-side user retrieval
-     if (!accessToken || accessToken.value === '') {
-       return { success: false };
-     }
+    try {
+      // For now, we'll implement a simpler authentication check
+      // TODO: Implement proper server-side user retrieval
+      if (!accessToken || accessToken.value === '') {
+        return { success: false, user: null, role: null, permissions: [] };
+      }
 
-     // Clean up invalid tokens
-     cookies.delete('sb-access-token', { path: '/' });
-     cookies.delete('sb-refresh-token', { path: '/' });
-     return { success: false };
+      // Clean up invalid tokens
+      cookies.delete('sb-access-token', { path: '/' });
+      cookies.delete('sb-refresh-token', { path: '/' });
+      return { success: false, user: null, role: null, permissions: [] };
 
-   } catch (error) {
-     console.error('Authentication error:', error);
-     return { success: false };
-   }
- }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      return { success: false, user: null, role: null, permissions: [] };
+    }
+  }
 
 function logRequest(request: Request, locals: AuthenticatedLocals): void {
   const timestamp = new Date().toISOString();
