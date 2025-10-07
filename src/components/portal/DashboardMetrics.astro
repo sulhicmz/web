@@ -1,0 +1,435 @@
+---
+// ==========================================================================
+// AstroPro Digital - Dashboard Metrics Component
+// Metrics cards untuk portal dashboard dengan real-time data
+// ==========================================================================
+
+import type { DashboardStats } from '../../types';
+
+interface Props {
+  stats?: DashboardStats;
+  loading?: boolean;
+  class?: string;
+}
+
+const {
+  stats = {
+    total_projects: 0,
+    active_projects: 0,
+    completed_projects: 0,
+    total_revenue: 0,
+    pending_payments: 0,
+    open_tickets: 0,
+    client_satisfaction: 0,
+  },
+  loading = false,
+  class: className = ""
+} = Astro.props;
+
+// Format currency untuk Indonesian Rupiah
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
+// Calculate percentage changes (mock data untuk demo)
+const getChangeData = (current: number, previous: number) => {
+  if (previous === 0) return { value: 0, type: 'neutral' as const };
+  const change = ((current - previous) / previous) * 100;
+  return {
+    value: Math.abs(change),
+    type: change > 0 ? 'increase' as const : change < 0 ? 'decrease' as const : 'neutral' as const
+  };
+};
+
+// Mock previous data untuk demo
+const previousStats = {
+  total_projects: Math.floor(stats.total_projects * 0.8),
+  active_projects: Math.floor(stats.active_projects * 0.9),
+  completed_projects: Math.floor(stats.completed_projects * 0.7),
+  total_revenue: Math.floor(stats.total_revenue * 0.85),
+  pending_payments: Math.floor(stats.pending_payments * 1.2),
+  open_tickets: Math.floor(stats.open_tickets * 0.6),
+  client_satisfaction: stats.client_satisfaction - 0.2,
+};
+
+const metrics = [
+  {
+    id: 'total_projects',
+    title: 'Total Proyek',
+    value: stats.total_projects,
+    icon: '📁',
+    color: 'primary',
+    change: getChangeData(stats.total_projects, previousStats.total_projects),
+    href: '/portal/projects'
+  },
+  {
+    id: 'active_projects',
+    title: 'Proyek Aktif',
+    value: stats.active_projects,
+    icon: '🚀',
+    color: 'info',
+    change: getChangeData(stats.active_projects, previousStats.active_projects),
+    href: '/portal/projects?status=active'
+  },
+  {
+    id: 'completed_projects',
+    title: 'Proyek Selesai',
+    value: stats.completed_projects,
+    icon: '✅',
+    color: 'success',
+    change: getChangeData(stats.completed_projects, previousStats.completed_projects),
+    href: '/portal/projects?status=completed'
+  },
+  {
+    id: 'total_revenue',
+    title: 'Pendapatan Bulan Ini',
+    value: formatCurrency(stats.total_revenue),
+    icon: '💰',
+    color: 'warning',
+    change: getChangeData(stats.total_revenue, previousStats.total_revenue),
+    href: '/portal/billing'
+  },
+  {
+    id: 'pending_payments',
+    title: 'Pembayaran Pending',
+    value: formatCurrency(stats.pending_payments),
+    icon: '⏳',
+    color: 'error',
+    change: getChangeData(stats.pending_payments, previousStats.pending_payments),
+    href: '/portal/billing?status=pending'
+  },
+  {
+    id: 'open_tickets',
+    title: 'Tiket Terbuka',
+    value: stats.open_tickets,
+    icon: '🎫',
+    color: 'secondary',
+    change: getChangeData(stats.open_tickets, previousStats.open_tickets),
+    href: '/portal/support'
+  }
+];
+---
+
+<div class={`dashboard-metrics ${className}`}>
+  <div class="metrics-grid">
+    {metrics.map((metric) => (
+      <a href={metric.href} class="metric-card" data-loading={loading}>
+        <div class="metric-card__header">
+          <div class="metric-card__icon" data-color={metric.color}>
+            <span aria-hidden="true">{metric.icon}</span>
+          </div>
+          <div class="metric-card__change" data-type={metric.change.type}>
+            {metric.change.type === 'increase' && (
+              <span aria-label={`Meningkat ${metric.change.value}%`}>↗</span>
+            )}
+            {metric.change.type === 'decrease' && (
+              <span aria-label={`Menurun ${metric.change.value}%`}>↘</span>
+            )}
+            {metric.change.value > 0 && (
+              <span class="change-value">{metric.change.value}%</span>
+            )}
+          </div>
+        </div>
+
+        <div class="metric-card__content">
+          <div class="metric-card__value">
+            {metric.value}
+          </div>
+          <div class="metric-card__title">
+            {metric.title}
+          </div>
+        </div>
+
+        <!-- Loading skeleton -->
+        {loading && (
+          <div class="metric-card__skeleton">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line skeleton-line--short"></div>
+          </div>
+        )}
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .dashboard-metrics {
+    width: 100%;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .metric-card {
+    position: relative;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    transition: all var(--transition-base);
+    text-decoration: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 140px;
+  }
+
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .metric-card:hover::before {
+    opacity: 1;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .metric-card:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .metric-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-4);
+  }
+
+  .metric-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-xl);
+    transition: all var(--transition-base);
+  }
+
+  .metric-card__icon[data-color="primary"] {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    color: var(--color-primary);
+  }
+
+  .metric-card__icon[data-color="success"] {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+  }
+
+  .metric-card__icon[data-color="warning"] {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--color-warning);
+  }
+
+  .metric-card__icon[data-color="error"] {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-error);
+  }
+
+  .metric-card__icon[data-color="info"] {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--color-info);
+  }
+
+  .metric-card__icon[data-color="secondary"] {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--color-text-secondary);
+  }
+
+  .metric-card__change {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    min-width: fit-content;
+  }
+
+  .metric-card__change[data-type="increase"] {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+  }
+
+  .metric-card__change[data-type="decrease"] {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-error);
+  }
+
+  .metric-card__change[data-type="neutral"] {
+    opacity: 0;
+  }
+
+  .metric-card__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .metric-card__value {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    margin-bottom: var(--space-2);
+    word-break: break-word;
+  }
+
+  .metric-card__title {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-medium);
+    line-height: var(--leading-relaxed);
+  }
+
+  .metric-card__skeleton {
+    position: absolute;
+    inset: 0;
+    background: var(--color-surface);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .skeleton-line {
+    height: 1rem;
+    background: linear-gradient(90deg, var(--color-border) 0%, var(--color-border-light) 50%, var(--color-border) 100%);
+    border-radius: var(--radius-sm);
+    animation: shimmer 1.5s infinite;
+  }
+
+  .skeleton-line--short {
+    height: 0.75rem;
+    width: 60%;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .metrics-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .metric-card {
+      padding: var(--space-4);
+      min-height: 120px;
+    }
+
+    .metric-card__icon {
+      width: 40px;
+      height: 40px;
+      font-size: var(--text-lg);
+    }
+
+    .metric-card__value {
+      font-size: var(--text-xl);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .metric-card {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-4);
+      min-height: auto;
+    }
+
+    .metric-card__header {
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+
+    .metric-card__content {
+      flex: 1;
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .metric-card,
+    .metric-card__icon,
+    .metric-card__change {
+      transition: none;
+    }
+
+    .metric-card:hover {
+      transform: none;
+    }
+
+    .skeleton-line {
+      animation: none;
+    }
+  }
+
+  /* High Contrast Mode */
+  @media (prefers-contrast: high) {
+    .metric-card {
+      border-width: 2px;
+    }
+
+    .metric-card__change {
+      border: 1px solid currentColor;
+    }
+  }
+
+  /* Loading state */
+  .metric-card[data-loading="true"] .metric-card__content {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  // Add click analytics tracking
+  document.addEventListener('DOMContentLoaded', () => {
+    const metricCards = document.querySelectorAll('.metric-card');
+
+    metricCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        const metricTitle = card.querySelector('.metric-card__title')?.textContent;
+        const metricValue = card.querySelector('.metric-card__value')?.textContent;
+
+        // Track metric card interaction
+        if (typeof window !== 'undefined' && window.analytics) {
+          window.analytics.track('dashboard_metric_click', {
+            metric_name: metricTitle,
+            metric_value: metricValue,
+            page_section: 'dashboard'
+          });
+        }
+      });
+    });
+  });
+</script>

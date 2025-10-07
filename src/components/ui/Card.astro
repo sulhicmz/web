@@ -1,7 +1,5 @@
 ---
-import type { astroHTML } from 'astro/types';
-
-interface CardProps extends astroHTML.JSX.HTMLAttributes<'article'> {
+interface CardProps extends AstroHTML.JSX.HTMLAttributes<'article'> {
         as?: 'article' | 'section' | 'div';
         title?: string;
         eyebrow?: string;
@@ -31,40 +29,86 @@ const Tag = as;
         .ui-card {
                 display: flex;
                 flex-direction: column;
-                gap: 1.25rem;
-                background: #ffffff;
-                padding: 1.75rem;
-                border-radius: 1.25rem;
-                border: 1px solid rgba(var(--gray-light), 0.8);
-                box-shadow: 0 10px 30px rgba(var(--gray), 0.1);
+                gap: var(--space-5);
+                background: var(--color-surface-card);
+                padding: var(--card-padding-md);
+                border-radius: var(--card-radius-md);
+                border: 1px solid var(--color-border);
+                box-shadow: var(--card-shadow-md);
+                backdrop-filter: blur(20px);
+                transition: all var(--transition-base);
+        }
+
+        .ui-card:hover {
+                border-color: var(--color-border-hover);
+                box-shadow: var(--card-shadow-lg);
+                transform: translateY(-2px);
         }
 
         .ui-card__eyebrow {
                 text-transform: uppercase;
-                letter-spacing: 0.12em;
-                font-size: 0.75rem;
-                color: rgba(var(--gray), 0.9);
+                letter-spacing: var(--tracking-wide);
+                font-size: var(--text-xs);
+                color: var(--color-text-tertiary);
                 margin: 0;
+                font-weight: var(--font-semibold);
         }
 
         .ui-card__title {
-                font-size: 1.45rem;
+                font-size: var(--text-xl);
+                font-weight: var(--font-bold);
+                color: var(--color-text-primary);
                 margin: 0;
+                line-height: var(--leading-tight);
         }
 
         .ui-card__description {
                 margin: 0;
-                color: rgba(var(--gray-dark), 0.9);
-                font-size: 1rem;
+                color: var(--color-text-secondary);
+                font-size: var(--text-base);
+                line-height: var(--leading-relaxed);
         }
 
         .ui-card__body {
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: var(--space-4);
+                flex: 1;
         }
 
         :global(.ui-card__footer) {
                 margin-top: auto;
+                padding-top: var(--space-4);
+                border-top: 1px solid var(--color-border-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+                .ui-card {
+                        padding: var(--card-padding-sm);
+                        gap: var(--space-4);
+                }
+
+                .ui-card__title {
+                        font-size: var(--text-lg);
+                }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+                .ui-card {
+                        transition: none;
+                }
+
+                .ui-card:hover {
+                        transform: none;
+                }
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+                .ui-card {
+                        border-width: 2px;
+                }
         }
 </style>

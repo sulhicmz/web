@@ -32,7 +32,7 @@ const resolveStatuses = (payload: Record<string, unknown>) => {
 
         for (const entry of entries) {
                 const changes = Array.isArray((entry as Record<string, unknown>)?.changes)
-                        ? (entry as Record<string, unknown>).changes
+                        ? (entry as Record<string, unknown>).changes as Array<Record<string, unknown>>
                         : [];
 
                 for (const change of changes) {
@@ -53,7 +53,7 @@ const resolveMessages = (payload: Record<string, unknown>) => {
 
         for (const entry of entries) {
                 const changes = Array.isArray((entry as Record<string, unknown>)?.changes)
-                        ? (entry as Record<string, unknown>).changes
+                        ? (entry as Record<string, unknown>).changes as Array<Record<string, unknown>>
                         : [];
 
                 for (const change of changes) {
@@ -212,7 +212,8 @@ export const POST: APIRoute = async ({ request }) => {
 
         const optOutNumbers = new Set<string>();
         for (const message of messages) {
-                const type = message.type;
+                const messageObj = message as Record<string, unknown>;
+                const type = (messageObj?.type as string) || 'unknown';
                 if (type === 'text') {
                         const from = typeof message.from === 'string' ? message.from : null;
                         const textBody = ((message.text as Record<string, unknown> | undefined)?.body as string | undefined) ?? '';

@@ -1,0 +1,723 @@
+---
+// ==========================================================================
+// AstroPro Digital - Project Kanban Board Component
+// Kanban board untuk project task management dengan drag & drop
+// ==========================================================================
+
+import type { Project, SupportTicket } from '../../types';
+
+interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  status: 'todo' | 'in_progress' | 'review' | 'done';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  assignee?: {
+    name: string;
+    avatar?: string;
+  };
+  due_date?: string;
+  tags?: string[];
+  project_id: string;
+}
+
+interface Props {
+  project?: Project;
+  tasks?: Task[];
+  loading?: boolean;
+  showFilters?: boolean;
+  class?: string;
+}
+
+const {
+  project,
+  tasks = [],
+  loading = false,
+  showFilters = true,
+  class: className = ""
+} = Astro.props;
+
+// Group tasks by status
+const tasksByStatus = {
+  todo: tasks.filter(task => task.status === 'todo'),
+  in_progress: tasks.filter(task => task.status === 'in_progress'),
+  review: tasks.filter(task => task.status === 'review'),
+  done: tasks.filter(task => task.status === 'done')
+};
+
+// Column configuration
+const columns = [
+  {
+    id: 'todo',
+    title: 'To Do',
+    count: tasksByStatus.todo.length,
+    color: 'secondary',
+    icon: '📋'
+  },
+  {
+    id: 'in_progress',
+    title: 'In Progress',
+    count: tasksByStatus.in_progress.length,
+    color: 'primary',
+    icon: '🚀'
+  },
+  {
+    id: 'review',
+    title: 'Review',
+    count: tasksByStatus.review.length,
+    color: 'warning',
+    icon: '👁️'
+  },
+  {
+    id: 'done',
+    title: 'Done',
+    count: tasksByStatus.done.length,
+    color: 'success',
+    icon: '✅'
+  }
+];
+
+// Priority colors
+const priorityColors = {
+  low: 'var(--color-text-secondary)',
+  medium: 'var(--color-info)',
+  high: 'var(--color-warning)',
+  urgent: 'var(--color-error)'
+};
+---
+
+<div class={`project-kanban ${className}`}>
+  <!-- Kanban Controls -->
+  {showFilters && (
+    <div class="kanban-controls">
+      <div class="controls-left">
+        <h2 class="kanban-title">
+          {project ? `Tasks: ${project.title}` : 'Project Tasks'}
+        </h2>
+        <div class="kanban-filters">
+          <button class="filter-btn active" data-filter="all">
+            All ({tasks.length})
+          </button>
+          <button class="filter-btn" data-filter="urgent">
+            Urgent ({tasks.filter(t => t.priority === 'urgent').length})
+          </button>
+          <button class="filter-btn" data-filter="overdue">
+            Overdue ({tasks.filter(t => t.due_date && new Date(t.due_date) < new Date()).length})
+          </button>
+        </div>
+      </div>
+      <div class="controls-right">
+        <button class="btn btn-primary btn-sm">
+          + Add Task
+        </button>
+      </div>
+    </div>
+  )}
+
+  <!-- Kanban Board -->
+  <div class="kanban-board" data-loading={loading}>
+    <div class="kanban-columns">
+      {columns.map((column) => (
+        <div class="kanban-column" data-status={column.id}>
+          <div class="column-header">
+            <div class="column-header__info">
+              <span class="column-icon" aria-hidden="true">{column.icon}</span>
+              <h3 class="column-title">{column.title}</h3>
+              <span class="column-count">{column.count}</span>
+            </div>
+            <button class="column-menu-btn" aria-label="Column options">
+              ⋯
+            </button>
+          </div>
+
+          <div class="column-content">
+            {tasksByStatus[column.id as keyof typeof tasksByStatus]?.map((task) => (
+              <div class="task-card" draggable="true">
+                <div class="task-card__header">
+                  <h4 class="task-title">{task.title}</h4>
+                  <div class="task-priority" data-priority={task.priority}>
+                    <span class="priority-dot"></span>
+                    <span class="priority-label">
+                      {task.priority === 'urgent' ? '!' :
+                       task.priority === 'high' ? '↑' :
+                       task.priority === 'medium' ? '→' : '↓'}
+                    </span>
+                  </div>
+                </div>
+
+                {task.description && (
+                  <p class="task-description">{task.description}</p>
+                )}
+
+                <div class="task-card__footer">
+                  <div class="task-meta">
+                    {task.assignee && (
+                      <div class="task-assignee">
+                        {task.assignee.avatar ? (
+                          <img src={task.assignee.avatar} alt={task.assignee.name} class="assignee-avatar" />
+                        ) : (
+                          <div class="assignee-avatar assignee-avatar--initial">
+                            {task.assignee.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <span class="assignee-name">{task.assignee.name}</span>
+                      </div>
+                    )}
+
+                    {task.due_date && (
+                      <div class={`task-due-date ${new Date(task.due_date) < new Date() ? 'overdue' : ''}`}>
+                        📅 {new Date(task.due_date).toLocaleDateString('id-ID')}
+                      </div>
+                    )}
+                  </div>
+
+                  {task.tags && task.tags.length > 0 && (
+                    <div class="task-tags">
+                      {task.tags.slice(0, 2).map((tag) => (
+                        <span class="task-tag">#{tag}</span>
+                      ))}
+                      {task.tags.length > 2 && (
+                        <span class="task-tag task-tag--more">+{task.tags.length - 2}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <!-- Empty state -->
+            {tasksByStatus[column.id as keyof typeof tasksByStatus]?.length === 0 && !loading && (
+              <div class="column-empty">
+                <div class="empty-icon">📭</div>
+                <p class="empty-text">No tasks in {column.title.toLowerCase()}</p>
+                <button class="btn btn-ghost btn-sm">Add Task</button>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Loading overlay -->
+    {loading && (
+      <div class="kanban-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading tasks...</p>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .project-kanban {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Kanban Controls */
+  .kanban-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    gap: var(--space-4);
+  }
+
+  .controls-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .kanban-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .kanban-filters {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .filter-btn {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-elevated);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+
+  .filter-btn.active {
+    background: var(--gradient-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-primary);
+    background: rgba(124, 58, 237, 0.05);
+  }
+
+  /* Kanban Board */
+  .kanban-board {
+    flex: 1;
+    position: relative;
+    min-height: 500px;
+  }
+
+  .kanban-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+    height: 100%;
+  }
+
+  .kanban-column {
+    background: var(--color-surface-light);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-xl);
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+  }
+
+  .column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-border-light);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  .column-header__info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .column-icon {
+    font-size: var(--text-base);
+  }
+
+  .column-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .column-count {
+    background: var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-full);
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .column-menu-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+  }
+
+  .column-menu-btn:hover {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--color-primary);
+  }
+
+  .column-content {
+    flex: 1;
+    padding: var(--space-4);
+    overflow-y: auto;
+    min-height: 200px;
+  }
+
+  /* Task Cards */
+  .task-card {
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-3);
+    cursor: grab;
+    transition: all var(--transition-base);
+    position: relative;
+  }
+
+  .task-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+  }
+
+  .task-card.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+  }
+
+  .task-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-3);
+  }
+
+  .task-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    color: var(--color-text-primary);
+    margin: 0;
+    line-height: var(--leading-tight);
+    flex: 1;
+    margin-right: var(--space-2);
+  }
+
+  .task-priority {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-bold);
+    flex-shrink: 0;
+  }
+
+  .task-priority[data-priority="urgent"] {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-error);
+  }
+
+  .task-priority[data-priority="high"] {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--color-warning);
+  }
+
+  .task-priority[data-priority="medium"] {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--color-info);
+  }
+
+  .task-priority[data-priority="low"] {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--color-text-secondary);
+  }
+
+  .priority-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: currentColor;
+  }
+
+  .task-description {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .task-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .task-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .task-assignee {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .assignee-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+  }
+
+  .assignee-avatar--initial {
+    background: var(--gradient-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-xs);
+    font-weight: var(--font-bold);
+  }
+
+  .task-due-date {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-surface);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+
+  .task-due-date.overdue {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-error);
+  }
+
+  .task-tags {
+    display: flex;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+  }
+
+  .task-tag {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--color-primary);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+  }
+
+  .task-tag--more {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+  }
+
+  /* Empty State */
+  .column-empty {
+    text-align: center;
+    padding: var(--space-8);
+    color: var(--color-text-secondary);
+  }
+
+  .empty-icon {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-4);
+    opacity: 0.5;
+  }
+
+  .empty-text {
+    margin: 0 0 var(--space-4) 0;
+    font-size: var(--text-sm);
+  }
+
+  /* Loading State */
+  .kanban-loading {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-xl);
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-border);
+    border-top: 3px solid var(--color-primary);
+    border-radius: var(--radius-full);
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .kanban-columns {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .kanban-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-4);
+    }
+
+    .controls-left {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-3);
+    }
+
+    .kanban-filters {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .kanban-columns {
+      grid-template-columns: 1fr;
+    }
+
+    .kanban-column {
+      max-height: 400px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .kanban-columns {
+      gap: var(--space-4);
+    }
+
+    .column-header {
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .column-content {
+      padding: var(--space-3);
+    }
+
+    .task-card {
+      padding: var(--space-3);
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .task-card,
+    .filter-btn,
+    .column-menu-btn {
+      transition: none;
+    }
+
+    .task-card:hover {
+      transform: none;
+    }
+
+    .loading-spinner {
+      animation: none;
+    }
+  }
+
+  /* High Contrast Mode */
+  @media (prefers-contrast: high) {
+    .kanban-column,
+    .task-card {
+      border-width: 2px;
+    }
+
+    .task-priority {
+      border: 1px solid currentColor;
+    }
+  }
+</style>
+
+<script>
+  // Drag and drop functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const taskCards = document.querySelectorAll('.task-card');
+    const columns = document.querySelectorAll('.kanban-column');
+
+    let draggedElement: Element | null = null;
+
+    // Task card drag events
+    taskCards.forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        draggedElement = card;
+        card.classList.add('dragging');
+
+        if (e.dataTransfer) {
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/html', card.outerHTML);
+        }
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        draggedElement = null;
+      });
+    });
+
+    // Column drop zones
+    columns.forEach(column => {
+      column.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (e.dataTransfer) {
+          e.dataTransfer.dropEffect = 'move';
+        }
+
+        column.classList.add('drag-over');
+      });
+
+      column.addEventListener('dragleave', () => {
+        column.classList.remove('drag-over');
+      });
+
+      column.addEventListener('drop', (e) => {
+        e.preventDefault();
+        column.classList.remove('drag-over');
+
+        if (draggedElement && e.dataTransfer) {
+          const newStatus = column.dataset.status;
+          const taskId = draggedElement.id || 'unknown';
+
+          // Update task status (would integrate with API)
+          console.log(`Moving task ${taskId} to ${newStatus}`);
+
+          // Track analytics
+          if (typeof window !== 'undefined' && window.analytics) {
+            window.analytics.track('task_moved', {
+              task_id: taskId,
+              new_status: newStatus,
+              project_id: column.closest('.project-kanban')?.dataset.projectId
+            });
+          }
+        }
+      });
+    });
+  });
+
+  // Filter functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active state from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+
+        // Add active state to clicked button
+        button.classList.add('active');
+
+        const filterType = button.dataset.filter;
+        console.log(`Filtering tasks: ${filterType}`);
+
+        // Implement filtering logic here
+      });
+    });
+  });
+</script>

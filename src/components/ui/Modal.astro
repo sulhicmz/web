@@ -1,7 +1,5 @@
 ---
-import type { astroHTML } from 'astro/types';
-
-interface ModalProps extends astroHTML.JSX.HTMLAttributes<'div'> {
+interface ModalProps extends AstroHTML.JSX.HTMLAttributes<'div'> {
     isOpen: boolean;
     title?: string;
     description?: string;

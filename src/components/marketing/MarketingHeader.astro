@@ -1,13 +1,13 @@
 ---
 import NavLink from './NavLink.astro';
-import { SITE_TITLE, buildWhatsappLink } from '../../consts';
+import { SITE } from '../../consts';
 ---
 
 <header class="marketing-header" data-scroll-shadow>
         <nav class="marketing-nav" aria-label="Navigasi utama">
                 <a class="brand" href="/">
                         <span class="brand-icon" aria-hidden="true"></span>
-                        <span class="brand-text">{SITE_TITLE}</span>
+                        <span class="brand-text">{SITE.title}</span>
                 </a>
                 <div class="nav-links">
                         <NavLink href="/">Beranda</NavLink>
@@ -17,7 +17,7 @@ import { SITE_TITLE, buildWhatsappLink } from '../../consts';
                         <NavLink href="/faq">FAQ</NavLink>
                         <NavLink href="/kontak">Kontak</NavLink>
                 </div>
-                <a class="cta" href={buildWhatsappLink()} rel="noreferrer" target="_blank">
+                <a class="cta" href="https://wa.me/6281234567890?text=Halo%20AstroPro%2C%20saya%20ingin%20konsultasi%20tentang%20proyek%20digital" rel="noreferrer" target="_blank">
                         Konsultasi Gratis
                 </a>
         </nav>

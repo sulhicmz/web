@@ -1,9 +1,9 @@
 ---
 import MarketingLayout from '../layouts/MarketingLayout.astro';
-import { buildWhatsappLink, CONTACT_EMAIL } from '../consts';
-import { CONTACT_DETAILS } from '../config'; // Corrected import
+import { SITE } from '../consts';
+import { SITE } from '../consts';
 
-const demoWhatsappLink = buildWhatsappLink('Halo, saya ingin menjadwalkan demo');
+const demoWhatsappLink = 'https://wa.me/6281234567890?text=Halo%2C%20saya%20ingin%20menjadwalkan%20demo';
 ---
 
 <MarketingLayout title="Hubungi Tim Kami" description="Kirim brief proyek, jadwalkan demo portal, atau konsultasi kebutuhan website Astro Anda.">
@@ -17,7 +17,7 @@ const demoWhatsappLink = buildWhatsappLink('Halo, saya ingin menjadwalkan demo')
                         </label>
                         <label>
                                 Email Kerja
-                                <input type="email" name="email" required placeholder={CONTACT_DETAILS.email} />
+                                <input type="email" name="email" required placeholder={SITE.email} />
                         </label>
                         <label>
                                 Nomor WhatsApp
@@ -44,7 +44,7 @@ const demoWhatsappLink = buildWhatsappLink('Halo, saya ingin menjadwalkan demo')
                 </form>
                 <div class="direct-contact">
                         <a class="whatsapp" href={demoWhatsappLink} target="_blank" rel="noreferrer">Chat WhatsApp</a>
-                        <a class="email" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+                        <a class="email" href={`mailto:${SITE.email}`}>{SITE.email}</a>
                 </div>
         </section>
 </MarketingLayout>
