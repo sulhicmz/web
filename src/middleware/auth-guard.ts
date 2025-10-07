@@ -252,6 +252,3 @@ export const rateLimiter: MiddlewareHandler = async ({ request, redirect }, next
 
   return next();
 };
-
-// Export consolidated middleware
-export const onRequest = [rateLimiter, securityHeaders, requestLogger, authGuard, errorHandler];
