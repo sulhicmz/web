@@ -83,7 +83,7 @@ export interface PaymentProvider {
         getPaymentStatus(reference: string): Promise<PaymentRecord>;
         applyCoupon?(reference: string, code: string): Promise<CouponResult>;
         parseWebhook(body: string, headers: Record<string, string>): Promise<WebhookEvent>;
-        verifyWebhook(payload: unknown, signature: string): boolean;
+        verifyWebhook(payload: unknown, signature: string): Promise<boolean>;
 }
 
 export interface SubscriptionPaymentMethod {

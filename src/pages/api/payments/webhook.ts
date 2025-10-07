@@ -22,7 +22,7 @@ export const POST: APIRoute = async ({ request }) => {
         const body = await request.json();
         const signature = request.headers.get('x-callback-token') ?? request.headers.get('x-callback-signature') ?? '';
 
-        if (!provider.verifyWebhook(body, signature)) {
+        if (!(await provider.verifyWebhook(body, signature))) {
                 console.warn('[payments/webhook] Invalid signature');
                 return json({ error: 'Signature webhook tidak valid.' }, { status: 400 });
         }
