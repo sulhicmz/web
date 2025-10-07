@@ -1,4 +1,3 @@
-import { createHash } from 'crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { getServiceClient } from '../../supabase/server';
@@ -110,10 +109,16 @@ const mapStatus = (status: string): PaymentStatus => {
         }
 };
 
-const buildSignature = (reference: string, statusCode: string, grossAmount: string, serverKey: string) =>
-        createHash('sha512')
-                .update(`${reference}${statusCode}${grossAmount}${serverKey}`)
-                .digest('hex');
+// Fungsi SHA512 kompatibel Web Crypto API
+async function sha512(message: string): Promise<string> {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+const buildSignature = async (reference: string, statusCode: string, grossAmount: string, serverKey: string): Promise<string> =>
+        await sha512(`${reference}${statusCode}${grossAmount}${serverKey}`);
 
 export class MidtransProvider implements PaymentProvider {
         readonly name = 'midtrans';
@@ -134,7 +139,16 @@ export class MidtransProvider implements PaymentProvider {
         }
 
         private authorizationHeader() {
-                const encoded = Buffer.from(`${this.serverKey}:`).toString('base64');
+                // Gunakan TextEncoder dan globalThis.btoa untuk kompatibilitas Web/Wrangler
+                const encoder = new TextEncoder();
+                const data = encoder.encode(`${this.serverKey}:`);
+                // Konversi Uint8Array ke string Base64
+                let binaryString = '';
+                const len = data.byteLength;
+                for (let i = 0; i < len; i++) {
+                        binaryString += String.fromCharCode(data[i]);
+                }
+                const encoded = globalThis.btoa(binaryString);
                 return `Basic ${encoded}`;
         }
 
@@ -553,7 +567,7 @@ export class MidtransProvider implements PaymentProvider {
                 };
         }
 
-        verifyWebhook(payload: any, signature: string): boolean {
+        async verifyWebhook(payload: any, signature: string): Promise<boolean> {
                 const reference = String(payload?.order_id ?? '');
                 const statusCode = String(payload?.status_code ?? '');
                 const grossAmount = String(payload?.gross_amount ?? '');
@@ -562,7 +576,7 @@ export class MidtransProvider implements PaymentProvider {
                         return false;
                 }
 
-                const expectedSignature = buildSignature(reference, statusCode, grossAmount, this.serverKey);
+                const expectedSignature = await buildSignature(reference, statusCode, grossAmount, this.serverKey);
 
                 if (signature !== expectedSignature) {
                         return false;
@@ -635,7 +649,7 @@ export class MidtransProvider implements PaymentProvider {
                 const signatureHeader = headers['x-callback-token'] ?? headers['x-callback-signature'] ?? '';
                 const signature = payload.signature_key ?? signatureHeader;
 
-                const expectedSignature = buildSignature(reference, statusCode, grossAmount, this.serverKey);
+                const expectedSignature = await buildSignature(reference, statusCode, grossAmount, this.serverKey);
                 const signatureValid = signature === expectedSignature && Boolean(signature);
                 const status = mapStatus(String(payload.transaction_status ?? 'failed'));
 
