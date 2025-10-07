@@ -103,7 +103,7 @@ const isClickable = typeof href === 'string' && href.length > 0;
 const Tag = isClickable ? 'a' : 'article';
 ---
 
-<{Tag} class={`project-card ${classes}`} {...(isClickable ? { href } : {})} {...rest}>
+<Fragment Tag} class={`project-card ${classes}`} {...(isClickable ? { href } : {})} {...rest}>
     <!-- Header -->
     <header class="project-card__header">
         <div class="project-card__title-wrapper">
@@ -227,7 +227,7 @@ const Tag = isClickable ? 'a' : 'article';
             <slot name="actions" />
         </div>
     </div>
-</{Tag}>
+</Fragment>
 
 <style>
     .project-card {

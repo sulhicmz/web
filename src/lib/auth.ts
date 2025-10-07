@@ -3,7 +3,7 @@
 // Utilitas untuk autentikasi dan manajemen session
 // ==========================================================================
 
-import { getBrowserClient, getServerClient, getServiceClient } from './supabase';
+import { getBrowserClient, getServerClient, getServiceClient } from './supabase/index';
 import type { User, Session } from '@supabase/supabase-js';
 import type { AuthUser, UserProfile } from '../types';
 
@@ -310,7 +310,8 @@ export const rbac = {
    * Check if user is admin
    */
   isAdmin(user: AuthUser | null): boolean {
-    return user?.profile?.role === 'owner' || user?.profile?.role === 'staff';
+    const role = user?.profile?.role;
+    return role === 'admin' || role === 'owner' || role === 'staff';
   },
 
   /**

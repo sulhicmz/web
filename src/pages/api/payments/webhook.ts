@@ -11,9 +11,12 @@ const json = (data: unknown, init: ResponseInit = {}) =>
         });
 
 export const POST: APIRoute = async ({ request }) => {
+        const serverKey = import.meta.env.MIDTRANS_SERVER_KEY || '';
+        const environment = (import.meta.env.PAYMENT_ENV as 'sandbox' | 'production') || 'sandbox';
+
         const provider = new MidtransProvider({
-                serverKey: import.meta.env.MIDTRANS_SERVER_KEY,
-                environment: import.meta.env.PAYMENT_ENV as 'sandbox' | 'production',
+                serverKey,
+                environment,
         });
 
         const body = await request.json();

@@ -30,7 +30,7 @@ export default defineConfig({
       external: ['@supabase/supabase-js', 'node:crypto'],
     },
   },
-  output: 'hybrid',
+  output: 'server',
   build: {
     assets: '_astro',
   },

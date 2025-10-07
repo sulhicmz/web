@@ -1,10 +1,5 @@
 ---
-import {
-        SITE_TITLE,
-        SITE_DESCRIPTION,
-        CONTACT_EMAIL,
-        buildWhatsappLink,
-} from '../../consts';
+import { SITE } from '../../consts';
 
 const currentYear = new Date().getFullYear();
 ---
@@ -12,8 +7,8 @@ const currentYear = new Date().getFullYear();
 <footer class="marketing-footer">
         <div class="footer-grid">
                 <section class="footer-about">
-                        <p class="brand">{SITE_TITLE}</p>
-                        <p>{SITE_DESCRIPTION}</p>
+                        <p class="brand">{SITE.title}</p>
+                        <p>{SITE.description}</p>
                 </section>
                 <section>
                         <h2>Navigasi</h2>
@@ -28,14 +23,14 @@ const currentYear = new Date().getFullYear();
                 <section>
                         <h2>Kontak</h2>
                         <ul>
-                                <li><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
-                                <li><a href={buildWhatsappLink()} rel="noreferrer" target="_blank">WhatsApp Tim</a></li>
+                                <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+                                <li><a href="https://wa.me/6281234567890?text=Halo%20AstroPro%2C%20saya%20ingin%20konsultasi%20tentang%20proyek%20digital" rel="noreferrer" target="_blank">WhatsApp Tim</a></li>
                                 <li>Jam operasional: Senin–Jumat, 09.00–18.00 WIB</li>
                         </ul>
                 </section>
         </div>
         <div class="footer-bottom">
-                <span>&copy; {currentYear} {SITE_TITLE}. Seluruh hak cipta dilindungi.</span>
+                <span>&copy; {currentYear} {SITE.title}. Seluruh hak cipta dilindungi.</span>
         </div>
 </footer>
 <style>
