@@ -1,4 +1,4 @@
-{
+
   "name": "web",
   "compatibility_date": "2025-04-01",
   "compatibility_flags": ["nodejs_compat"],
@@ -24,7 +24,7 @@
       "bindings": {
         "SESSION": {
           "type": "KVNamespace",
-          "id": "ASTROPRO_SESSION_KV"
+          "id": "astropro_session_kv"
         }
       }
     }
