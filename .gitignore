@@ -71,3 +71,9 @@ temp/
 ehthumbs.db
 Thumbs.db
 Thumbs.db:encryptable
+
+# Git
+.gitignore
+README.md
+package.json
+.github/
