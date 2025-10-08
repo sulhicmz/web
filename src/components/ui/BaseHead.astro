@@ -9,11 +9,12 @@ interface Props {
 	description: string;
 	image?: string;
 	noindex?: boolean; // Tambahkan prop noindex, opsional
+	type?: string; // Tambahkan prop type untuk Open Graph
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = '/blog-placeholder-1.jpg', noindex = false } = Astro.props; // Berikan default
+const { title, description, image = '/blog-placeholder-1.jpg', noindex = false, type = 'website' } = Astro.props; // Berikan default
 
 // Definisikan fullTitle
 const fullTitle = title ? `${title} | ${SITE.title}` : SITE.title;
