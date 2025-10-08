@@ -187,7 +187,7 @@ export const POST: APIRoute = async ({ request }) => {
                         event_id: createId(),
                         message_id: status.id ?? null,
                         recipient: status.recipient_id ?? null,
-                        template: (status.template as string | undefined) ?? (status.conversation as Record<string, unknown> | undefined)?.origin?.type ?? null,
+                        template: (status.template as string | undefined) ?? ((status.conversation as Record<string, unknown> | undefined)?.origin as Record<string, unknown> | undefined)?.type ?? null,
                         status: status.status,
                         attempt: attemptNumber,
                         retry_after: nextRetryEligible?.toISOString() ?? null,
