@@ -122,22 +122,21 @@ const getBenefitIcon = (index: number): string => {
         gap: clamp(1.75rem, 3vw, 2.75rem);
         padding: clamp(2.5rem, 4vw, 3.25rem);
         border-radius: var(--radius-2xl);
-        background: linear-gradient(155deg, rgba(6, 12, 32, 0.82) 0%, rgba(17, 26, 48, 0.78) 55%, rgba(28, 36, 64, 0.85) 100%);
-        border: 1px solid rgba(56, 189, 248, 0.18);
-        box-shadow: 0 28px 60px rgba(2, 6, 23, 0.55);
+        background: linear-gradient(155deg, rgba(6, 12, 32, 0.92) 0%, rgba(17, 26, 48, 0.82) 55%, rgba(24, 32, 56, 0.85) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.16);
+        box-shadow: 0 18px 40px rgba(2, 6, 23, 0.45);
         position: relative;
         overflow: hidden;
-        backdrop-filter: blur(18px);
         transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
     }
 
     .feature-card::before {
         content: '';
         position: absolute;
-        inset: -35% -20% auto;
-        height: 240px;
-        background: radial-gradient(circle, rgba(56, 189, 248, 0.32), transparent 70%);
-        opacity: 0.6;
+        inset: -30% -25% auto;
+        height: 200px;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.18), transparent 70%);
+        opacity: 0.45;
         pointer-events: none;
         transition: opacity var(--transition-base), transform var(--transition-base);
     }
@@ -153,15 +152,15 @@ const getBenefitIcon = (index: number): string => {
 
     .feature-card:hover,
     .feature-card:focus-within {
-        transform: translateY(-6px);
-        box-shadow: var(--glow-secondary);
-        border-color: rgba(56, 189, 248, 0.45);
+        transform: translateY(-4px);
+        box-shadow: 0 24px 44px rgba(2, 6, 23, 0.5);
+        border-color: rgba(56, 189, 248, 0.3);
     }
 
     .feature-card:hover::before,
     .feature-card:focus-within::before {
-        opacity: 0.95;
-        transform: translate3d(0, -10px, 0) scale(1.05);
+        opacity: 0.7;
+        transform: translate3d(0, -6px, 0) scale(1.03);
     }
 
     .feature-card--compact {
@@ -219,7 +218,7 @@ const getBenefitIcon = (index: number): string => {
         border-radius: var(--radius-2xl);
         background: linear-gradient(135deg, rgba(147, 51, 234, 0.45), rgba(56, 189, 248, 0.35));
         color: var(--color-text-primary);
-        box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.28), 0 18px 34px rgba(2, 6, 23, 0.55);
+        box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.24), 0 12px 24px rgba(2, 6, 23, 0.45);
         position: relative;
         z-index: 1;
     }
@@ -229,8 +228,8 @@ const getBenefitIcon = (index: number): string => {
         inset: -28px;
         border-radius: inherit;
         background: radial-gradient(circle, rgba(147, 51, 234, 0.32), transparent 70%);
-        filter: blur(24px);
-        opacity: 0.6;
+        filter: blur(12px);
+        opacity: 0.45;
         z-index: 0;
     }
 
@@ -238,7 +237,7 @@ const getBenefitIcon = (index: number): string => {
         position: relative;
         border-radius: var(--radius-xl);
         overflow: hidden;
-        box-shadow: 0 24px 40px rgba(2, 6, 23, 0.55);
+        box-shadow: 0 16px 32px rgba(2, 6, 23, 0.45);
     }
 
     .feature-card__image {
@@ -353,7 +352,7 @@ const getBenefitIcon = (index: number): string => {
         background: var(--accent-gradient);
         color: var(--color-text-primary);
         transform: translateY(-2px);
-        box-shadow: var(--glow-primary);
+        box-shadow: 0 14px 24px rgba(8, 15, 32, 0.45);
         outline: none;
     }
 
