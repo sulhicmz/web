@@ -19,7 +19,6 @@ const { title = SITE.title, description = SITE.description } = Astro.props as Pr
         	<BaseHead title={title} description={description} type="website" />
         </head>
         <body class="marketing-shell">
-                <div class="marketing-backdrop" aria-hidden="true"></div>
                 <div class="marketing-grid" aria-hidden="true"></div>
                 <MarketingHeader />
                 <main class="marketing-main">
@@ -34,27 +33,17 @@ const { title = SITE.title, description = SITE.description } = Astro.props as Pr
         .marketing-shell {
                 margin: 0;
                 min-height: 100vh;
-                background: transparent;
                 position: relative;
                 overflow-x: hidden;
                 color: var(--color-text-primary);
-        }
-
-        .marketing-backdrop {
-                position: fixed;
-                inset: -20% -25% auto;
-                pointer-events: none;
                 background:
-                        radial-gradient(35% 45% at 25% 18%, rgba(147, 51, 234, 0.35), transparent 72%),
-                        radial-gradient(48% 60% at 75% 12%, rgba(34, 211, 238, 0.3), transparent 75%),
-                        radial-gradient(60% 55% at 55% 80%, rgba(244, 114, 182, 0.22), transparent 78%);
-                filter: blur(0px);
-                z-index: -3;
-                animation: backdropFloat 28s ease-in-out infinite alternate;
+                        linear-gradient(160deg, rgba(8, 12, 32, 0.95) 0%, rgba(12, 18, 36, 0.92) 55%, rgba(17, 26, 48, 0.9) 100%),
+                        radial-gradient(48% 58% at 18% 20%, rgba(147, 51, 234, 0.18), transparent 70%),
+                        radial-gradient(40% 50% at 78% 12%, rgba(34, 211, 238, 0.12), transparent 72%);
         }
 
         .marketing-grid {
-                position: fixed;
+                position: absolute;
                 inset: 0;
                 pointer-events: none;
                 background-image:
@@ -63,7 +52,7 @@ const { title = SITE.title, description = SITE.description } = Astro.props as Pr
                 background-size: 120px 120px;
                 mix-blend-mode: screen;
                 z-index: -2;
-                opacity: 0.4;
+                opacity: 0.28;
         }
 
         .marketing-main {
@@ -73,24 +62,14 @@ const { title = SITE.title, description = SITE.description } = Astro.props as Pr
                 padding: clamp(3.75rem, 7vw, 6.5rem) clamp(1.8rem, 6vw, 4rem) clamp(5rem, 10vw, 7.5rem);
         }
 
-        @keyframes backdropFloat {
-                0% {
-                        transform: translate3d(0, 0, 0) scale(1);
-                        opacity: 0.75;
-                }
-                50% {
-                        transform: translate3d(-30px, 18px, 0) scale(1.04);
-                        opacity: 0.9;
-                }
-                100% {
-                        transform: translate3d(24px, -26px, 0) scale(1.06);
-                        opacity: 0.8;
-                }
-        }
-
         @media (max-width: 720px) {
                 .marketing-main {
                         padding: 3.5rem 1.4rem 4.75rem;
+                }
+
+                .marketing-grid {
+                        opacity: 0.2;
+                        background-size: 160px 160px;
                 }
         }
 </style>
