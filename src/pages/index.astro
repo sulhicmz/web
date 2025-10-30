@@ -7,807 +7,996 @@ const heroWhatsappLink = 'https://wa.me/6281234567890?text=Halo%2C%20saya%20tert
 ---
 
 <MarketingLayout title="Jasa Website Astro + Portal Klien" description="Bangun situs pemasaran, portofolio, blog, dan portal klien terpadu dengan arsitektur Astro yang cepat dan aman.">
-        <!-- Hero Section -->
-        <HeroSection
-                title="Platform Agency Modern untuk Masa Depan Digital"
-                subtitle="Satukan marketing site, client portal, dan operasional dalam satu platform terpadu. Dibangun dengan Astro, Supabase, dan Cloudflare untuk performa dan skalabilitas maksimal."
-                primaryCTA={{
-                        text: "Mulai Konsultasi",
-                        href: heroWhatsappLink
-                }}
-                secondaryCTA={{
-                        text: "Lihat Demo",
-                        href: "/portal"
-                }}
-                backgroundPattern="gradient"
+  <!-- Hero Section -->
+  <HeroSection
+    title="Platform Agency Modern untuk Masa Depan Digital"
+    subtitle="Satukan marketing site, client portal, dan operasional dalam satu platform terpadu. Dibangun dengan Astro, Supabase, dan Cloudflare untuk performa dan skalabilitas maksimal."
+    primaryCTA={{
+      text: 'Mulai Konsultasi',
+      href: heroWhatsappLink
+    }}
+    secondaryCTA={{
+      text: 'Lihat Demo',
+      href: '/portal'
+    }}
+    backgroundPattern="gradient"
+  />
+
+  <section class="outcomes-section" aria-label="Hasil transformasi klien">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Hasil nyata</p>
+        <h2>Dampak utama yang dicapai klien AstroPro</h2>
+        <p class="section-subtitle">
+          Blueprint kami menggabungkan marketing site, portal klien, dan automasi operasional dalam satu ekosistem yang siap scale.
+        </p>
+      </div>
+
+      <div class="outcomes-grid">
+        <article class="outcome-card">
+          <span class="outcome-card__value">+72%</span>
+          <span class="outcome-card__label">Conversion rate marketing site</span>
+          <p class="outcome-card__detail">Optimasi landing, copy berbasis data, dan eksperimen terukur.</p>
+        </article>
+        <article class="outcome-card">
+          <span class="outcome-card__value">-60%</span>
+          <span class="outcome-card__label">Waktu pengerjaan onboarding</span>
+          <p class="outcome-card__detail">Portal klien streamline dengan alur approval otomatis.</p>
+        </article>
+        <article class="outcome-card">
+          <span class="outcome-card__value">98%</span>
+          <span class="outcome-card__label">Kepuasan klien yang diukur</span>
+          <p class="outcome-card__detail">Survey NPS di dalam portal plus laporan kinerja berkala.</p>
+        </article>
+        <article class="outcome-card">
+          <span class="outcome-card__value">24/7</span>
+          <span class="outcome-card__label">Operasional siap produksi</span>
+          <p class="outcome-card__detail">Observability real-time dan runbook insiden terstandarisasi.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="solutions-section" aria-label="Solusi untuk agensi digital">
+    <div class="container">
+      <div class="solutions-layout">
+        <header class="solutions-header">
+          <p class="section-eyebrow">Solusi terpadu</p>
+          <h2>Layout konten dirancang mengikuti tujuan bisnis</h2>
+          <p class="section-subtitle">
+            Setiap modul siap dikustomisasi untuk menangani penjualan layanan, kolaborasi tim internal, hingga dukungan pasca-proyek.
+          </p>
+        </header>
+
+        <div class="solutions-grid">
+          <article class="solution-card">
+            <div class="solution-card__icon" aria-hidden="true">🎯</div>
+            <h3>Lead Generation yang terukur</h3>
+            <p>Landing page modular, formulir multi-step, dan automasi nurturing terhubung CRM.</p>
+            <ul>
+              <li>Komponen hero &amp; CTA berbasis eksperimen</li>
+              <li>Integrasi analitik consent-first</li>
+              <li>Segmentasi konten dan personalisasi</li>
+            </ul>
+          </article>
+
+          <article class="solution-card">
+            <div class="solution-card__icon" aria-hidden="true">🪐</div>
+            <h3>Portal Klien kolaboratif</h3>
+            <p>Dashboard status, repository dokumen, dan ticketing dengan SLA yang jelas.</p>
+            <ul>
+              <li>Hak akses granular dengan Supabase RLS</li>
+              <li>Timeline proyek dan milestone otomatis</li>
+              <li>Widget laporan KPI siap ekspor</li>
+            </ul>
+          </article>
+
+          <article class="solution-card">
+            <div class="solution-card__icon" aria-hidden="true">⚙️</div>
+            <h3>Operasional &amp; billing otomatis</h3>
+            <p>Integrasi Midtrans, invoice otomatis, dan notifikasi lintas kanal yang sinkron.</p>
+            <ul>
+              <li>Template kontrak &amp; tagihan digital</li>
+              <li>Sinkronisasi Slack/Email real-time</li>
+              <li>Audit trail lengkap untuk compliance</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" aria-label="Fitur utama platform">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Blueprint produk</p>
+        <h2>Fondasi produk siap produksi yang kami bangun</h2>
+        <p class="section-subtitle">Fitur lengkap untuk memastikan marketing site dan portal klien berjalan harmonis.</p>
+      </div>
+
+      <div class="features-grid">
+        <FeatureCard
+          title="Marketing Site Modern"
+          description="Website pemasaran yang cepat, SEO-friendly, dan conversion-optimized dengan konten dinamis."
+          icon="globe"
+          benefits={[
+            'SSG untuk performa maksimal',
+            'Content collections dengan MDX',
+            'SEO dan analytics terintegrasi',
+            'Responsive design untuk semua device'
+          ]}
+          ctaText="Lihat Fitur"
+          ctaHref="/layanan"
+          variant="detailed"
         />
 
-        <!-- Features Section -->
-        <section class="features-section" aria-label="Fitur utama platform">
-                <div class="container">
-                        <div class="section-header">
-                                <h2>Mengapa Memilih AstroPro Digital?</h2>
-                                <p class="section-subtitle">Platform terintegrasi yang dirancang khusus untuk kebutuhan agensi digital modern</p>
-                        </div>
+        <FeatureCard
+          title="Client Portal Terpadu"
+          description="Dashboard klien dengan manajemen proyek, billing, dan support system yang user-friendly."
+          icon="users"
+          benefits={[
+            'SSR untuk interaktivitas real-time',
+            'RBAC dengan Supabase Auth',
+            'Multi-tenant architecture',
+            'Real-time notifications'
+          ]}
+          ctaText="Coba Portal"
+          ctaHref="/portal"
+          variant="detailed"
+        />
 
-                        <div class="features-grid">
-                                <FeatureCard
-                                        title="Marketing Site Modern"
-                                        description="Website pemasaran yang cepat, SEO-friendly, dan conversion-optimized dengan konten dinamis."
-                                        icon="globe"
-                                        benefits={[
-                                                "SSG untuk performa maksimal",
-                                                "Content collections dengan MDX",
-                                                "SEO dan analytics terintegrasi",
-                                                "Responsive design untuk semua device"
-                                        ]}
-                                        ctaText="Lihat Fitur"
-                                        ctaHref="/layanan"
-                                        variant="detailed"
-                                />
+        <FeatureCard
+          title="Payment & Billing"
+          description="Sistem pembayaran terintegrasi dengan Midtrans untuk transaksi yang aman dan mudah."
+          icon="payment"
+          benefits={[
+            'Midtrans payment gateway',
+            'Invoice otomatis',
+            'Webhook validation',
+            'Multi-currency support'
+          ]}
+          ctaText="Lihat Pricing"
+          ctaHref="/layanan"
+          variant="detailed"
+        />
 
-                                <FeatureCard
-                                        title="Client Portal Terpadu"
-                                        description="Dashboard klien dengan manajemen proyek, billing, dan support system yang user-friendly."
-                                        icon="users"
-                                        benefits={[
-                                                "SSR untuk interaktivitas real-time",
-                                                "RBAC dengan Supabase Auth",
-                                                "Multi-tenant architecture",
-                                                "Real-time notifications"
-                                        ]}
-                                        ctaText="Coba Portal"
-                                        ctaHref="/portal"
-                                        variant="detailed"
-                                />
+        <FeatureCard
+          title="Operational Automation"
+          description="Otomasi operasional dengan CI/CD, monitoring, dan runbook untuk efisiensi tim."
+          icon="automation"
+          benefits={[
+            'Cloudflare Workers deployment',
+            'Automated testing & QA',
+            'Performance monitoring',
+            'Incident response runbooks'
+          ]}
+          ctaText="Pelajari Lebih Lanjut"
+          ctaHref="/about"
+          variant="detailed"
+        />
+      </div>
+    </div>
+  </section>
 
-                                <FeatureCard
-                                        title="Payment & Billing"
-                                        description="Sistem pembayaran terintegrasi dengan Midtrans untuk transaksi yang aman dan mudah."
-                                        icon="payment"
-                                        benefits={[
-                                                "Midtrans payment gateway",
-                                                "Invoice otomatis",
-                                                "Webhook validation",
-                                                "Multi-currency support"
-                                        ]}
-                                        ctaText="Lihat Pricing"
-                                        ctaHref="/layanan"
-                                        variant="detailed"
-                                />
+  <section class="workflow-section" aria-label="Alur implementasi">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Cara kami bekerja</p>
+        <h2>Roadmap kolaborasi empat fase</h2>
+        <p class="section-subtitle">Setiap fase dibekali artefak, dokumentasi, dan standar QA supaya tim Anda siap melanjutkan sendiri.</p>
+      </div>
 
-                                <FeatureCard
-                                        title="Operational Automation"
-                                        description="Otomasi operasional dengan CI/CD, monitoring, dan runbook untuk efisiensi tim."
-                                        icon="automation"
-                                        benefits={[
-                                                "Cloudflare Workers deployment",
-                                                "Automated testing & QA",
-                                                "Performance monitoring",
-                                                "Incident response runbooks"
-                                        ]}
-                                        ctaText="Pelajari Lebih Lanjut"
-                                        ctaHref="/about"
-                                        variant="detailed"
-                                />
-                        </div>
-                </div>
-        </section>
+      <ol class="workflow-timeline">
+        <li class="workflow-step">
+          <div class="step-badge">01</div>
+          <h3>Discovery &amp; alignment</h3>
+          <p>Pemetaan persona, audit stack, serta definisi KPI marketing &amp; portal.</p>
+        </li>
+        <li class="workflow-step">
+          <div class="step-badge">02</div>
+          <h3>Experience design</h3>
+          <p>Wireframe alur klien, design system neon futuristik, dan copy konversi tinggi.</p>
+        </li>
+        <li class="workflow-step">
+          <div class="step-badge">03</div>
+          <h3>Build &amp; integration</h3>
+          <p>Astro + Supabase, Midtrans, serta automasi email/Slack yang terukur.</p>
+        </li>
+        <li class="workflow-step">
+          <div class="step-badge">04</div>
+          <h3>Launch &amp; scale</h3>
+          <p>Deploy Cloudflare, training tim, dan backlog optimalisasi berkelanjutan.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
 
-        <!-- Testimonials Section -->
-        <section class="testimonials-section" aria-label="Testimoni klien">
-                <div class="container">
-                        <div class="section-header">
-                                <h2>Yang Dikatakan Klien Kami</h2>
-                                <p class="section-subtitle">Bergabunglah dengan ratusan agensi yang telah mentransformasi bisnis mereka</p>
-                        </div>
+  <section class="stack-section" aria-label="Teknologi dan dukungan">
+    <div class="container">
+      <div class="stack-layout">
+        <div class="stack-intro">
+          <p class="section-eyebrow">Stack siap produksi</p>
+          <h2>Teknologi pilihan yang kami gunakan</h2>
+          <p class="section-subtitle">Fondasi yang scalable memastikan portal klien dan marketing site Anda tetap stabil, aman, dan mudah dipelihara.</p>
+        </div>
+        <div class="stack-cards">
+          <article class="stack-card">
+            <h3>Lapisan presentasi</h3>
+            <ul>
+              <li>Astro dengan Islands Architecture</li>
+              <li>Styling modular dengan tokens neon</li>
+              <li>MDX untuk konten kampanye</li>
+            </ul>
+          </article>
+          <article class="stack-card">
+            <h3>Data &amp; integrasi</h3>
+            <ul>
+              <li>Supabase Postgres + Storage</li>
+              <li>Midtrans &amp; invoice otomatis</li>
+              <li>Webhook terverifikasi</li>
+            </ul>
+          </article>
+          <article class="stack-card">
+            <h3>Operasional</h3>
+            <ul>
+              <li>Cloudflare Workers &amp; Pages</li>
+              <li>Observability &amp; alerting siap pakai</li>
+              <li>Runbook QA dan incident response</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                        <div class="testimonials-grid">
-                                <TestimonialCard
-                                        quote="Platform ini benar-benar mengubah cara kami mengelola proyek dan klien. Setup cepat, fitur lengkap, dan support yang responsif. Sangat recommended untuk agensi modern."
-                                        author={{
-                                                name: "Sarah Wijaya",
-                                                role: "CEO",
-                                                company: "DigitalCraft Agency"
-                                        }}
-                                        rating={5}
-                                        metrics={[
-                                                { label: "Proyek Selesai", value: "150+" },
-                                                { label: "Client Satisfaction", value: "98%" }
-                                        ]}
-                                        variant="featured"
-                                />
+  <!-- Testimonials Section -->
+  <section class="testimonials-section" aria-label="Testimoni klien">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Buktipakai</p>
+        <h2>Yang dikatakan klien setelah go-live</h2>
+        <p class="section-subtitle">Mereka merasakan peningkatan performa, efisiensi, dan kepuasan klien sejak fase pertama.</p>
+      </div>
 
-                                <TestimonialCard
-                                        quote="Dari yang manual menjadi automated. Portal klien yang profesional dan marketing site yang convert. Best investment untuk bisnis kami tahun ini."
-                                        author={{
-                                                name: "Budi Santoso",
-                                                role: "Founder",
-                                                company: "TechVantage Solutions"
-                                        }}
-                                        rating={5}
-                                        metrics={[
-                                                { label: "Revenue Increase", value: "+45%" },
-                                                { label: "Time Saved", value: "20h/week" }
-                                        ]}
-                                        variant="featured"
-                                />
+      <div class="testimonials-grid">
+        <TestimonialCard
+          quote="Platform ini benar-benar mengubah cara kami mengelola proyek dan klien. Setup cepat, fitur lengkap, dan support yang responsif. Sangat recommended untuk agensi modern."
+          author={{
+            name: 'Sarah Wijaya',
+            role: 'CEO',
+            company: 'DigitalCraft Agency'
+          }}
+          rating={5}
+          metrics={[
+            { label: 'Proyek Selesai', value: '150+' },
+            { label: 'Client Satisfaction', value: '98%' }
+          ]}
+          variant="featured"
+        />
 
-                                <TestimonialCard
-                                        quote="Integrasi pembayaran dan sistem support yang seamless. Tim development kami jadi lebih fokus ke inovasi, bukan maintenance."
-                                        author={{
-                                                name: "Maya Putri",
-                                                role: "CTO",
-                                                company: "InnovateHub"
-                                        }}
-                                        rating={5}
-                                        metrics={[
-                                                { label: "Dev Productivity", value: "+60%" },
-                                                { label: "Support Tickets", value: "-80%" }
-                                        ]}
-                                        variant="featured"
-                                />
-                        </div>
-                </div>
-        </section>
+        <TestimonialCard
+          quote="Dari yang manual menjadi automated. Portal klien yang profesional dan marketing site yang convert. Best investment untuk bisnis kami tahun ini."
+          author={{
+            name: 'Budi Santoso',
+            role: 'Founder',
+            company: 'TechVantage Solutions'
+          }}
+          rating={5}
+          metrics={[
+            { label: 'Revenue Increase', value: '+45%' },
+            { label: 'Time Saved', value: '20h/week' }
+          ]}
+          variant="featured"
+        />
 
-        <!-- CTA Section -->
-        <section class="cta-section" aria-label="Call to action">
-                <div class="container">
-                        <div class="cta-content">
-                                <h2>Siap Transformasi Digital Agency Anda?</h2>
-                                <p class="cta-description">
-                                        Bergabunglah dengan agensi modern lainnya. Konsultasi gratis, demo langsung,
-                                        dan roadmap implementasi yang terstruktur untuk kesuksesan bisnis Anda.
-                                </p>
+        <TestimonialCard
+          quote="Integrasi pembayaran dan sistem support yang seamless. Tim development kami jadi lebih fokus ke inovasi, bukan maintenance."
+          author={{
+            name: 'Maya Putri',
+            role: 'CTO',
+            company: 'InnovateHub'
+          }}
+          rating={5}
+          metrics={[
+            { label: 'Dev Productivity', value: '+60%' },
+            { label: 'Support Tickets', value: '-80%' }
+          ]}
+          variant="featured"
+        />
+      </div>
+    </div>
+  </section>
 
-                                <div class="cta-actions">
-                                        <a href={heroWhatsappLink} class="btn btn--cta-primary" target="_blank" rel="noreferrer">
-                                                Konsultasi Sekarang
-                                                <span aria-hidden="true">→</span>
-                                        </a>
-                                        <a href="/kontak" class="btn btn--cta-secondary">
-                                                Jadwalkan Demo
-                                                <span aria-hidden="true">📅</span>
-                                        </a>
-                                </div>
+  <!-- CTA Section -->
+  <section class="cta-section" aria-label="Call to action">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Siap transformasi digital agency Anda?</h2>
+        <p class="cta-description">
+          Bergabunglah dengan agensi modern lainnya. Konsultasi gratis, demo langsung, dan roadmap implementasi yang terstruktur untuk kesuksesan bisnis Anda.
+        </p>
 
-                                <div class="cta-features">
-                                        <div class="cta-feature">
-                                                <span class="cta-feature__icon" aria-hidden="true">⚡</span>
-                                                <span class="cta-feature__text">Setup dalam 1 hari</span>
-                                        </div>
-                                        <div class="cta-feature">
-                                                <span class="cta-feature__icon" aria-hidden="true">🔒</span>
-                                                <span class="cta-feature__text">Security enterprise-grade</span>
-                                        </div>
-                                        <div class="cta-feature">
-                                                <span class="cta-feature__icon" aria-hidden="true">🎯</span>
-                                                <span class="cta-feature__text">Support 24/7</span>
-                                        </div>
-                                </div>
-                        </div>
-                </div>
-        </section>
+        <div class="cta-actions">
+          <a href={heroWhatsappLink} class="btn btn--cta-primary" target="_blank" rel="noreferrer">
+            Konsultasi Sekarang
+            <span aria-hidden="true">→</span>
+          </a>
+          <a href="/kontak" class="btn btn--cta-secondary">
+            Jadwalkan Demo
+            <span aria-hidden="true">📅</span>
+          </a>
+        </div>
 
-        <!-- Original sections as backup -->
-        <!-- <section class="hero" data-animate>
-                <div class="hero-content">
-                        <span class="eyebrow">Digital sprint terpadu</span>
-                        <h1>Bangun pengalaman digital futuristik yang tetap mudah dioperasikan.</h1>
-                        <p class="lead">
-                                Kami menyatukan marketing site, knowledge base, dan portal klien dalam satu sprint terarah—mengemas Astro, Supabase, dan pembayaran lokal menjadi solusi yang ramah tim dan cepat scale.
-                        </p>
-                        <div class="hero-actions">
-                                <a class="btn primary" href={heroWhatsappLink} target="_blank" rel="noreferrer">
-                                        Konsultasi via WhatsApp
-                                </a>
-                                <a class="btn ghost" href="/layanan">Lihat Paket Layanan</a>
-                        </div>
-                        <ul class="hero-benefits">
-                                <li>
-                                        <strong>Blueprint terverifikasi</strong>
-                                        <span>SSR portal + SSG marketing dengan guard RBAC, siap multi tenant.</span>
-                                </li>
-                                <li>
-                                        <strong>Automasi operasional</strong>
-                                        <span>Midtrans Snap, notifikasi lintas kanal, dan runbook insiden siap pakai.</span>
-                                </li>
-                                <li>
-                                        <strong>Kolaborasi efisien</strong>
-                                        <span>CI/CD Cloudflare, content collections MDX, dan kontrol akses granular.</span>
-                                </li>
-                        </ul>
-                </div>
-                <aside class="hero-summary">
-                        <div class="hero-summary__glow" aria-hidden="true"></div>
-                        <h2>Peta perjalanan</h2>
-                        <dl>
-                                <div>
-                                        <dt>Discovery &amp; scope</dt>
-                                        <dd>Model KPI, journey pengguna, arsitektur informasi.</dd>
-                                </div>
-                                <div>
-                                        <dt>Desain &amp; validasi</dt>
-                                        <dd>Design system futuristik, prototipe aksesibel, copy terpandu.</dd>
-                                </div>
-                                <div>
-                                        <dt>Integrasi inti</dt>
-                                        <dd>Supabase RLS, pembayaran locale, analitik consent-first.</dd>
-                                </div>
-                                <div>
-                                        <dt>Go-live &amp; optimasi</dt>
-                                        <dd>Deploy Cloudflare, observability, dan sesi enablement tim.</dd>
-                                </div>
-                        </dl>
-                </aside>
-        </section>
-
-        <section class="value-grid" data-animate>
-                <h2>Mengapa bermitra dengan kami</h2>
-                <div class="grid">
-                        <article>
-                                <span class="icon">⚙️</span>
-                                <h3>Arsitektur modular</h3>
-                                <p>Komponen terstruktur membuat fitur baru dan iterasi UI tetap gesit.</p>
-                        </article>
-                        <article>
-                                <span class="icon">🛰️</span>
-                                <h3>Pengalaman masa depan</h3>
-                                <p>Transisi lembut, tipografi terang, dan respons cepat menjaga fokus pengguna.</p>
-                        </article>
-                        <article>
-                                <span class="icon">🤝</span>
-                                <h3>Operasional ramah tim</h3>
-                                <p>Runbook, checklist QA, dan integrasi otomatis meminimalkan beban support.</p>
-                        </article>
-                </div>
-        </section>
-
-        <section class="process" data-animate>
-                <h2>Peta kolaborasi empat fase</h2>
-                <ol>
-                        <li>
-                                <div class="step-badge">01</div>
-                                <h3>Discovery</h3>
-                                <p>Audit journey, segmentasi persona, dan definisi KPI.</p>
-                        </li>
-                        <li>
-                                <div class="step-badge">02</div>
-                                <h3>Desain &amp; prototipe</h3>
-                                <p>Visual futuristik yang tetap mudah dibaca serta aksesibilitas WCAG.</p>
-                        </li>
-                        <li>
-                                <div class="step-badge">03</div>
-                                <h3>Integrasi teknis</h3>
-                                <p>Supabase, pembayaran, dan notifikasi terpadu lintas kanal.</p>
-                        </li>
-                        <li>
-                                <div class="step-badge">04</div>
-                                <h3>Go-live</h3>
-                                <p>Deploy Cloudflare, observability, dan sesi enablement tim.</p>
-                        </li>
-                </ol>
-        </section>
-
-        <section class="cta-banner" data-animate>
-                <div class="cta-content">
-                        <h2>Siap melesat menuju pengalaman digital baru?</h2>
-                        <p>Kami bantu rangkai demo, timeline, dan roadmap peningkatan layanan Anda.</p>
-                </div>
-                <a class="btn primary" href="/kontak">Jadwalkan Demo</a>
-        </section>
+        <div class="cta-features">
+          <div class="cta-feature">
+            <span class="cta-feature__icon" aria-hidden="true">⚡</span>
+            <span class="cta-feature__text">Setup dalam 1 hari</span>
+          </div>
+          <div class="cta-feature">
+            <span class="cta-feature__icon" aria-hidden="true">🔒</span>
+            <span class="cta-feature__text">Security enterprise-grade</span>
+          </div>
+          <div class="cta-feature">
+            <span class="cta-feature__icon" aria-hidden="true">🎯</span>
+            <span class="cta-feature__text">Support 24/7</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </MarketingLayout>
 
 <style>
-        /* ==========================================================================
-           AstroPro Digital - Homepage Styles
-           Modern marketing site dengan komponen terbaru
-           ========================================================================== */
-
-        /* Container utility */
-        .container {
-                max-width: 1400px;
-                margin: 0 auto;
-                padding: 0 var(--space-6);
-        }
-
-        /* Section Headers */
-        .section-header {
-                text-align: center;
-                margin-bottom: var(--space-16);
-        }
-
-        .section-header h2 {
-                font-size: var(--text-3xl);
-                font-weight: var(--font-bold);
-                margin-bottom: var(--space-4);
-                background: var(--gradient-primary);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-        }
-
-        .section-subtitle {
-                font-size: var(--text-lg);
-                color: var(--color-text-secondary);
-                margin: 0;
-                max-width: 600px;
-                margin-left: auto;
-                margin-right: auto;
-        }
-
-        /* Features Section */
-        .features-section {
-                padding: var(--space-20) 0;
-                background: rgba(15, 23, 42, 0.5);
-        }
-
-        .features-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-                gap: var(--space-8);
-        }
-
-        /* Testimonials Section */
-        .testimonials-section {
-                padding: var(--space-20) 0;
-                background: var(--gradient-surface);
-                position: relative;
-        }
-
-        .testimonials-section::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
-                pointer-events: none;
-        }
-
-        .testimonials-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-                gap: var(--space-8);
-                position: relative;
-                z-index: 1;
-        }
-
-        /* CTA Section */
-        .cta-section {
-                padding: var(--space-20) 0;
-                background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
-                border-top: 1px solid rgba(124, 58, 237, 0.2);
-        }
-
-        .cta-content {
-                text-align: center;
-                max-width: 800px;
-                margin: 0 auto;
-        }
-
-        .cta-content h2 {
-                font-size: var(--text-3xl);
-                font-weight: var(--font-bold);
-                margin-bottom: var(--space-4);
-                color: var(--color-text-primary);
-        }
-
-        .cta-description {
-                font-size: var(--text-lg);
-                color: var(--color-text-secondary);
-                margin-bottom: var(--space-8);
-                line-height: var(--leading-relaxed);
-        }
-
-        .cta-actions {
-                display: flex;
-                gap: var(--space-4);
-                justify-content: center;
-                align-items: center;
-                margin-bottom: var(--space-8);
-                flex-wrap: wrap;
-        }
-
-        .btn {
-                display: inline-flex;
-                align-items: center;
-                gap: var(--space-2);
-                padding: var(--space-4) var(--space-8);
-                border-radius: var(--radius-full);
-                font-size: var(--text-lg);
-                font-weight: var(--font-semibold);
-                text-decoration: none;
-                transition: all var(--transition-base);
-                position: relative;
-                overflow: hidden;
-        }
-
-        .btn--cta-primary {
-                background: var(--gradient-primary);
-                color: white;
-                box-shadow: var(--shadow-gradient);
-        }
-
-        .btn--cta-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 12px 30px rgba(124, 58, 237, 0.4);
-                background: linear-gradient(135deg, #6D28D9 0%, #1E40AF 100%);
-        }
-
-        .btn--cta-secondary {
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                color: white;
-                border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn--cta-secondary:hover {
-                background: rgba(255, 255, 255, 0.2);
-                border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .cta-features {
-                display: flex;
-                justify-content: center;
-                gap: var(--space-8);
-                flex-wrap: wrap;
-        }
-
-        .cta-feature {
-                display: flex;
-                align-items: center;
-                gap: var(--space-2);
-                font-size: var(--text-sm);
-                color: var(--color-text-secondary);
-        }
-
-        .cta-feature__icon {
-                font-size: 1.25rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-                .features-section,
-                .testimonials-section,
-                .cta-section {
-                        padding: var(--space-16) 0;
-                }
-
-                .features-grid,
-                .testimonials-grid {
-                        grid-template-columns: 1fr;
-                        gap: var(--space-6);
-                }
-
-                .section-header {
-                        margin-bottom: var(--space-12);
-                }
-
-                .section-header h2 {
-                        font-size: var(--text-2xl);
-                }
-
-                .cta-actions {
-                        flex-direction: column;
-                        gap: var(--space-3);
-                }
-
-                .btn {
-                        width: 100%;
-                        max-width: 280px;
-                        justify-content: center;
-                }
-
-                .cta-features {
-                        gap: var(--space-4);
-                        flex-direction: column;
-                        align-items: center;
-                }
-        }
-
-        @media (max-width: 480px) {
-                .container {
-                        padding: 0 var(--space-4);
-                }
-
-                .cta-content h2 {
-                        font-size: var(--text-2xl);
-                }
-
-                .cta-description {
-                        font-size: var(--text-base);
-                }
-        }
-
-        /* Reduced Motion Support */
-        @media (prefers-reduced-motion: reduce) {
-                .btn {
-                        transition: none;
-                }
-
-                .btn:hover {
-                        transform: none;
-                }
-        }
-
-        /* High Contrast Mode */
-        @media (prefers-contrast: high) {
-                .btn--cta-primary,
-                .btn--cta-secondary {
-                        border-width: 2px;
-                }
-
-                .cta-features {
-                        gap: var(--space-6);
-                }
-        }
-
-        /* Focus Styles for Accessibility */
-        .btn:focus-visible {
-                outline: 2px solid rgba(255, 255, 255, 0.8);
-                outline-offset: 2px;
-        }
-
-        /* ==========================================================================
-           Legacy Styles (untuk backup jika diperlukan)
-           ========================================================================== */
-
-        /* Commented out original styles for reference */
-        /*
-        .hero {
-                position: relative;
-                display: grid;
-                gap: clamp(2rem, 6vw, 3.5rem);
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                padding: clamp(3rem, 6vw, 5rem);
-                background: rgba(18, 24, 40, 0.78);
-                border: 1px solid rgba(110, 132, 182, 0.18);
-                border-radius: clamp(2.2rem, 6vw, 3rem);
-                box-shadow: 0 20px 44px rgba(12, 18, 36, 0.3);
-                overflow: hidden;
-        }
-
-        .hero::before {
-                content: "";
-                position: absolute;
-                inset: -30% 40% auto auto;
-                width: 420px;
-                height: 420px;
-                background: radial-gradient(circle, rgba(100, 193, 255, 0.18), transparent 70%);
-                filter: blur(14px);
-                opacity: 0.7;
-        }
-
-        .hero-content {
-                display: grid;
-                gap: clamp(1.2rem, 3vw, 1.8rem);
-                position: relative;
-                z-index: 1;
-        }
-
-        .eyebrow {
-                text-transform: uppercase;
-                letter-spacing: 0.32em;
-                color: rgba(255, 255, 255, 0.68);
-                font-weight: 600;
-                font-size: 0.78rem;
-        }
-
-        .lead {
-                font-size: clamp(1.05rem, 2.1vw, 1.25rem);
-                margin: 0;
-                color: rgb(var(--text-secondary));
-                max-width: 52ch;
-        }
-
-        .hero-actions {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 1rem;
-        }
-
-        .hero-benefits {
-                margin: 0;
-                padding: 0;
-                list-style: none;
-                display: grid;
-                gap: 0.85rem;
-        }
-
-        .hero-benefits li {
-                display: grid;
-                gap: 0.3rem;
-                background: rgba(15, 21, 35, 0.82);
-                border: 1px solid rgba(110, 132, 182, 0.2);
-                border-radius: 1.1rem;
-                padding: 0.9rem 1.1rem;
-        }
-
-        .hero-benefits strong {
-                color: rgb(var(--text-primary));
-        }
-
-        .hero-benefits span {
-                color: rgb(var(--text-muted));
-                font-size: 0.95rem;
-        }
-
-        .hero-summary {
-                position: relative;
-                background: rgba(14, 20, 36, 0.82);
-                border: 1px solid rgba(110, 132, 182, 0.2);
-                border-radius: clamp(1.8rem, 5vw, 2.2rem);
-                padding: clamp(1.9rem, 4vw, 2.4rem);
-                box-shadow: 0 18px 38px rgba(12, 18, 36, 0.28);
-                display: grid;
-                gap: 1.1rem;
-        }
-
-        .hero-summary__glow {
-                position: absolute;
-                inset: -25% -10% auto auto;
-                width: 220px;
-                height: 220px;
-                background: radial-gradient(circle, rgba(100, 193, 255, 0.18), transparent 70%);
-                filter: blur(14px);
-                opacity: 0.65;
-        }
-
-        .hero-summary h2 {
-                margin: 0;
-                font-size: 1.05rem;
-                color: rgb(var(--text-primary));
-        }
-
-        .hero-summary dl {
-                margin: 0;
-                padding: 0;
-                display: grid;
-                gap: 1rem;
-        }
-
-        .hero-summary dt {
-                font-weight: 600;
-                color: rgb(var(--text-primary));
-        }
-
-        .hero-summary dd {
-                margin: 0.3rem 0 0;
-                color: rgb(var(--text-muted));
-        }
-
-        .value-grid {
-                margin-top: clamp(4rem, 8vw, 6rem);
-                text-align: center;
-        }
-
-        .value-grid .grid {
-                margin-top: clamp(1.5rem, 4vw, 2.5rem);
-                display: grid;
-                gap: clamp(1.2rem, 3vw, 1.8rem);
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        }
-
-        .value-grid article {
-                position: relative;
-                background: rgba(17, 23, 40, 0.82);
-                border-radius: clamp(1.5rem, 4vw, 1.9rem);
-                padding: clamp(1.8rem, 4vw, 2.3rem);
-                border: 1px solid rgba(110, 132, 182, 0.18);
-                box-shadow: 0 14px 32px rgba(12, 18, 36, 0.24);
-                display: grid;
-                gap: 0.75rem;
-        }
-
-        .value-grid .icon {
-                font-size: 1.6rem;
-        }
-
-        .process {
-                margin-top: clamp(4rem, 8vw, 6rem);
-        }
-
-        .process ol {
-                display: grid;
-                gap: clamp(1.2rem, 3vw, 1.8rem);
-                counter-reset: steps;
-                grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-                padding-left: 0;
-                list-style: none;
-        }
-
-        .process li {
-                background: rgba(17, 23, 40, 0.8);
-                border-radius: clamp(1.6rem, 4vw, 1.9rem);
-                padding: clamp(1.8rem, 4vw, 2.2rem);
-                border: 1px solid rgba(110, 132, 182, 0.18);
-                box-shadow: 0 14px 28px rgba(12, 18, 36, 0.24);
-                position: relative;
-                display: grid;
-                gap: 0.65rem;
-        }
-
-        .step-badge {
-                width: 2.25rem;
-                height: 2.25rem;
-                border-radius: 0.75rem;
-                background: rgba(100, 193, 255, 0.16);
-                color: rgb(var(--text-primary));
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: 600;
-                font-size: 0.9rem;
-        }
-
-        .cta-banner {
-                margin-top: clamp(4.5rem, 9vw, 7rem);
-                background: rgba(13, 19, 34, 0.85);
-                border-radius: clamp(1.8rem, 5vw, 2.2rem);
-                padding: clamp(2.5rem, 6vw, 3.5rem);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: clamp(1.5rem, 4vw, 2.5rem);
-                flex-wrap: wrap;
-                border: 1px solid rgba(110, 132, 182, 0.2);
-                box-shadow: 0 16px 34px rgba(12, 18, 36, 0.26);
-        }
-
-        .cta-banner h2 {
-                color: rgb(var(--text-primary));
-        }
-
-        [data-animate] {
-                animation: floatFade 720ms var(--transition-smooth) both;
-        }
-
-        [data-animate]:nth-of-type(2) {
-                animation-delay: 120ms;
-        }
-
-        [data-animate]:nth-of-type(3) {
-                animation-delay: 220ms;
-        }
-
-        [data-animate]:nth-of-type(4) {
-                animation-delay: 320ms;
-        }
-
-        @keyframes floatFade {
-                0% {
-                        opacity: 0;
-                        transform: translateY(22px) scale(0.98);
-                }
-                100% {
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                }
-        }
-
-        @media (max-width: 900px) {
-                .hero {
-                        grid-template-columns: 1fr;
-                        padding: clamp(2.5rem, 6vw, 3.2rem);
-                }
-
-                .hero-summary {
-                        order: -1;
-                }
-        }
-
-        @media (max-width: 720px) {
-                .cta-banner {
-                        text-align: center;
-                        justify-content: center;
-                }
-        }
-        */
-
-        /* ==========================================================================
-           End of Legacy Styles
-           ========================================================================== */
+  .container {
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+    position: relative;
+  }
+
+  .section-header h2 {
+    font-size: clamp(2rem, 2rem + 1vw, 2.75rem);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-4);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 26px rgba(147, 51, 234, 0.25);
+  }
+
+  .section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    margin-bottom: 1.25rem;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: rgba(var(--text-secondary), 0.85);
+    font-size: var(--text-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .section-subtitle {
+    font-size: var(--text-lg);
+    color: rgba(var(--text-secondary), 0.85);
+    margin: 0 auto;
+    max-width: 720px;
+    line-height: var(--leading-relaxed);
+  }
+
+  .outcomes-section {
+    position: relative;
+    padding: clamp(5rem, 8vw, 6.5rem) 0;
+  }
+
+  .outcomes-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: linear-gradient(155deg, rgba(6, 12, 32, 0.85) 0%, rgba(17, 26, 48, 0.78) 60%, rgba(28, 36, 64, 0.82) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    box-shadow: 0 26px 58px rgba(2, 6, 23, 0.55);
+  }
+
+  .outcomes-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: radial-gradient(circle at 20% 25%, rgba(147, 51, 234, 0.28), transparent 65%),
+      radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.25), transparent 70%);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .outcomes-section > .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.4rem);
+  }
+
+  .outcome-card {
+    background: rgba(8, 12, 32, 0.82);
+    border-radius: var(--radius-2xl);
+    border: 1px solid rgba(56, 189, 248, 0.28);
+    padding: clamp(1.75rem, 3vw, 2.4rem);
+    box-shadow: 0 18px 36px rgba(2, 6, 23, 0.45);
+    display: grid;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .outcome-card::before {
+    content: '';
+    position: absolute;
+    inset: -40% 40% 40% -40%;
+    background: radial-gradient(circle, rgba(244, 114, 182, 0.32), transparent 70%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .outcome-card__value {
+    font-size: clamp(2rem, 1.8rem + 1.2vw, 2.8rem);
+    font-weight: var(--font-bold);
+    color: var(--color-text-primary);
+  }
+
+  .outcome-card__label {
+    font-size: var(--text-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(var(--text-secondary), 0.7);
+  }
+
+  .outcome-card__detail {
+    margin: 0;
+    color: rgba(var(--text-secondary), 0.85);
+    line-height: var(--leading-relaxed);
+  }
+
+  .solutions-section {
+    position: relative;
+    padding: clamp(5.5rem, 9vw, 7rem) 0;
+  }
+
+  .solutions-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: linear-gradient(140deg, rgba(6, 12, 32, 0.9) 0%, rgba(17, 26, 48, 0.8) 50%, rgba(35, 47, 78, 0.82) 100%);
+    border: 1px solid rgba(244, 114, 182, 0.22);
+    box-shadow: 0 30px 62px rgba(2, 6, 23, 0.58);
+  }
+
+  .solutions-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: radial-gradient(circle at 18% 32%, rgba(244, 114, 182, 0.28), transparent 65%),
+      radial-gradient(circle at 82% 22%, rgba(56, 189, 248, 0.26), transparent 65%);
+    pointer-events: none;
+  }
+
+  .solutions-section > .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .solutions-layout {
+    display: grid;
+    gap: clamp(2.5rem, 4vw, 3rem);
+  }
+
+  .solutions-header {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .solution-card {
+    background: rgba(8, 12, 32, 0.78);
+    border-radius: var(--radius-2xl);
+    border: 1px solid rgba(147, 51, 234, 0.32);
+    padding: clamp(1.9rem, 3vw, 2.6rem);
+    box-shadow: 0 22px 44px rgba(2, 6, 23, 0.5);
+    display: grid;
+    gap: 0.9rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .solution-card::before {
+    content: '';
+    position: absolute;
+    inset: -35% -40% 45% 30%;
+    background: radial-gradient(circle, rgba(147, 51, 234, 0.28), transparent 70%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .solution-card__icon {
+    width: 3rem;
+    height: 3rem;
+    display: grid;
+    place-items: center;
+    border-radius: 1rem;
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid rgba(56, 189, 248, 0.32);
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+  }
+
+  .solution-card h3 {
+    margin: 0;
+    font-size: clamp(1.3rem, 1.1rem + 0.4vw, 1.6rem);
+    color: var(--color-text-primary);
+  }
+
+  .solution-card p {
+    margin: 0;
+    color: rgba(var(--text-secondary), 0.85);
+  }
+
+  .solution-card ul {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    list-style: none;
+  }
+
+  .solution-card li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: rgba(var(--text-secondary), 0.75);
+    line-height: 1.5;
+  }
+
+  .solution-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--color-secondary);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
+  }
+
+  .features-section {
+    position: relative;
+    padding: clamp(5rem, 8vw, 6.5rem) 0;
+  }
+
+  .features-section::before,
+  .features-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    pointer-events: none;
+  }
+
+  .features-section::before {
+    background: linear-gradient(155deg, rgba(6, 12, 32, 0.85) 0%, rgba(17, 26, 48, 0.78) 60%, rgba(28, 36, 64, 0.8) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.18);
+    box-shadow: 0 28px 60px rgba(2, 6, 23, 0.55);
+  }
+
+  .features-section::after {
+    background: radial-gradient(circle at 20% 25%, rgba(147, 51, 234, 0.28), transparent 65%),
+      radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.25), transparent 70%);
+    opacity: 0.6;
+  }
+
+  .features-section > .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .workflow-section {
+    position: relative;
+    padding: clamp(5.5rem, 9vw, 7rem) 0;
+  }
+
+  .workflow-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: linear-gradient(150deg, rgba(15, 23, 42, 0.85) 0%, rgba(6, 12, 32, 0.9) 60%, rgba(17, 26, 48, 0.86) 100%);
+    border: 1px solid rgba(244, 114, 182, 0.25);
+    box-shadow: 0 30px 60px rgba(2, 6, 23, 0.55);
+  }
+
+  .workflow-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: radial-gradient(circle at 30% 30%, rgba(244, 114, 182, 0.28), transparent 70%),
+      radial-gradient(circle at 70% 65%, rgba(56, 189, 248, 0.22), transparent 65%);
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .workflow-section > .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .workflow-timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.4rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .workflow-step {
+    background: rgba(8, 12, 32, 0.78);
+    border-radius: var(--radius-2xl);
+    border: 1px solid rgba(56, 189, 248, 0.24);
+    padding: clamp(1.9rem, 3vw, 2.6rem);
+    box-shadow: 0 22px 44px rgba(2, 6, 23, 0.48);
+    display: grid;
+    gap: 0.85rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .workflow-step::before {
+    content: '';
+    position: absolute;
+    inset: -30% 30% 40% -30%;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.3), transparent 70%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .step-badge {
+    width: 2.6rem;
+    height: 2.6rem;
+    display: grid;
+    place-items: center;
+    border-radius: 0.9rem;
+    background: rgba(244, 114, 182, 0.16);
+    border: 1px solid rgba(244, 114, 182, 0.32);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+  }
+
+  .workflow-step h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 1.05rem + 0.4vw, 1.5rem);
+    color: var(--color-text-primary);
+  }
+
+  .workflow-step p {
+    margin: 0;
+    color: rgba(var(--text-secondary), 0.85);
+    line-height: var(--leading-relaxed);
+  }
+
+  .stack-section {
+    position: relative;
+    padding: clamp(5.5rem, 9vw, 7rem) 0;
+  }
+
+  .stack-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: linear-gradient(160deg, rgba(6, 12, 32, 0.86) 0%, rgba(17, 26, 48, 0.8) 55%, rgba(35, 47, 78, 0.85) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.24);
+    box-shadow: 0 32px 64px rgba(2, 6, 23, 0.58);
+  }
+
+  .stack-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: radial-gradient(circle at 35% 25%, rgba(147, 51, 234, 0.32), transparent 65%),
+      radial-gradient(circle at 70% 60%, rgba(56, 189, 248, 0.25), transparent 70%);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .stack-section > .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .stack-layout {
+    display: grid;
+    gap: clamp(2.5rem, 4vw, 3.2rem);
+    align-items: start;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .stack-intro {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .stack-cards {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.2rem);
+  }
+
+  .stack-card {
+    background: rgba(8, 12, 32, 0.78);
+    border-radius: var(--radius-2xl);
+    border: 1px solid rgba(56, 189, 248, 0.26);
+    padding: clamp(1.8rem, 3vw, 2.4rem);
+    box-shadow: 0 20px 40px rgba(2, 6, 23, 0.48);
+    display: grid;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stack-card::before {
+    content: '';
+    position: absolute;
+    inset: -25% -35% 45% 25%;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.3), transparent 70%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .stack-card h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 1.05rem + 0.3vw, 1.4rem);
+    color: var(--color-text-primary);
+  }
+
+  .stack-card ul {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+    list-style: none;
+  }
+
+  .stack-card li {
+    position: relative;
+    padding-left: 1.4rem;
+    color: rgba(var(--text-secondary), 0.8);
+    line-height: var(--leading-relaxed);
+  }
+
+  .stack-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 10px rgba(147, 51, 234, 0.55);
+  }
+
+  .testimonials-section {
+    position: relative;
+    padding: clamp(5rem, 8vw, 6.5rem) 0;
+  }
+
+  .testimonials-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: linear-gradient(150deg, rgba(15, 23, 42, 0.85) 0%, rgba(6, 12, 32, 0.9) 60%, rgba(17, 26, 48, 0.86) 100%);
+    border: 1px solid rgba(244, 114, 182, 0.25);
+    box-shadow: 0 30px 60px rgba(2, 6, 23, 0.55);
+  }
+
+  .testimonials-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: radial-gradient(circle at 30% 30%, rgba(244, 114, 182, 0.28), transparent 70%),
+      radial-gradient(circle at 70% 65%, rgba(56, 189, 248, 0.22), transparent 65%);
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .testimonials-section > .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .cta-section {
+    position: relative;
+    padding: clamp(5.5rem, 9vw, 7rem) 0;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: linear-gradient(145deg, rgba(6, 12, 32, 0.85) 0%, rgba(17, 26, 48, 0.78) 60%, rgba(30, 40, 70, 0.82) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.24);
+    box-shadow: 0 32px 64px rgba(2, 6, 23, 0.6);
+  }
+
+  .cta-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(2rem, 3vw, 3rem);
+    background: radial-gradient(circle at 35% 25%, rgba(147, 51, 234, 0.32), transparent 65%),
+      radial-gradient(circle at 70% 60%, rgba(56, 189, 248, 0.25), transparent 70%);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .cta-section > .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-content {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .cta-content h2 {
+    font-size: clamp(2.1rem, 1.9rem + 1vw, 2.85rem);
+    font-weight: var(--font-bold);
+    margin: 0;
+    color: var(--color-text-primary);
+    text-shadow: 0 0 26px rgba(147, 51, 234, 0.25);
+  }
+
+  .cta-description {
+    font-size: var(--text-lg);
+    color: rgba(var(--text-secondary), 0.85);
+    margin: 0;
+    line-height: var(--leading-relaxed);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-full);
+    font-size: var(--text-lg);
+    text-decoration: none;
+    font-weight: var(--font-semibold);
+  }
+
+  .btn--cta-primary {
+    background: var(--accent-gradient);
+    border: 1px solid rgba(var(--accent-rgb), 0.5);
+    color: var(--color-text-primary);
+    box-shadow: 0 18px 36px rgba(2, 6, 23, 0.55);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .btn--cta-primary:hover,
+  .btn--cta-primary:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: var(--glow-primary);
+    outline: none;
+  }
+
+  .btn--cta-secondary {
+    background: rgba(6, 12, 32, 0.75);
+    border: 1px solid rgba(56, 189, 248, 0.32);
+    color: var(--color-text-primary);
+    box-shadow: inset 0 0 0 1px rgba(147, 51, 234, 0.18);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .btn--cta-secondary:hover,
+  .btn--cta-secondary:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-secondary);
+    outline: none;
+  }
+
+  .cta-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .cta-feature {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-full);
+    background: rgba(8, 12, 32, 0.7);
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    color: rgba(var(--text-secondary), 0.85);
+  }
+
+  .cta-feature__icon {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 1024px) {
+    .features-grid,
+    .testimonials-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .container {
+      padding: 0 var(--space-4);
+    }
+
+    .cta-actions {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>

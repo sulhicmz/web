@@ -4,8 +4,10 @@ import MarketingLayout from '../layouts/MarketingLayout.astro';
 
 <MarketingLayout title="Tentang AstroPro Digital" description="Tim multidisiplin yang membantu bisnis B2B membangun website Astro dan portal klien terpadu.">
         <section class="about">
-                <h1>Siapa Kami</h1>
-                <p>AstroPro Digital adalah tim strategis, desainer, dan engineer yang berfokus menghadirkan pengalaman digital premium melalui pendekatan data dan otomatisasi.</p>
+                <div class="about__header">
+                        <h1>Siapa Kami</h1>
+                        <p>AstroPro Digital adalah tim strategis, desainer, dan engineer yang berfokus menghadirkan pengalaman digital premium melalui pendekatan data dan otomatisasi.</p>
+                </div>
                 <div class="pillars">
                         <article>
                                 <h2>Strategi &amp; Operasi</h2>
@@ -26,27 +28,113 @@ import MarketingLayout from '../layouts/MarketingLayout.astro';
 <style>
         .about {
                 display: grid;
-                gap: clamp(1.75rem, 4vw, 2.5rem);
+                gap: clamp(2.5rem, 4vw, 3.5rem);
+                padding: clamp(3rem, 6vw, 4rem) clamp(1.5rem, 4vw, 2.5rem);
+                border-radius: var(--radius-2xl);
+                background: linear-gradient(150deg, rgba(6, 12, 32, 0.82) 0%, rgba(17, 26, 48, 0.78) 60%, rgba(30, 40, 70, 0.85) 100%);
+                border: 1px solid rgba(56, 189, 248, 0.2);
+                box-shadow: 0 28px 60px rgba(2, 6, 23, 0.55);
+                position: relative;
+                overflow: hidden;
+        }
+
+        .about::before {
+                content: '';
+                position: absolute;
+                inset: -30% 10% auto;
+                height: 260px;
+                background: radial-gradient(circle, rgba(147, 51, 234, 0.32), transparent 70%);
+                opacity: 0.7;
+                pointer-events: none;
+        }
+
+        .about::after {
+                content: '';
+                position: absolute;
+                inset: 15% -40% -20% 40%;
+                background: radial-gradient(circle, rgba(56, 189, 248, 0.28), transparent 70%);
+                filter: blur(80px);
+                opacity: 0.6;
+                pointer-events: none;
+        }
+
+        .about__header {
+                position: relative;
+                z-index: 1;
+                display: grid;
+                gap: var(--space-3);
+        }
+
+        .about__header h1 {
+                font-size: clamp(2.3rem, 2rem + 1vw, 3rem);
+                margin: 0;
+                color: var(--color-text-primary);
+                text-shadow: 0 0 26px rgba(147, 51, 234, 0.25);
+        }
+
+        .about__header p {
+                margin: 0;
+                color: rgba(var(--text-secondary), 0.85);
+                font-size: var(--text-lg);
+                line-height: var(--leading-relaxed);
         }
 
         .pillars {
+                position: relative;
+                z-index: 1;
                 display: grid;
-                gap: clamp(1.25rem, 3.5vw, 1.8rem);
+                gap: clamp(1.5rem, 3vw, 2.25rem);
                 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         }
 
         article {
-                background: rgba(17, 22, 36, 0.78);
-                padding: clamp(1.75rem, 4vw, 2.25rem);
-                border-radius: clamp(1.5rem, 4vw, 1.9rem);
-                box-shadow: 0 0 32px rgba(12, 18, 36, 0.4);
-                border: 1px solid rgba(124, 133, 178, 0.18);
-                transition: transform var(--transition-base), box-shadow var(--transition-base);
+                background: linear-gradient(160deg, rgba(8, 12, 32, 0.85) 0%, rgba(17, 26, 48, 0.78) 100%);
+                padding: clamp(1.75rem, 3vw, 2.4rem);
+                border-radius: var(--radius-xl);
+                box-shadow: 0 18px 36px rgba(2, 6, 23, 0.55);
+                border: 1px solid rgba(56, 189, 248, 0.2);
+                transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+                position: relative;
+                overflow: hidden;
+        }
+
+        article::before {
+                content: '';
+                position: absolute;
+                inset: -25% -25% auto auto;
+                width: 180px;
+                height: 180px;
+                background: radial-gradient(circle, rgba(56, 189, 248, 0.3), transparent 65%);
+                opacity: 0.7;
+                pointer-events: none;
         }
 
         article:hover,
         article:focus-within {
-                transform: translateY(-5px);
-                box-shadow: 0 0 36px rgba(90, 209, 255, 0.2);
+                transform: translateY(-6px);
+                box-shadow: var(--glow-secondary);
+                border-color: rgba(56, 189, 248, 0.45);
+        }
+
+        article h2 {
+                margin: 0 0 var(--space-3);
+                color: var(--color-text-primary);
+                font-size: clamp(1.4rem, 1.2rem + 0.4vw, 1.65rem);
+        }
+
+        article p {
+                margin: 0;
+                color: rgba(var(--text-secondary), 0.85);
+                line-height: var(--leading-relaxed);
+        }
+
+        @media (max-width: 720px) {
+                .about {
+                        padding: var(--space-5);
+                }
+
+                .about__header h1 {
+                        font-size: clamp(2rem, 1.75rem + 1.5vw, 2.6rem);
+                }
         }
 </style>
