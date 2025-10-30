@@ -121,15 +121,15 @@ const classes = ['ui-pricing-table', typeof customClass === 'string' ? customCla
         }
 
         .ui-pricing-table__card.is-highlighted {
-                border-color: rgba(var(--accent), 0.4);
-                box-shadow: 0 26px 60px rgba(var(--accent), 0.18);
+                border-color: rgba(var(--accent-rgb), 0.4);
+                box-shadow: 0 26px 60px rgba(var(--accent-rgb), 0.18);
         }
 
         .ui-pricing-table__badge {
                 position: absolute;
                 top: 1rem;
                 right: 1.5rem;
-                background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+                background: linear-gradient(135deg, var(--accent-color), var(--accent-dark));
                 color: #fff;
                 font-size: 0.75rem;
                 font-weight: 600;
@@ -192,8 +192,8 @@ const classes = ['ui-pricing-table', typeof customClass === 'string' ? customCla
                 height: 1.25rem;
                 border-radius: 999px;
                 font-weight: 700;
-                background: rgba(var(--accent), 0.12);
-                color: rgb(var(--accent));
+                background: rgba(var(--accent-rgb), 0.12);
+                color: var(--accent-color);
         }
 
         .ui-pricing-table__feature.is-excluded .ui-pricing-table__feature-indicator {
