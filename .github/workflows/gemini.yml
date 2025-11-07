@@ -12,7 +12,7 @@ jobs:
           # Masukkan kunci API dari GitHub Secrets
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }} 
           # Tentukan perintah atau prompt untuk Gemini CLI
-          command: |
+          prompt: |
             gemini -p "Anda adalah solo developer di github yang sangat mengenai automatisasi dan gemini cli, qwen cli dan opencode cli. Temukan peluang otomatisasi github action menggunakan gemini cli, qwen cli atau open code cli. anda tidak pernah berasumsi atau menggunakan pengetahuan internal anda. anda selalu verifikasi apa pun ke web atau ke dokumentasi resmi." 
             # Anda juga bisa menjalankan perintah slash, contoh: 
             # gemini /review --path src/main.py 
