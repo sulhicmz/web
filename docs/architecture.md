@@ -62,12 +62,14 @@ src/
 
 ## API Structure
 
-The application exposes several API endpoints:
+The application exposes several API endpoints grouped by functionality. For a comprehensive list and details, please see the [API Reference](./api-reference.md). Key endpoint groups include:
 
-- `/api/notifications/whatsapp` - WhatsApp notification handling
-- `/api/payments/session` - Payment session creation
-- `/api/payments/webhook` - Payment webhook processing
-- `/api/payments/subscription` - Subscription management
+- `/api/payments/*` - Payment processing, webhooks, and subscriptions.
+- `/api/portal/*` - Client portal data, such as projects.
+- `/api/user/*` - User profile management.
+- `/api/support/*` - Support ticket system.
+- `/api/billing/*` - Billing and invoice information.
+- `/api/notifications/*` - Outbound notifications.
 
 ## Security Considerations
 
