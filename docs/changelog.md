@@ -22,14 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced README.md with more detailed information
 - Updated howto.md with comprehensive deployment instructions
 
-## [2025-11-07] - 2025-11-07
+## [0.2.0] - 2025-11-07
 
 ### Added
 - Documentation reactivation and completion as part of issue #13
 - Comprehensive documentation set covering all major aspects of the application
 - Updated project documentation to match current implementation
 
-## [2025-11-05] - 2025-11-05
+## [0.1.0] - 2025-11-05
 
 ### Added
 - Initial project setup with Astro, Supabase, and Cloudflare integration

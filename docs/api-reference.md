@@ -1,6 +1,10 @@
 # API Reference
 
-This document provides a comprehensive reference for all API endpoints available in AstroPro Digital.
+This document provides a comprehensive reference for all API endpoints in AstroPro Digital, including both implemented and planned endpoints.
+
+**Legend:**
+- ✅ Implemented: Endpoints that are currently available for use
+- 📋 Planned: Endpoints that are planned for future implementation
 
 ## Authentication
 
@@ -11,7 +15,9 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 - Tokens are obtained through Supabase authentication flows
 - Tokens have a default expiration time (typically 1 hour)
 
-## Payment Endpoints
+## Payment Endpoints ✅
+
+These endpoints are currently implemented and available for use.
 
 ### Create Payment Session
 **Endpoint**: `POST /api/payments/session`
@@ -44,9 +50,15 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "redirect_url": "https://app.midtrans.com/snap/v3/redirection/...",
-  "token": "c3f4e5a6-d7b8-4c9d-a1e2-f3g4h5i6j7k8",
-  "transaction_id": "tran-12345"
+  "data": {
+    "redirect_url": "https://app.midtrans.com/snap/v3/redirection/...",
+    "token": "c3f4e5a6-d7b8-4c9d-a1e2-f3g4h5i6j7k8",
+    "transaction_id": "tran-12345"
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
@@ -62,8 +74,14 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "status": "success",
-  "message": "Webhook processed successfully"
+  "data": {
+    "status": "success",
+    "message": "Webhook processed successfully"
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
@@ -76,11 +94,28 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 
 **Request Body**: Subscription provider specific
 
-**Response**: Provider specific
+**Response**:
+```json
+{
+  "data": {
+    "subscription": {
+      "id": "sub-12345",
+      "status": "active",
+      "provider_data": {}
+    }
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
+}
+```
 
 **Authentication**: Required (Owner or Staff role)
 
-## Notification Endpoints
+## Notification Endpoints ✅
+
+These endpoints are currently implemented and available for use.
 
 ### WhatsApp Notifications
 **Endpoint**: `POST /api/notifications/whatsapp`
@@ -99,17 +134,27 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "status": "sent",
-  "message_id": "msg-12345"
+  "data": {
+    "status": "sent",
+    "message_id": "msg-12345"
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
 **Authentication**: Required (Staff or Owner role)
 
-## Portal Endpoints
+## Portal Endpoints 📋
+
+These endpoints are planned for future implementation and are not yet available.
 
 ### Project Management
 **Endpoint**: `GET /api/portal/projects`
+
+> ⚠️ **Not Yet Implemented**: This endpoint is planned for future implementation and is not currently available.
 
 **Description**: Retrieves projects for the authenticated user.
 
@@ -121,7 +166,7 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "projects": [
+  "data": [
     {
       "id": "proj-123",
       "name": "Project Name",
@@ -131,7 +176,16 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
       "updated_at": "2024-01-02T00:00:00Z"
     }
   ],
-  "total": 1
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 1,
+    "has_more": false
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
@@ -139,6 +193,8 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 
 ### Update Project Status
 **Endpoint**: `PUT /api/portal/projects/{projectId}`
+
+> ⚠️ **Not Yet Implemented**: This endpoint is planned for future implementation and is not currently available.
 
 **Description**: Updates the status of a specific project.
 
@@ -153,31 +209,47 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "id": "proj-123",
-  "status": "completed",
-  "updated_at": "2024-01-02T00:00:00Z"
+  "data": {
+    "id": "proj-123",
+    "status": "completed",
+    "updated_at": "2024-01-02T00:00:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
 **Authentication**: Required (Owner, Staff, or assigned Client role)
 
-## User Management Endpoints
+## User Management Endpoints 📋
+
+These endpoints are planned for future implementation and are not yet available.
 
 ### Get User Profile
 **Endpoint**: `GET /api/user/profile`
+
+> ⚠️ **Not Yet Implemented**: This endpoint is planned for future implementation and is not currently available.
 
 **Description**: Retrieves the profile information for the authenticated user.
 
 **Response**:
 ```json
 {
-  "id": "user-123",
-  "email": "user@example.com",
-  "role": "client",
-  "first_name": "John",
-  "last_name": "Doe",
-  "phone": "+6281234567890",
-  "created_at": "2024-01-01T00:00:00Z"
+  "data": {
+    "id": "user-123",
+    "email": "user@example.com",
+    "role": "client",
+    "first_name": "John",
+    "last_name": "Doe",
+    "phone": "+6281234567890",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
@@ -185,6 +257,8 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 
 ### Update User Profile
 **Endpoint**: `PUT /api/user/profile`
+
+> ⚠️ **Not Yet Implemented**: This endpoint is planned for future implementation and is not currently available.
 
 **Description**: Updates the profile information for the authenticated user.
 
@@ -200,22 +274,32 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "id": "user-123",
-  "email": "user@example.com",
-  "role": "client",
-  "first_name": "Jane",
-  "last_name": "Smith",
-  "phone": "+6289876543210",
-  "updated_at": "2024-01-02T00:00:00Z"
+  "data": {
+    "id": "user-123",
+    "email": "user@example.com",
+    "role": "client",
+    "first_name": "Jane",
+    "last_name": "Smith",
+    "phone": "+6289876543210",
+    "updated_at": "2024-01-02T00:00:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
 **Authentication**: Required
 
-## Support Ticket Endpoints
+## Support Ticket Endpoints 📋
+
+These endpoints are planned for future implementation and are not yet available.
 
 ### Create Support Ticket
 **Endpoint**: `POST /api/support/tickets`
+
+> ⚠️ **Not Yet Implemented**: This endpoint is planned for future implementation and is not currently available.
 
 **Description**: Creates a new support ticket.
 
@@ -232,10 +316,16 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "id": "ticket-123",
-  "subject": "Support Request",
-  "status": "open",
-  "created_at": "2024-01-02T00:00:00Z"
+  "data": {
+    "id": "ticket-123",
+    "subject": "Support Request",
+    "status": "open",
+    "created_at": "2024-01-02T00:00:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
@@ -243,6 +333,8 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 
 ### Get Support Tickets
 **Endpoint**: `GET /api/support/tickets`
+
+> ⚠️ **Not Yet Implemented**: This endpoint is planned for future implementation and is not currently available.
 
 **Description**: Retrieves support tickets for the authenticated user.
 
@@ -255,7 +347,7 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "tickets": [
+  "data": [
     {
       "id": "ticket-123",
       "subject": "Support Request",
@@ -264,41 +356,60 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
       "created_at": "2024-01-02T00:00:00Z"
     }
   ],
-  "total": 1
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 1,
+    "has_more": false
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
 **Authentication**: Required
 
-## Billing Endpoints
+## Billing Endpoints 📋
+
+These endpoints are planned for future implementation and are not yet available.
 
 ### Get Billing Information
 **Endpoint**: `GET /api/billing`
+
+> ⚠️ **Not Yet Implemented**: This endpoint is planned for future implementation and is not currently available.
 
 **Description**: Retrieves billing information for the authenticated user.
 
 **Response**:
 ```json
 {
-  "invoices": [
-    {
-      "id": "inv-123",
-      "amount": 1000000,
-      "currency": "IDR",
-      "status": "paid",
-      "due_date": "2024-02-01",
-      "issue_date": "2024-01-01"
-    }
-  ],
-  "payment_methods": [
-    {
-      "id": "pm-456",
-      "type": "credit_card",
-      "last_four": "1234",
-      "expiry_month": 12,
-      "expiry_year": 2025
-    }
-  ]
+  "data": {
+    "invoices": [
+      {
+        "id": "inv-123",
+        "amount": 1000000,
+        "currency": "IDR",
+        "status": "paid",
+        "due_date": "2024-02-01",
+        "issue_date": "2024-01-01"
+      }
+    ],
+    "payment_methods": [
+      {
+        "id": "pm-456",
+        "type": "credit_card",
+        "last_four": "1234",
+        "expiry_month": 12,
+        "expiry_year": 2025
+      }
+    ]
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 
@@ -306,6 +417,8 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 
 ### Update Payment Method
 **Endpoint**: `POST /api/billing/payment-method`
+
+> ⚠️ **Not Yet Implemented**: This endpoint is planned for future implementation and is not currently available.
 
 **Description**: Updates the user's payment method.
 
@@ -320,10 +433,16 @@ Most API endpoints require authentication. The application uses Supabase Auth fo
 **Response**:
 ```json
 {
-  "id": "pm-456",
-  "type": "credit_card",
-  "last_four": "1234",
-  "updated_at": "2024-01-02T00:00:00Z"
+  "data": {
+    "id": "pm-456",
+    "type": "credit_card",
+    "last_four": "1234",
+    "updated_at": "2024-01-02T00:00:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-01-02T00:00:00Z",
+    "version": "1.0"
+  }
 }
 ```
 

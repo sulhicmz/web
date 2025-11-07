@@ -56,20 +56,28 @@ src/
 │   ├── payments/           # Payment provider implementations
 │   └── supabase/           # Supabase client helpers
 ├── pages/                  # Route definitions and API handlers
-├── content/                # Content collections configuration
-└── styles/                 # Global styles and design tokens
+└── content/                # Content collections configuration
+├── styles/                 # Global styles and design tokens
+└── types/                  # TypeScript type definitions
 ```
 
 ## API Structure
 
-The application exposes several API endpoints grouped by functionality. For a comprehensive list and details, please see the [API Reference](./api-reference.md). Key endpoint groups include:
+The application exposes several API endpoints grouped by functionality. Currently implemented API routes are limited to payment processing and notifications. For a comprehensive list of planned API endpoints, please see the [API Reference](./api-reference.md).
+
+### Implemented API Routes
 
 - `/api/payments/*` - Payment processing, webhooks, and subscriptions.
+- `/api/notifications/*` - Outbound notifications.
+
+### Planned API Routes
+
+The following API routes are documented in the API reference but not yet implemented:
+
 - `/api/portal/*` - Client portal data, such as projects.
 - `/api/user/*` - User profile management.
 - `/api/support/*` - Support ticket system.
 - `/api/billing/*` - Billing and invoice information.
-- `/api/notifications/*` - Outbound notifications.
 
 ## Security Considerations
 

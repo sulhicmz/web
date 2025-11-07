@@ -64,7 +64,7 @@ Set the following variables for production:
 | `PUBLIC_SUPABASE_URL` | Public URL for client-side Supabase | Cloudflare environment |
 | `PUBLIC_SUPABASE_ANON_KEY` | Public anon key for client-side Supabase | Cloudflare environment |
 | `SUPABASE_URL` | Supabase service URL (for server-side use) | Cloudflare secret |
-| `SUPABASE_SERVICE_ROLE` | Service role key for server-side Supabase | Cloudflare secret |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key for server-side Supabase | Cloudflare secret |
 | `PAYMENT_PROVIDER` | Payment provider identifier (e.g., `midtrans`) | Cloudflare environment |
 | `PAYMENT_ENV` | Payment environment (`sandbox` or `production`) | Cloudflare environment |
 | `MIDTRANS_SERVER_KEY` | Midtrans server key for API calls | Cloudflare secret |
@@ -89,9 +89,11 @@ Configure secrets in Cloudflare:
 
 ```bash
 wrangler secret put SUPABASE_URL
-wrangler secret put SUPABASE_SERVICE_ROLE
+wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 wrangler secret put MIDTRANS_SERVER_KEY
 ```
+
+Note: Public keys like `PUBLIC_SUPABASE_ANON_KEY` and non-sensitive configuration like `PAYMENT_ENV` should be set as plain environment variables in Cloudflare, not as secrets.
 
 ### 3. Deploy Configuration
 

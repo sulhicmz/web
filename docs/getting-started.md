@@ -56,8 +56,15 @@ Before you begin, ensure you have the following installed:
 │   ├── pages/              # Route definitions
 │   └── content/            # Content collections
 ├── supabase/               # Database migrations and local setup
-├── styles/                 # Global styles and design tokens
-└── types/                  # TypeScript type definitions
+│   └── migrations/         # Database schema migrations
+├── src/
+│   ├── components/         # Reusable Astro components
+│   ├── layouts/            # Page layout templates
+│   ├── lib/                # Shared libraries and utilities
+│   ├── pages/              # Route definitions
+│   ├── content/            # Content collections
+│   ├── styles/             # Global styles and design tokens
+│   └── types/              # TypeScript type definitions
 ```
 
 ## Key Features
