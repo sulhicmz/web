@@ -61,14 +61,13 @@ Set the following variables for production:
 
 | Variable | Purpose | Location |
 |----------|---------|----------|
-| `SUPABASE_URL` | Supabase service URL (server-side) | Cloudflare secret |
-| `SUPABASE_ANON_KEY` | Public key for client-side Supabase | Cloudflare environment |
+| `PUBLIC_SUPABASE_URL` | Public URL for client-side Supabase | Cloudflare environment |
+| `PUBLIC_SUPABASE_ANON_KEY` | Public anon key for client-side Supabase | Cloudflare environment |
+| `SUPABASE_URL` | Supabase service URL (for server-side use) | Cloudflare secret |
 | `SUPABASE_SERVICE_ROLE` | Service role key for server-side Supabase | Cloudflare secret |
-| `PUBLIC_SUPABASE_URL` | Client-side Supabase URL | Cloudflare environment |
-| `PUBLIC_SUPABASE_ANON_KEY` | Public anon key | Cloudflare environment |
-| `PAYMENT_PROVIDER` | `midtrans` | Cloudflare environment |
-| `PAYMENT_ENV` | `production` | Cloudflare environment |
-| `MIDTRANS_SERVER_KEY` | Server key for API | Cloudflare secret |
+| `PAYMENT_PROVIDER` | Payment provider identifier (e.g., `midtrans`) | Cloudflare environment |
+| `PAYMENT_ENV` | Payment environment (`sandbox` or `production`) | Cloudflare environment |
+| `MIDTRANS_SERVER_KEY` | Midtrans server key for API calls | Cloudflare secret |
 
 ## Cloudflare Configuration
 
