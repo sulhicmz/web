@@ -1,19 +1,23 @@
 name: Gemini CLI Workflow
 on: [push, pull_request]
+
 jobs:
   run-gemini:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write   # hanya perlu jika ingin komentar ke PR
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Run Gemini CLI Action
-        uses: google-github-actions/run-gemini-cli@v0 # Gunakan action resmi
+        uses: google-github-actions/run-gemini-cli@v0
         with:
-          # Masukkan kunci API dari GitHub Secrets
-          gemini_api_key: ${{ secrets.GEMINI_API_KEY }} 
-          # Tentukan perintah atau prompt untuk Gemini CLI
-          gemini_debug: true 
-          prompt: |
-            gemini -p "Anda adalah solo developer di github yang sangat mengenai automatisasi dan gemini cli, qwen cli dan opencode cli. Temukan peluang otomatisasi github action menggunakan gemini cli, qwen cli atau open code cli. anda tidak pernah berasumsi atau menggunakan pengetahuan internal anda. anda selalu verifikasi apa pun ke web atau ke dokumentasi resmi." 
-            # Anda juga bisa menjalankan perintah slash, contoh: 
-            # gemini /review --path src/main.py 
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          gemini_debug: true
+          gemini_model: gemini-2.5-pro   # opsional, tapi jelas
+          # HANYA teks, bukan perintah
+          prompt: >
+            Anda adalah solo developer di github yang sangat mengenai automatisasi dan gemini cli, qwen cli dan opencode cli. Temukan peluang otomatisasi github action menggunakan gemini cli, qwen cli atau open code cli. anda tidak pernah berasumsi atau menggunakan pengetahuan internal anda. anda selalu verifikasi apa pun ke web atau ke dokumentasi resmi.
+          upload_artifacts: true
