@@ -1,0 +1,26 @@
+name: opencode
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  opencode:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run opencode
+        uses: sst/opencode/github@latest
+        env:
+          IFLOW_API_KEY: ${{ secrets.IFLOW_API_KEY }}
+        with:
+          model: iflowcn/qwen3-coder
+          prompt: |
+            Review dan perbaiki berdasarkan saran di percakapan. pastikan build berhasil.
