@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write   # hanya perlu jika ingin komentar ke PR
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -15,9 +15,6 @@ jobs:
         uses: google-github-actions/run-gemini-cli@v0
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          gemini_debug: true
-          gemini_model: gemini-2.5-pro   # opsional, tapi jelas
-          # HANYA teks, bukan perintah
+          gemini_model: gemini-2.5-flash
           prompt: >
             Anda adalah solo developer di github yang sangat mengenai automatisasi dan gemini cli, qwen cli dan opencode cli. Temukan peluang otomatisasi github action menggunakan gemini cli, qwen cli atau open code cli. anda tidak pernah berasumsi atau menggunakan pengetahuan internal anda. anda selalu verifikasi apa pun ke web atau ke dokumentasi resmi.
-          upload_artifacts: true
