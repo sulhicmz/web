@@ -1,22 +1,21 @@
 name: opencode
 
 on:
-  push:
-    branches: [ main ]
+  issues:
+    types: [opened, edited, reopened]
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    branches: [ main ]
-  workflow_dispatch: {}
-  # Opsional: aktifkan jika ingin merespons komentar
-  # issue_comment:
-  #   types: [created, edited]
-
-concurrency:
-  group: opencode-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  issue_comment:
+    types: [created]
 
 jobs:
   opencode:
+    if: |
+      github.event_name == 'issues' ||
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' &&
+        (contains(github.event.comment.body, '/oc') ||
+         contains(github.event.comment.body, '/opencode')))
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -33,5 +32,3 @@ jobs:
           IFLOW_API_KEY: ${{ secrets.IFLOW_API_KEY }}
         with:
           model: iflowcn/qwen3-coder
-          prompt: |
-            Review dan perbaiki berdasarkan saran di percakapan. Pastikan build berhasil.
