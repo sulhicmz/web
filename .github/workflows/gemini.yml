@@ -1,14 +1,15 @@
-name: Gemini CLI Workflow
-
 on:
-  - push
-  - pull_request
+  issues:
+    types: [opened, edited, reopened]
+  pull_request:
+    types: [opened, edited, reopened]
 
 jobs:
   run-gemini:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
       pull-requests: write
 
     steps:
