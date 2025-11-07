@@ -90,10 +90,8 @@ Configure secrets in Cloudflare:
 
 ```bash
 wrangler secret put SUPABASE_URL
-wrangler secret put SUPABASE_ANON_KEY
 wrangler secret put SUPABASE_SERVICE_ROLE
 wrangler secret put MIDTRANS_SERVER_KEY
-wrangler secret put PAYMENT_ENV
 ```
 
 ### 3. Deploy Configuration
