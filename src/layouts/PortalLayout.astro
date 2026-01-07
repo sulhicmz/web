@@ -9,7 +9,7 @@ interface Props {
         description?: string;
 }
 
-const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengelola proyek, paket, dan dukungan.' } = Astro.props as Props;
+const { title = `${SITE.title} Portal`, description = 'Portal klien untuk mengelola proyek, paket, dan dukungan.' } = Astro.props as Props;
 ---
 
 <!doctype html>
@@ -32,13 +32,11 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
 </html>
 
 <script>
-  import { createClient } from '@supabase/supabase-js';
-
-  const supabase = createClient(import.meta.env.PUBLIC_SUPABASE_URL, import.meta.env.PUBLIC_SUPABASE_ANON_KEY);
-
   const logoutButton = document.getElementById('logout-button');
-
-  logoutButton.addEventListener('click', async () => {
+  
+  logoutButton?.addEventListener('click', async () => {
+    const { getSupabaseClient } = await import('../lib/supabase/lazy-client');
+    const supabase = await getSupabaseClient();
     await supabase.auth.signOut();
     window.location.href = '/login';
   });

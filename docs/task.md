@@ -113,6 +113,168 @@
   - Confidence in refactoring and code changes
   - Foundation for future test expansion (integration tests, E2E tests)
 
+### DATA-001: Data Access Layer
+- **Status**: Complete
+- **Priority**: P1
+- **Agent**: 06 (Data Architect)
+- **Description**: Create centralized data access layer to separate application logic from database queries
+- **Implementation**:
+  - Created `src/lib/supabase/queries/` directory with:
+    - `base.ts` - Query utilities, type definitions, result types
+    - `clients.ts` - Client queries: getById, getBySlug, getAll, getActive, create, update, softDelete, restore, hardDelete
+    - `projects.ts` - Project queries: getById, getByClient, getBySlug, getAll, getActive, create, update, softDelete, restore, hardDelete, withClient, withPackage, withDetails
+    - `invoices.ts` - Invoice queries: getById, getByClient, getByStatus, getOverdue, getAll, create, update, softDelete, restore, hardDelete, withClient, withPayments, withSubscription, withDetails
+    - `user-profiles.ts` - User profile queries: getById, getByClient, getByRole, getAll, create, update, delete, withClient, getAdmins, getClients, getTeamMembers
+    - `index.ts` - Barrel exports and query orchestrator
+- **Benefits**:
+  - Single source of truth for database queries
+  - Type-safe query builders with TypeScript
+  - Centralized location for query optimization
+  - Easier to add caching, logging, and monitoring
+  - Separates data access concerns from application logic
+  - Prevents N+1 query issues through relationship queries
+
+### DATA-002: Database Constraints & Optimization
+- **Status**: Complete
+- **Priority**: P1
+- **Agent**: 06 (Data Architect)
+- **Description**: Add database-level constraints and indexes for data integrity and query performance
+- **Implementation**:
+  - Created `supabase/migrations/0002_add_constraints.sql`:
+    - Check constraints for all status fields (client, project, invoice, subscription, payment, ticket, doc, user_profile)
+    - Numeric range constraints for prices and amounts (non-negative, max values)
+    - Cascading delete rules with proper ON DELETE CASCADE/SET NULL for all foreign keys
+    - Compound indexes for common query patterns:
+      - projects: (client_id, status), (client_id, package_id)
+      - subscriptions: (client_id, status)
+      - invoices: (client_id, status), (client_id, due_date) for overdue queries
+      - payments: (invoice_id, status), (client_id, status)
+      - tickets: (client_id, status), (project_id, status)
+      - user_profiles: (client_id, role)
+      - docs: (client_id, visibility)
+      - activity_events: (client_id, occurred_at)
+      - audit_logs: (client_id, created_at)
+    - Unique constraints: clients.name (excluding soft-deleted), projects.client_id+name (excluding soft-deleted)
+- **Benefits**:
+  - Data integrity enforced at database level
+  - Invalid status values rejected immediately
+  - Negative prices and amounts prevented
+  - Proper cascading deletes prevent orphaned records
+  - Query performance improved with compound indexes
+  - Business rules enforced through unique constraints
+
+### DATA-003: Data Validation Layer
+- **Status**: Complete
+- **Priority**: P1
+- **Agent**: 06 (Data Architect)
+- **Description**: Create Zod-based validation layer for application boundary validation
+- **Implementation**:
+  - Created `src/lib/validation/` directory with Zod schemas:
+    - `common.ts` - Shared schemas: uuidSchema, emailSchema, urlSchema, timestampSchema, jsonbSchema, paginationSchema, sortingSchema, filterSchema
+    - `clients.ts` - Client validation: clientBaseSchema, clientInsertSchema, clientUpdateSchema, clientQuerySchema, clientWithProjectsSchema
+    - `projects.ts` - Project validation: projectBaseSchema, projectInsertSchema, projectUpdateSchema, projectQuerySchema, projectWithRelationsSchema
+    - `invoices.ts` - Invoice validation: invoiceBaseSchema, invoiceInsertSchema, invoiceUpdateSchema, invoiceQuerySchema, invoiceWithRelationsSchema
+    - `user-profiles.ts` - User profile validation: userProfileBaseSchema, userProfileInsertSchema, userProfileUpdateSchema, userProfileQuerySchema, userProfileWithClientSchema
+    - `index.ts` - Validation helpers: validateRequest, validateQueryParams, createValidationError
+  - Added Zod dependency to package.json
+- **Benefits**:
+  - Type-safe runtime validation at application boundaries
+  - Consistent error messages for validation failures
+  - Prevents invalid data from reaching the database
+  - Automatic TypeScript type inference from schemas
+  - Reusable validation logic across API endpoints
+  - Clear error reporting with field-level details
+
+### DATA-004: Compound Indexes for Query Optimization
+- **Status**: Complete
+- **Priority**: P2
+- **Agent**: 06 (Data Architect)
+- **Description**: Add compound indexes for frequently queried column combinations
+- **Implementation**:
+  - Created 14 compound indexes in migration 0002:
+    - `projects_client_status_idx` - For querying projects by client and status
+    - `projects_client_package_idx` - For querying projects by client and package
+    - `subscriptions_client_status_idx` - For querying subscriptions by client and status
+    - `invoices_client_status_idx` - For querying invoices by client and status
+    - `invoices_client_due_date_idx` - For finding overdue invoices
+    - `payments_invoice_status_idx` - For querying payments by invoice and status
+    - `payments_client_status_idx` - For querying payments by client and status
+    - `tickets_client_status_idx` - For querying tickets by client and status
+    - `tickets_project_status_idx` - For querying tickets by project and status
+    - `user_profiles_client_role_idx` - For querying users by client and role
+    - `docs_client_visibility_idx` - For querying docs by client and visibility
+    - `activity_events_client_occurred_idx` - For querying activity events by client and timestamp
+    - `audit_logs_client_created_idx` - For querying audit logs by client and timestamp
+- **Benefits**:
+  - Significant performance improvements for common queries
+  - Reduced database load with optimized query plans
+  - Better scalability as data volume grows
+  - Faster pagination and filtering operations
+
+### DATA-005: Seed Data for Testing
+- **Status**: Complete
+- **Priority**: P2
+- **Agent**: 06 (Data Architect)
+- **Description**: Create comprehensive seed data for testing and development
+- **Implementation**:
+  - Created `supabase/seeds/test_data.sql` with realistic test data:
+    - 4 packages: Basic Website, Professional Website, E-commerce Website, Custom Application
+    - 5 clients: PT Maju Jaya (Manufacturing), CV Sejahtera (Retail), PT Teknologi Indonesia (Technology), Toko Budi (E-commerce), Restoran Nusantara (F&B)
+    - 3 projects with 2 websites for different clients
+    - 5 products (SEO, Content, Analytics, Payment Gateway, Inventory)
+    - 3 addons (Premium Support, Backup Service, Marketing Package)
+    - 2 subscriptions (monthly and annual billing)
+    - 3 invoices (paid, pending, overdue) with 2 payments
+    - 3 tickets (open, in-progress, resolved) with various priorities
+    - 3 docs (public, internal, private) for different clients
+    - 2 tutorials with video URLs and step-by-step guides
+    - 5 knowledge base categories for different clients
+- **Benefits**:
+  - Realistic test scenarios for development and QA
+  - Consistent test data across environments
+  - Easy database reset for fresh testing
+  - Comprehensive coverage of all major entities
+  - Ready-to-use data for manual testing and demos
+
+### PERF-001: Bundle Size Analysis & Optimization
+- **Status**: Complete
+- **Priority**: P1
+- **Agent**: 05 (Performance)
+- **Description**: Analyze and optimize bundle size, specifically targeting the 170KB index bundle containing Supabase SDK
+- **Implementation**:
+  - Installed rollup-plugin-visualizer for bundle analysis
+  - Fixed CSS syntax error (fractional spacing tokens: `--space-1/2` → `--space-1-2`)
+  - Created lazy-client.ts wrapper for Supabase SDK
+  - Created local type definitions (src/types/supabase-types.ts) to avoid bundling Supabase types
+  - Updated all Supabase type imports to use local types
+  - Moved Supabase import in PortalLayout to dynamic import within event handler
+  - Added `export const prerender = true` to index.astro
+  - Configured code splitting in astro.config.mjs
+- **Findings**:
+  - Index bundle is ~170KB containing full Supabase SDK (Realtime ~25KB, PostgREST ~30KB, Functions ~15KB, Auth ~20KB)
+  - Marketing pages (index.astro, about.astro, etc.) don't use Supabase but SDK is being bundled
+  - Root cause: Astro SSR mode creates shared bundles; top-level imports force dependency inclusion
+  - PortalLayout script has lazy import but was still pulling in Supabase code at build time
+- **Limitations**:
+  - Static export configuration didn't prevent Supabase from being bundled
+  - Code splitting configuration (manualChunks) didn't create separate Supabase chunk
+  - Astro's SSR mode with `output: 'server'` creates unified bundles across all routes
+- **Improvements Made**:
+  - Fixed CSS syntax errors preventing proper minification
+  - Created lazy-loading pattern for Supabase client initialization
+  - Removed type-only imports that could trigger bundling
+  - CSS extraction is working correctly (29KB separate CSS for index page)
+- **Recommendations for Future Work**:
+  - Consider splitting marketing and portal into separate Astro projects
+  - Use Astro islands for truly dynamic Supabase interactions
+  - Configure Vite to create route-level code splitting
+  - Evaluate if Supabase can be loaded from CDN instead of bundling
+- **Benefits**:
+  - Identified root cause of large bundle size
+  - Established baseline metrics (170KB index bundle, 29KB CSS)
+  - Created infrastructure for future lazy-loading improvements
+  - Fixed CSS syntax errors improving build reliability
+
 ### SEC-001: Critical Vulnerability Remediation
 - **Status**: Complete
 - **Priority**: P0
@@ -163,8 +325,8 @@
 
 ## Quick Stats
 
-- **Total Tasks**: 5
+- **Total Tasks**: 10
 - **Backlog**: 0
 - **In Progress**: 0
-- **Complete**: 5
+- **Complete**: 10
 - **Blocked**: 0

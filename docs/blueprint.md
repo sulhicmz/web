@@ -102,6 +102,7 @@ supabase/              # Database migrations & seeds
 |------|---------|---------|
 | 2025-01-07 | 1.0 | Initial blueprint creation |
 | 2025-01-07 | 1.1 | Module extraction - Split `auth.ts` and `state-manager.ts` into focused modules following Single Responsibility Principle |
+| 2025-01-07 | 1.2 | Data architecture improvements - Added data access layer, constraints, validation layer, and seed data |
 
 ### Architecture Improvements (v1.1)
 
@@ -129,6 +130,51 @@ supabase/              # Database migrations & seeds
 - **Testability**: Smaller, focused modules easier to test
 - **Maintainability**: Changes isolated to specific concerns
 - **Reusability**: Modules can be imported independently
+
+### Architecture Improvements (v1.2)
+
+#### Data Access Layer
+- **Before**: Direct Supabase client usage throughout codebase with no abstraction
+- **After**: Centralized query layer in `src/lib/supabase/queries/`:
+  - `base.ts` - Shared query utilities and type definitions
+  - `clients.ts` - Client entity queries (CRUD, filtering, relationships)
+  - `projects.ts` - Project entity queries (CRUD, filtering, relationships)
+  - `invoices.ts` - Invoice entity queries (CRUD, filtering, relationships)
+  - `user-profiles.ts` - User profile queries (CRUD, filtering, relationships)
+  - `index.ts` - Barrel exports and query orchestrator
+
+#### Database Constraints & Optimization
+- **Migration**: `supabase/migrations/0002_add_constraints.sql`:
+  - Check constraints for all status fields (enum validation at DB level)
+  - Numeric range constraints for prices and amounts
+  - Cascading delete rules with proper ON DELETE CASCADE/SET NULL
+  - Compound indexes for common query patterns (client+status, etc.)
+  - Unique constraints for business rules (no duplicate client names)
+
+#### Data Validation Layer
+- **New Directory**: `src/lib/validation/`:
+  - `common.ts` - Shared validation schemas (UUID, email, URL, pagination)
+  - `clients.ts` - Client validation with Zod schemas
+  - `projects.ts` - Project validation with Zod schemas
+  - `invoices.ts` - Invoice validation with Zod schemas
+  - `user-profiles.ts` - User profile validation with Zod schemas
+  - `index.ts` - Validation helpers and error formatting
+
+#### Seed Data
+- **File**: `supabase/seeds/test_data.sql`:
+  - Test packages (Basic, Professional, E-commerce, Custom)
+  - Test clients (5 sample clients with various industries)
+  - Test projects, websites, products, addons
+  - Test subscriptions, invoices, payments
+  - Test tickets, docs, tutorials, KB categories
+
+#### Benefits
+- **Data Integrity**: Database-level constraints prevent invalid data
+- **Query Performance**: Compound indexes optimize common query patterns
+- **Type Safety**: Validation layer ensures data quality at boundaries
+- **Maintainability**: Centralized queries make DB changes easier
+- **Testing**: Seed data provides realistic test scenarios
+- **Separation of Concerns**: Data access layer isolated from application logic
 
 ## Version History
 
