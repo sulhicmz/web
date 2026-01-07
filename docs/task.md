@@ -270,10 +270,40 @@
   - Configure Vite to create route-level code splitting
   - Evaluate if Supabase can be loaded from CDN instead of bundling
 - **Benefits**:
-  - Identified root cause of large bundle size
-  - Established baseline metrics (170KB index bundle, 29KB CSS)
-  - Created infrastructure for future lazy-loading improvements
-  - Fixed CSS syntax errors improving build reliability
+   - Identified root cause of large bundle size
+   - Established baseline metrics (170KB index bundle, 29KB CSS)
+   - Created infrastructure for future lazy-loading improvements
+   - Fixed CSS syntax errors improving build reliability
+
+### PERF-002: Prerender Static Routes
+- **Status**: Complete
+- **Priority**: P1
+- **Agent**: 05 (Performance)
+- **Description**: Prerender blog and portfolio case study pages at build time instead of server-side rendering
+- **Implementation**:
+  - Added `export const prerender = true` to `src/pages/blog/[...slug].astro`
+  - Added `export const prerender = true` to `src/pages/portofolio/studi-kasus/[slug].astro`
+- **Findings**:
+  - Both pages defined `getStaticPaths()` but were not being prerendered
+  - Build warnings indicated "getStaticPaths() ignored in dynamic page"
+  - Pages were being server-rendered unnecessarily for static content
+- **Improvements**:
+  - 5 blog posts now prerendered at build time:
+    - /blog/using-mdx/
+    - /blog/first-post/
+    - /blog/second-post/
+    - /blog/third-post/
+    - /blog/markdown-style-guide/
+  - 3 portfolio case studies now prerendered at build time:
+    - /portofolio/studi-kasus/finserve-pro/
+    - /portofolio/studi-kasus/eduplus-academy/
+    - /portofolio/studi-kasus/crafthub-studio/
+- **Benefits**:
+  - Static HTML served instantly without server rendering
+  - Faster page load times for all blog and portfolio content
+  - Better SEO with pre-rendered HTML for crawlers
+  - Reduced server load (8 routes no longer require SSR)
+  - Prerender time: 84ms total
 
 ### INT-001: Integration Hardening
 - **Status**: Complete
