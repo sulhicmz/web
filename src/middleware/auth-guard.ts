@@ -6,7 +6,6 @@
 import type { MiddlewareHandler } from 'astro';
 import { SUPABASE_CONFIG, ERROR_MESSAGES } from '../config';
 import { ApiUtils } from '../lib/api-utils';
-import { AuthUtils } from '../lib/auth';
 import { CONSTS } from '../consts';
 
 // Types for middleware context
