@@ -14,14 +14,14 @@ function createMockUser(overrides: Partial<AuthUser> = {}): AuthUser {
   };
 }
 
-function createMockUserProfile(role: string, additional: Partial<UserProfile> = {}): UserProfile {
+  function createMockUserProfile(role: string | undefined, additional: Partial<UserProfile> = {}): UserProfile {
   return {
     id: 'profile-id',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     email: 'test@example.com',
     full_name: 'Test User',
-    role: role as any,
+    role: (role || 'admin') as 'admin' | 'client' | 'team_member' | 'owner' | 'staff' | 'manager',
     is_active: true,
     ...additional,
   };
@@ -62,7 +62,15 @@ describe('RBAC - Role-Based Access Control', () => {
     it('should return false when user.profile.role is undefined', () => {
       const user = createMockUser({
         email: 'user@example.com',
-        profile: createMockUserProfile(undefined as any),
+        profile: {
+          id: 'profile-id',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          email: 'test@example.com',
+          full_name: 'Test User',
+          role: undefined as never,
+          is_active: true,
+        },
       });
 
       expect(rbac.hasRole(user, ['admin'])).toBe(false);

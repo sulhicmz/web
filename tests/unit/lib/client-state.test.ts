@@ -60,7 +60,10 @@ describe('Client State Manager', () => {
 
     it('should update object with function', () => {
       stateManager.set('obj', { count: 5 });
-      stateManager.update('obj', (prev) => ({ ...(prev as any), count: (prev as any).count + 10 }));
+      stateManager.update('obj', (prev) => {
+        const obj = prev as { count: number };
+        return { ...obj, count: obj.count + 10 };
+      });
       expect(stateManager.get('obj')).toEqual({ count: 15 });
     });
 
@@ -97,7 +100,7 @@ describe('Client State Manager', () => {
 
     it('should clear all listeners', () => {
       const listener = vi.fn();
-      const unsubscribe = stateManager.subscribe('key', listener);
+      stateManager.subscribe('key', listener);
 
       stateManager.clear();
 
@@ -200,15 +203,14 @@ describe('Client State Manager', () => {
 
   describe('Integration', () => {
     it('should handle complex state flow', () => {
-      let updateCount = 0;
       const listener = vi.fn();
 
       stateManager.subscribe('user', listener);
       stateManager.set('user', { name: 'John', age: 30 });
-      stateManager.update('user', (prev) => ({
-        ...(prev as any),
-        age: (prev as any).age + 1,
-      }));
+      stateManager.update('user', (prev) => {
+        const user = prev as { name: string; age: number };
+        return { ...user, age: user.age + 1 };
+      });
 
       expect(stateManager.get('user')).toEqual({ name: 'John', age: 31 });
       expect(listener).toHaveBeenCalledTimes(2);
