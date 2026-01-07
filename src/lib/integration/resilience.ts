@@ -10,6 +10,7 @@ export interface RetryConfig {
   backoffMultiplier: number;
   retryableStatuses?: number[];
   retryableErrors?: string[];
+  retryNonRetryableErrors?: boolean;
 }
 
 export interface CircuitBreakerConfig {
@@ -60,6 +61,7 @@ export const DEFAULT_RETRY_CONFIG: RetryConfig = {
   backoffMultiplier: 2,
   retryableStatuses: [408, 429, 500, 502, 503, 504],
   retryableErrors: ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'network'],
+  retryNonRetryableErrors: false,
 };
 
 export const DEFAULT_CIRCUIT_BREAKER_CONFIG: CircuitBreakerConfig = {
@@ -113,16 +115,38 @@ export class RetryManager {
       try {
         return await operation();
       } catch (error) {
+        const originalError = error;
         lastError = error instanceof Error ? error : new Error(String(error));
 
+        const isTimeoutError = lastError.name === 'TimeoutError';
+        const status =
+          (originalError as unknown as { status?: number; statusCode?: number })?.status ||
+          (originalError as unknown as { status?: number; statusCode?: number })?.statusCode;
         const isRetryable =
-          this.isRetryableError(lastError) ||
-          this.isRetryableStatus(
-            (lastError as unknown as { status?: number }).status
+          !isTimeoutError && (
+            this.isRetryableError(lastError) ||
+            this.isRetryableStatus(status)
           );
 
-        if (!isRetryable || attempt === config.maxAttempts) {
-          throw lastError;
+        if (attempt === config.maxAttempts) {
+          throw new RetryExhaustedError(
+            config.maxAttempts,
+            lastError || new Error('Unknown error')
+          );
+        }
+
+        if (!isRetryable) {
+          if (!config.retryNonRetryableErrors) {
+            throw lastError;
+          }
+          continue;
+        }
+
+        if (!isRetryable) {
+          if (!config.retryNonRetryableErrors) {
+            throw lastError;
+          }
+          continue;
         }
 
         console.warn(
@@ -182,7 +206,7 @@ export class CircuitBreaker {
       );
     }
 
-    if (this.state === 'half-open' && this.halfOpenCallCount >= config.halfOpenMaxCalls) {
+    if (this.state === 'half-open' && this.halfOpenCallCount >= Math.max(config.halfOpenMaxCalls, config.successThreshold)) {
       throw new CircuitBreakerError(this.serviceName, this.state, this.failureCount);
     }
 

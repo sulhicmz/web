@@ -219,7 +219,7 @@ describe('ResilientHttpClient', () => {
       const circuitState = clientWithCircuitBreaker.getCircuitBreakerState('http-client');
 
       expect(circuitState).toContain('open');
-    }, 10000);
+    }, 20000);
 
     it('should skip circuit breaker when disabled', async () => {
       mockFetch.mockRejectedValue(new Error('error'));

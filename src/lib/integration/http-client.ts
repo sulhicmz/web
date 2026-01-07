@@ -105,9 +105,11 @@ export class ResilientHttpClient {
         clearTimeout(timeoutId);
 
         if (error instanceof Error && error.name === 'AbortError') {
-          throw new Error(
+          const timeoutError = new Error(
             `Request to ${url} timed out after ${timeout}ms`
           );
+          timeoutError.name = 'TimeoutError';
+          throw timeoutError;
         }
 
         throw error;

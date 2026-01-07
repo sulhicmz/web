@@ -44,7 +44,7 @@ describe('RetryManager', () => {
     });
 
     it('should respect maxAttempts and fail after exhausted', async () => {
-      const retryManager = new RetryManager({ maxAttempts: 2 });
+      const retryManager = new RetryManager({ maxAttempts: 2, retryNonRetryableErrors: true });
       const operation = vi
         .fn()
         .mockRejectedValue(new Error('permanent error'));

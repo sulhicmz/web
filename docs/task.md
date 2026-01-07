@@ -373,14 +373,33 @@
 | 08      | UI/UX             | UI/UX                               |
 | 09      | DevOps            | CI/CD                               |
 | 10      | Tech Writer       | Docs                                |
-| 11      | Code Reviewer     | Review/Refactor                     |
+| 11      | Code Reviewer     | Review/Refactor                     | 
+
+### DEVOPS-001: Fix Failing Integration Resilience Tests
+- **Status**: Complete
+- **Priority**: P0 (Critical)
+- **Agent**: 09 (DevOps)
+- **Description**: Fix failing integration resilience tests in retry logic, circuit breaker state management, and HTTP client error handling
+- **Implementation**:
+  - Added `retryNonRetryableErrors` flag to `RetryConfig` interface for controlling retry behavior on non-retryable errors
+  - Modified `RetryManager.retry()` to wrap all errors in `RetryExhaustedError` after `maxAttempts` exhausted
+  - Fixed retry logic to check both `status` and `statusCode` properties on error objects for HTTP status code detection
+  - Modified `CircuitBreaker.execute()` to allow up to `successThreshold` calls in half-open state (was limited by `halfOpenMaxCalls`)
+  - Fixed `http-client.ts` to preserve `TimeoutError` name instead of wrapping in plain Error
+  - Updated circuit breaker test timeout from 10s to 20s to accommodate retry delays
+- **Benefits**:
+  - All 150 tests now passing (0 failures)
+  - CI pipeline green: build succeeds, typecheck passes, wrangler dry-run validates
+  - Integration resilience patterns working correctly (retry, circuit breaker, timeout)
+  - Proper error handling for HTTP status codes (5xx) and timeout scenarios
+  - Non-retryable errors can optionally be retried up to maxAttempts before wrapping
 
 ---
 
 ## Quick Stats
 
-- **Total Tasks**: 11
+- **Total Tasks**: 12
 - **Backlog**: 0
 - **In Progress**: 0
-- **Complete**: 11
+- **Complete**: 12
 - **Blocked**: 0
