@@ -1,15 +1,7 @@
 import type { APIRoute } from 'astro';
 import { withTimeout } from '../../../lib/api-middleware';
+import { ApiError } from '../../../lib/api-utils';
 import { MidtransProvider } from '../../../lib/payments/providers/midtrans';
-
-const json = (data: unknown, init: ResponseInit = {}) =>
-        new Response(JSON.stringify(data), {
-                status: init.status ?? 200,
-                headers: {
-                        'content-type': 'application/json; charset=utf-8',
-                        ...init.headers,
-                },
-        });
 
 export const POST: APIRoute = withTimeout(async ({ request }) => {
         const serverKey = import.meta.env.MIDTRANS_SERVER_KEY || '';
@@ -25,10 +17,19 @@ export const POST: APIRoute = withTimeout(async ({ request }) => {
 
         if (!(await provider.verifyWebhook(body, signature))) {
                 console.warn('[payments/webhook] Invalid signature');
-                return json({ error: 'Signature webhook tidak valid.' }, { status: 400 });
+                throw new ApiError('Invalid webhook signature', 400, 'INVALID_SIGNATURE');
         }
 
         const event = await provider.parseWebhook(JSON.stringify(body), Object.fromEntries(request.headers.entries()));
 
-        return json({ received: true, event: { reference: event.reference, status: event.status } });
+        return new Response(JSON.stringify({
+                success: true,
+                data: { received: true, event: { reference: event.reference, status: event.status } },
+                timestamp: new Date().toISOString(),
+        }), {
+                status: 200,
+                headers: {
+                        'content-type': 'application/json; charset=utf-8',
+                },
+        });
 }, 10000);

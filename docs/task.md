@@ -511,6 +511,40 @@
   - CSP violation reporting for security monitoring
   - Defense in depth with multiple security layers
 
+### INT-002: API Standardization
+- **Status**: Complete
+- **Priority**: P1 (High)
+- **Agent**: 07 (Integration)
+- **Description**: Unify naming, response formats, error handling, and middleware usage across all API endpoints
+- **Implementation**:
+  - **Standard Response Format**: All endpoints now use consistent structure with `success`, `data`, `error`, `message`, and `timestamp` fields
+  - **Standard Error Handling**:
+    - Replaced custom error responses with `ApiError` class from `src/lib/api-utils.ts`
+    - Consistent error codes (e.g., `INVALID_JSON`, `INVALID_PAYLOAD`, `PROVIDER_NOT_CONFIGURED`, `INVALID_SIGNATURE`, `SUBSCRIPTION_CREATION_FAILED`)
+    - Proper HTTP status codes (400, 422, 500, 503)
+  - **Middleware Usage**:
+    - Added `withRateLimit()` and `withTimeout()` middleware to all endpoints
+    - Payment endpoints: 10 req/min rate limit, 20-25s timeout
+    - Webhook endpoints: 10s timeout (must respond quickly)
+    - WhatsApp webhook: 10s timeout
+  - **Standardized Headers**:
+    - `Content-Type: application/json; charset=utf-8`
+    - `Cache-Control: no-store` for sensitive data
+  - **Language Consistency**: All error messages converted to English from Indonesian
+  - **Updated Endpoints**:
+    - `src/pages/api/payments/session.ts` - Payment checkout session creation
+    - `src/pages/api/payments/subscription.ts` - Subscription creation
+    - `src/pages/api/payments/webhook.ts` - Payment provider webhook handler
+    - `src/pages/api/notifications/whatsapp.ts` - WhatsApp webhook handler
+- **Benefits**:
+  - Consistent API patterns across all endpoints
+  - Predictable response formats for API consumers
+  - Improved developer experience with standardized error codes
+  - Consistent security protection (rate limiting, timeouts)
+  - Easier maintenance and debugging
+  - Better internationalization with English messages
+  - All builds, type checks, and dry-runs passing
+
 ### SEC-006: Restrict CORS Configuration
 - **Status**: Complete
 - **Priority**: P2 (Medium)
@@ -638,8 +672,8 @@
 
 ## Quick Stats
 
-- **Total Tasks**: 22
+- **Total Tasks**: 23
 - **Backlog**: 5
 - **In Progress**: 0
-- **Complete**: 17
+- **Complete**: 18
 - **Blocked**: 0

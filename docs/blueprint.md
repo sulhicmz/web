@@ -391,9 +391,58 @@ circuitBreaker.reset();
 - **Testing**: Seed data provides realistic test scenarios
 - **Separation of Concerns**: Data access layer isolated from application logic
 
+### Architecture Improvements (v1.4)
+
+#### API Standardization
+- **Before**: Inconsistent API response formats, error handling, and naming across endpoints
+  - Mixed Indonesian/English error messages
+  - Custom response helpers (`json()`, `responseJson()`) duplicated across files
+  - Inconsistent middleware usage (some endpoints had rate limiting/timeout, others didn't)
+  - No standardized error codes
+- **After**: Unified API patterns following contract-first principles:
+  - **Standard Response Format**: All endpoints use consistent structure:
+    ```typescript
+    {
+      success: true | false,
+      data?: T,
+      error?: string,
+      message?: string,
+      timestamp: ISO string
+    }
+    ```
+  - **Standard Error Handling**:
+    - Use `ApiError` class from `src/lib/api-utils.ts`
+    - Consistent error codes (e.g., `INVALID_JSON`, `INVALID_PAYLOAD`, `PROVIDER_NOT_CONFIGURED`)
+    - Proper HTTP status codes (400, 422, 500, 503)
+  - **Middleware Usage**:
+    - All endpoints use `withRateLimit()` and `withTimeout()` middleware
+    - Payment endpoints: 10 req/min rate limit, 20-25s timeout
+    - Webhook endpoints: 10s timeout (must respond quickly)
+  - **Standardized Headers**:
+    - `Content-Type: application/json; charset=utf-8`
+    - `Cache-Control: no-store` for sensitive data
+  - **English Error Messages**: All user-facing messages in English for consistency
+
+#### Standardized Endpoints
+- `/api/payments/session` - Payment checkout session creation
+- `/api/payments/subscription` - Subscription creation
+- `/api/payments/webhook` - Payment provider webhook handler
+- `/api/notifications/whatsapp` - WhatsApp webhook handler
+
+#### Benefits
+- **Consistency**: All APIs follow the same patterns
+- **Developer Experience**: Predictable response formats and error handling
+- **Security**: Consistent rate limiting and timeout protection
+- **Maintainability**: Easier to add new endpoints following established patterns
+- **Debugging**: Standardized error codes make troubleshooting easier
+- **Internationalization**: English messages provide consistent user experience
+
 ## Version History
 
 | Date | Version | Changes |
 |------|---------|---------|
-| 2025-01-07 | 1.1 | Module extraction for auth and state management |
+| 2025-01-07 | 1.4 | API standardization - Unified response formats, error handling, middleware usage |
+| 2025-01-07 | 1.3 | Integration resilience - Added timeout, retry, circuit breaker patterns for all external integrations |
+| 2025-01-07 | 1.2 | Data architecture improvements - Added data access layer, constraints, validation layer, and seed data |
+| 2025-01-07 | 1.1 | Module extraction - Split `auth.ts` and `state-manager.ts` into focused modules following Single Responsibility Principle |
 | 2025-01-07 | 1.0 | Initial blueprint creation |

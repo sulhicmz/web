@@ -1,17 +1,10 @@
 import type { APIRoute } from 'astro';
+import { withTimeout } from '../../../lib/api-middleware';
+import { ApiError } from '../../../lib/api-utils';
 
 import { getServiceClient } from '../../../lib/supabase/server';
 
 const RETRY_DELAYS_MINUTES = [5, 15, 60];
-
-const responseJson = (data: unknown, status = 200): Response =>
-        new Response(JSON.stringify(data), {
-                status,
-                headers: {
-                        'content-type': 'application/json; charset=utf-8',
-                        'cache-control': 'no-store',
-                },
-        });
 
 const safeNumber = (value: unknown): number | null => {
         if (value === null || value === undefined) return null;
@@ -153,13 +146,12 @@ const applyOptOut = async (supabase: ReturnType<typeof getServiceClient> | null,
         }
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = withTimeout(async ({ request }) => {
         let payload: Record<string, unknown>;
         try {
                 payload = (await request.json()) as Record<string, unknown>;
         } catch (error) {
-                const message = error instanceof Error ? error.message : 'Body harus berupa JSON valid.';
-                return responseJson({ error: message }, 400);
+                throw new ApiError('Request body must be valid JSON', 400, 'INVALID_JSON');
         }
 
         const supabase = getSupabaseClient();
@@ -236,10 +228,20 @@ export const POST: APIRoute = async ({ request }) => {
                 applyOptOut(supabase, optOutNumbers),
         ]);
 
-        return responseJson({
-                received: true,
-                statuses: logRecords.length,
-                retriesScheduled: retryQueue.length,
-                optOuts: optOutNumbers.size,
+        return new Response(JSON.stringify({
+                success: true,
+                data: {
+                        received: true,
+                        statuses: logRecords.length,
+                        retriesScheduled: retryQueue.length,
+                        optOuts: optOutNumbers.size,
+                },
+                timestamp: new Date().toISOString(),
+        }), {
+                status: 200,
+                headers: {
+                        'content-type': 'application/json; charset=utf-8',
+                        'cache-control': 'no-store',
+                },
         });
-};
+}, 10000);
