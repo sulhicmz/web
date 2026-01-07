@@ -29,7 +29,7 @@ export function useReactiveState<T>(key: string, initialValue: T) {
   };
 
   const subscribe = (callback: (value: T) => void) => {
-    return clientState.subscribe(key, callback);
+    return clientState.subscribe(key, (value: unknown) => callback(value as T));
   };
 
   return { state, setState, subscribe };

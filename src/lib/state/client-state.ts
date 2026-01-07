@@ -5,8 +5,8 @@
 
 export class ClientStateManager {
   private static instance: ClientStateManager;
-  private state: Map<string, any> = new Map();
-  private listeners: Map<string, Set<(value: any) => void>> = new Map();
+  private state: Map<string, unknown> = new Map();
+  private listeners: Map<string, Set<(value: unknown) => void>> = new Map();
 
   static getInstance(): ClientStateManager {
     if (!ClientStateManager.instance) {
@@ -15,17 +15,17 @@ export class ClientStateManager {
     return ClientStateManager.instance;
   }
 
-  set(key: string, value: any): void {
+  set<T>(key: string, value: T): void {
     this.state.set(key, value);
     this.notifyListeners(key, value);
   }
 
-  get<T>(key: string): T | null {
-    return this.state.get(key) || null;
+  get<T>(key: string): T | undefined {
+    return this.state.get(key) as T | undefined;
   }
 
-  update(key: string, updater: (prev: any) => any): void {
-    const current = this.get(key);
+  update<T>(key: string, updater: (prev: T | undefined) => T): void {
+    const current = this.get<T>(key);
     const next = updater(current);
     this.set(key, next);
   }
@@ -40,7 +40,7 @@ export class ClientStateManager {
     this.listeners.clear();
   }
 
-  subscribe(key: string, listener: (value: any) => void): () => void {
+  subscribe(key: string, listener: (value: unknown) => void): () => void {
     if (!this.listeners.has(key)) {
       this.listeners.set(key, new Set());
     }
@@ -52,7 +52,7 @@ export class ClientStateManager {
     };
   }
 
-  private notifyListeners(key: string, value: any): void {
+  private notifyListeners(key: string, value: unknown): void {
     const keyListeners = this.listeners.get(key);
     if (keyListeners) {
       keyListeners.forEach(listener => listener(value));

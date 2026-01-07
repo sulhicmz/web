@@ -45,7 +45,7 @@ export const POST: APIRoute = async ({ request }) => {
         let rawPayload: unknown;
         try {
                 rawPayload = await request.json();
-        } catch (error) {
+        } catch {
                 return json({ error: 'Body harus berupa JSON valid.' }, { status: 400 });
         }
 
@@ -56,7 +56,7 @@ export const POST: APIRoute = async ({ request }) => {
         const provider = (() => {
                 try {
                         return assertPaymentProvider();
-                } catch (error) {
+                } catch {
                         return null;
                 }
         })();

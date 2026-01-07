@@ -6,11 +6,25 @@
 import type { User } from '@supabase/supabase-js';
 import { ClientStateManager } from './client-state';
 
+interface Notification {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  isRead: boolean;
+  timestamp: string;
+}
+
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+  ttl: number;
+}
+
 export class AppStateStore {
   private clientState = ClientStateManager.getInstance();
 
   get currentUser() {
-    return this.clientState.get<User>('current_user');
+    return this.clientState.get<User>('current_user') || null;
   }
 
   set currentUser(user: User | null) {
@@ -58,10 +72,10 @@ export class AppStateStore {
   }
 
   get notifications() {
-    return this.clientState.get<any[]>('notifications') || [];
+    return this.clientState.get<Notification[]>('notifications') || [];
   }
 
-  set notifications(notifications: any[]) {
+  set notifications(notifications: Notification[]) {
     this.clientState.set('notifications', notifications);
   }
 
@@ -70,40 +84,42 @@ export class AppStateStore {
   }
 
   get currentProject() {
-    return this.clientState.get<any>('current_project');
+    const project = this.clientState.get<Record<string, unknown>>('current_project');
+    return project || undefined;
   }
 
-  set currentProject(project: any) {
+  set currentProject(project: Record<string, unknown> | undefined | null) {
     this.clientState.set('current_project', project);
   }
 
-  setFormState(formName: string, state: any) {
+  setFormState<T>(formName: string, state: T) {
     this.clientState.set(`form_${formName}`, state);
   }
 
-  getFormState(formName: string) {
-    return this.clientState.get(`form_${formName}`);
+  getFormState<T>(formName: string): T | undefined {
+    return this.clientState.get<T>(`form_${formName}`);
   }
 
   clearFormState(formName: string) {
     this.clientState.delete(`form_${formName}`);
   }
 
-  setCache(key: string, data: any, ttlMinutes: number = 5) {
-    this.clientState.set(`cache_${key}`, {
+  setCache<T>(key: string, data: T, ttlMinutes: number = 5) {
+    const entry: CacheEntry<T> = {
       data,
       timestamp: Date.now(),
       ttl: ttlMinutes * 60 * 1000
-    });
+    };
+    this.clientState.set(`cache_${key}`, entry);
   }
 
-  getCache(key: string) {
-    const cached = this.clientState.get<any>(`cache_${key}`);
-    if (!cached) return null;
+  getCache<T>(key: string): T | undefined {
+    const cached = this.clientState.get<CacheEntry<T>>(`cache_${key}`);
+    if (!cached) return undefined;
 
     if (Date.now() > cached.timestamp + cached.ttl) {
       this.clientState.delete(`cache_${key}`);
-      return null;
+      return undefined;
     }
 
     return cached.data;
@@ -122,8 +138,8 @@ export class AppStateStore {
     }
   }
 
-  subscribe(key: string, callback: (value: any) => void) {
-    return this.clientState.subscribe(key, callback);
+  subscribe<T>(key: string, callback: (value: T) => void) {
+    return this.clientState.subscribe(key, (value: unknown) => callback(value as T));
   }
 
   reset() {

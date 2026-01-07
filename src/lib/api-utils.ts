@@ -4,6 +4,7 @@
 // ==========================================================================
 
 import type { ApiResponse, PaginatedResponse } from '../types';
+import { createHmac } from 'crypto';
 
 // API Response Helpers
 export function createSuccessResponse<T>(
@@ -85,10 +86,10 @@ export function handleApiError(error: unknown): ApiResponse<never> {
 }
 
 // Validation Helpers
-export function validateRequired(
-  value: any,
+export function validateRequired<T>(
+  value: T,
   fieldName: string
-): asserts value is NonNullable<typeof value> {
+): asserts value is NonNullable<T> {
   if (value === null || value === undefined || value === '') {
     throw new ApiError(
       `Field ${fieldName} is required`,
@@ -214,7 +215,7 @@ export const RATE_LIMITS = {
 export type RateLimitType = keyof typeof RATE_LIMITS;
 
 // Cache Utilities
-export function getCacheKey(endpoint: string, params?: Record<string, any>): string {
+export function getCacheKey(endpoint: string, params?: Record<string, unknown>): string {
   const paramStr = params ? JSON.stringify(params) : '';
   return `api:${endpoint}:${paramStr}`;
 }
@@ -234,7 +235,7 @@ export function logApiRequest(
   method: string,
   endpoint: string,
   userId?: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): void {
   console.log(`[${new Date().toISOString()}] ${method} ${endpoint}`, {
     userId,
@@ -246,7 +247,7 @@ export function logApiError(
   endpoint: string,
   error: Error,
   statusCode: number,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): void {
   console.error(`[${new Date().toISOString()}] ERROR ${endpoint}`, {
     error: error.message,
@@ -284,9 +285,9 @@ export function getApiResponseHeaders(): Record<string, string> {
 
 // Database Query Helpers
 export function buildWhereClause(
-  filters: Record<string, any>
-): Record<string, any> {
-  const whereClause: Record<string, any> = {};
+  filters: Record<string, unknown>
+): Record<string, unknown> {
+  const whereClause: Record<string, unknown> = {};
 
   Object.entries(filters).forEach(([key, value]) => {
     if (value !== null && value !== undefined && value !== '') {
@@ -355,8 +356,7 @@ export function verifyWebhookSignature(
 ): boolean {
   // In production, use proper cryptographic verification
   // This is a simplified example
-  const expectedSignature = `sha256=${require('crypto')
-    .createHmac('sha256', secret)
+  const expectedSignature = `sha256=${createHmac('sha256', secret)
     .update(payload)
     .digest('hex')}`;
 

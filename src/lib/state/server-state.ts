@@ -3,9 +3,15 @@
 // Manajemen state server-side dengan TTL support
 // ==========================================================================
 
+interface StateItem<T> {
+  value: T;
+  timestamp: number;
+  ttl: number | null;
+}
+
 export class ServerStateManager {
   private static instance: ServerStateManager;
-  private state: Map<string, any> = new Map();
+  private state: Map<string, StateItem<unknown>> = new Map();
 
   static getInstance(): ServerStateManager {
     if (!ServerStateManager.instance) {
@@ -14,16 +20,17 @@ export class ServerStateManager {
     return ServerStateManager.instance;
   }
 
-  set(key: string, value: any): void {
-    this.state.set(key, {
+  set<T>(key: string, value: T): void {
+    const item: StateItem<T> = {
       value,
       timestamp: Date.now(),
       ttl: null
-    });
+    };
+    this.state.set(key, item as StateItem<unknown>);
   }
 
   get<T>(key: string): T | null {
-    const item = this.state.get(key);
+    const item = this.state.get(key) as StateItem<T> | undefined;
     if (!item) return null;
 
     if (item.ttl && Date.now() > item.timestamp + item.ttl) {
@@ -31,15 +38,16 @@ export class ServerStateManager {
       return null;
     }
 
-    return item.value as T;
+    return item.value;
   }
 
-  setWithTTL(key: string, value: any, ttlMs: number): void {
-    this.state.set(key, {
+  setWithTTL<T>(key: string, value: T, ttlMs: number): void {
+    const item: StateItem<T> = {
       value,
       timestamp: Date.now(),
       ttl: ttlMs
-    });
+    };
+    this.state.set(key, item as StateItem<unknown>);
   }
 
   delete(key: string): void {

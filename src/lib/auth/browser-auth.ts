@@ -4,7 +4,7 @@
 // ==========================================================================
 
 import { getBrowserClient } from '../supabase';
-import type { User, Session } from '@supabase/supabase-js';
+import type { Session } from '@supabase/supabase-js';
 import type { AuthUser, UserProfile } from '../../types';
 
 export const auth = {
