@@ -394,12 +394,106 @@
   - Proper error handling for HTTP status codes (5xx) and timeout scenarios
   - Non-retryable errors can optionally be retried up to maxAttempts before wrapping
 
+### [REFACTOR] TEST-002: Error Handler Test Coverage
+- **Location**: `src/lib/error-handler.ts`
+- **Issue**: Critical error handling system (440 lines) has zero test coverage
+- **Suggestion**: Write comprehensive unit tests for all error classes, ErrorHandler methods, ValidationHelpers, and error boundary function
+- **Priority**: P0 (Critical)
+- **Effort**: Medium
+- **Required Tests**:
+  - Error classes (ValidationError, AuthenticationError, AuthorizationError, NotFoundError, ConflictError, RateLimitError, ExternalServiceError)
+  - ErrorHandler.handleApiError (7 error type branches)
+  - ErrorHandler.handleMiddlewareError (3 error type branches)
+  - ErrorHandler.handleComponentError
+  - ErrorHandler.logError
+  - ErrorHandler.getUserFriendlyMessage
+  - ErrorHandler.isRetryableError
+  - ErrorHandler.getStatusCode
+  - createErrorBoundary
+  - ValidationHelpers (required, email, phone, password, passwordConfirmation, minLength, maxLength)
+- **Test Count**: 40-50 tests estimated
+
+### [REFACTOR] TEST-003: API Utils Test Coverage
+- **Location**: `src/lib/api-utils.ts`
+- **Issue**: Core API utilities (391 lines) have zero test coverage
+- **Suggestion**: Write comprehensive unit tests for response helpers, validation, request parsing, security utilities, cache helpers, and database query builders
+- **Priority**: P0 (Critical)
+- **Effort**: Medium
+- **Required Tests**:
+  - Response helpers (createSuccessResponse, createErrorResponse, createPaginatedResponse)
+  - ApiError class
+  - handleApiError
+  - Validation helpers (validateRequired, validateEmail, validateUUID)
+  - Request parsing (parseRequestBody - JSON and form-data)
+  - Query params (getPaginationParams, getSortParams, getSearchParams)
+  - Security (sanitizeHtml, generateSlug)
+  - Cache utilities (getCacheKey, getCacheTTL)
+  - Database helpers (buildWhereClause, buildOrderByClause)
+  - File upload (validateFileUpload, generateFileName)
+  - Webhook verification (verifyWebhookSignature)
+- **Test Count**: 50-60 tests estimated
+
+### [REFACTOR] REFACTOR-001: Extract Error Handler Type Discrimination
+- **Location**: `src/lib/error-handler.ts` lines 85-168
+- **Issue**: Repeated instanceof checks in handleApiError, handleMiddlewareError, getStatusCode, and getUserFriendlyError create code duplication and make adding new error types error-prone
+- **Suggestion**: Create a type-safe error type discriminator utility that maps error instances to their properties (statusCode, errorCode, message), eliminating repetitive instanceof chains
+- **Priority**: P1 (High)
+- **Effort**: Small
+- **Approach**:
+  - Create `getErrorType(error: unknown)` function that returns error metadata
+  - Refactor all methods to use this utility
+  - Reduce ~60 lines of duplicate instanceof checks
+  - Makes adding new error types a single-line change
+- **Test Dependency**: TEST-002 must be complete
+
+### [REFACTOR] REFACTOR-002: Split API Utils by Concern
+- **Location**: `src/lib/api-utils.ts` (391 lines total)
+- **Issue**: File contains 10+ unrelated concerns (responses, validation, security, caching, logging, file upload, webhooks) violating Single Responsibility Principle
+- **Suggestion**: Split into focused modules:
+  - `src/lib/api/response.ts` - Response helpers, pagination
+  - `src/lib/api/request.ts` - Request parsing, query params
+  - `src/lib/api/validation.ts` - Validation helpers
+  - `src/lib/api/security.ts` - Sanitization, CORS, security headers
+  - `src/lib/api/cache.ts` - Cache utilities
+  - `src/lib/api/logging.ts` - Logging utilities
+  - `src/lib/api/database.ts` - Query builders
+  - `src/lib/api/upload.ts` - File upload utilities
+  - `src/lib/api/webhook.ts` - Webhook verification
+  - `src/lib/api/index.ts` - Barrel exports with ApiUtils for backward compatibility
+- **Priority**: P2 (Medium)
+- **Effort**: Large
+- **Benefits**:
+  - Each module has single, testable responsibility
+  - Easier to locate and maintain code
+  - Better import tree shaking
+  - Backward compatible through barrel exports
+- **Test Dependency**: TEST-003 must be complete
+
+### [REFACTOR] REFACTOR-003: Consolidate Validation Logic
+- **Location**: `src/lib/error-handler.ts` (ValidationHelpers) + `src/lib/api-utils.ts` (validation helpers)
+- **Issue**: Duplicate validation logic exists in two files:
+  - error-handler.ts: required, email, phone, password, passwordConfirmation, minLength, maxLength
+  - api-utils.ts: validateRequired, validateEmail, validateUUID
+- **Suggestion**:
+  - Create unified `src/lib/validation/helpers.ts` with all validation logic
+  - Migrate existing test coverage from `tests/unit/lib/validation-helpers.test.ts`
+  - Update both files to import from central validation module
+  - Deprecate duplicate exports
+- **Priority**: P2 (Medium)
+- **Effort**: Small
+- **Benefits**:
+  - Single source of truth for validation
+  - Consistent validation behavior across codebase
+  - Easier to add new validators
+  - Test coverage centralized
+- **Test Dependency**: TEST-002, TEST-003 must be complete
+
 ---
 
 ## Quick Stats
 
-- **Total Tasks**: 12
-- **Backlog**: 0
+- **Total Tasks**: 17
+- **Backlog**: 5
 - **In Progress**: 0
 - **Complete**: 12
 - **Blocked**: 0
