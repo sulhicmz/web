@@ -33,7 +33,7 @@ describe('ResilientHttpClient', () => {
 
   beforeEach(() => {
     mockFetch = vi.fn();
-    global.fetch = mockFetch as any;
+    global.fetch = mockFetch as unknown as typeof fetch;
 
     httpClient = new ResilientHttpClient({
       baseURL: 'https://api.example.com',
@@ -211,7 +211,7 @@ describe('ResilientHttpClient', () => {
       for (let i = 0; i < 5; i++) {
         try {
           await clientWithCircuitBreaker.get('/test');
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }

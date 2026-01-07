@@ -3,7 +3,7 @@
 // HTTP client with built-in resilience patterns (timeout, retry, circuit breaker)
 // ==========================================================================
 
-import { ResilienceManager, type RetryConfig, type CircuitBreakerConfig, type TimeoutConfig } from './resilience';
+import { ResilienceManager, type RetryConfig, type CircuitBreakerConfig } from './resilience';
 
 export interface HttpClientConfig {
   baseURL?: string;

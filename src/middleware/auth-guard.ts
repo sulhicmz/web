@@ -4,6 +4,7 @@
 // ==========================================================================
 
 import type { MiddlewareHandler } from 'astro';
+import { getServerClient } from '../lib/supabase';
 
 interface AstroCookies {
   get(name: string): { value: string } | undefined;
@@ -86,11 +87,11 @@ export const authGuard: MiddlewareHandler = async (context, next) => {
          }
        }
 
-       // Set authenticated locals
-       locals.user = authResult.user;
-       locals.role = authResult.role;
-       locals.isAuthenticated = true;
-       locals.permissions = authResult.permissions;
+        // Set authenticated locals
+        locals.user = authResult.user ? { ...authResult.user } : null;
+        locals.role = authResult.role;
+        locals.isAuthenticated = true;
+        locals.permissions = authResult.permissions;
      }
 
     // Log successful request
@@ -138,16 +139,35 @@ async function authenticateUser(cookies: AstroCookies) {
     }
 
     try {
-      // For now, we'll implement a simpler authentication check
-      // TODO: Implement proper server-side user retrieval
-      if (!accessToken || accessToken.value === '') {
+      const supabase = getServerClient({ accessToken: accessToken.value });
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        // Invalid or expired token - clean up cookies
+        cookies.delete('sb-access-token', { path: '/' });
+        cookies.delete('sb-refresh-token', { path: '/' });
+        cookies.delete('sb-expires-at', { path: '/' });
         return { success: false, user: null, role: null, permissions: [] };
       }
 
-      // Clean up invalid tokens
-      cookies.delete('sb-access-token', { path: '/' });
-      cookies.delete('sb-refresh-token', { path: '/' });
-      return { success: false, user: null, role: null, permissions: [] };
+      // Fetch user profile to get role
+      const { data: profile, error: profileError } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error('Error fetching user profile:', profileError);
+        return { success: false, user, role: null, permissions: [] };
+      }
+
+      return {
+        success: true,
+        user,
+        role: profile.role,
+        permissions: profile.permissions || [],
+      };
 
     } catch (error) {
       console.error('Authentication error:', error);

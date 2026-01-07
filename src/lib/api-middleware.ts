@@ -5,7 +5,6 @@
 
 import type { APIRoute } from 'astro';
 import { ErrorHandler } from './error-handler';
-import { ResilientHttpClient } from './integration/http-client';
 
 export interface MiddlewareOptions {
   enableLogging?: boolean;
@@ -69,7 +68,6 @@ export class ApiMiddleware {
   }
 
   private buildContext(request: Request): RequestContext {
-    const url = new URL(request.url);
     const ip = request.headers.get('cf-connecting-ip') ||
                request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
                'unknown';

@@ -13,9 +13,6 @@ import {
   CircuitBreakerError,
   TimeoutError,
   RetryExhaustedError,
-  DEFAULT_RETRY_CONFIG,
-  DEFAULT_CIRCUIT_BREAKER_CONFIG,
-  DEFAULT_TIMEOUT_CONFIG,
 } from '../../../src/lib/integration/resilience';
 
 describe('RetryManager', () => {
@@ -69,8 +66,8 @@ describe('RetryManager', () => {
       });
 
       const delays: number[] = [];
-      const originalDelay = (retryManager as any).delay;
-      (retryManager as any).delay = (ms: number) => {
+      const originalDelay = (retryManager as unknown as { delay: (ms: number) => Promise<void> }).delay;
+      (retryManager as unknown as { delay: (ms: number) => Promise<void> }).delay = (ms: number) => {
         delays.push(ms);
         return originalDelay.call(retryManager, ms);
       };
@@ -95,8 +92,8 @@ describe('RetryManager', () => {
       });
 
       const delays: number[] = [];
-      const originalDelay = (retryManager as any).delay;
-      (retryManager as any).delay = (ms: number) => {
+      const originalDelay = (retryManager as unknown as { delay: (ms: number) => Promise<void> }).delay;
+      (retryManager as unknown as { delay: (ms: number) => Promise<void> }).delay = (ms: number) => {
         delays.push(ms);
         return originalDelay.call(retryManager, ms);
       };
@@ -190,7 +187,7 @@ describe('CircuitBreaker', () => {
       for (let i = 0; i < 3; i++) {
         try {
           await circuitBreaker.execute(operation);
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
@@ -206,7 +203,7 @@ describe('CircuitBreaker', () => {
       for (let i = 0; i < 3; i++) {
         try {
           await circuitBreaker.execute(operation);
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
@@ -228,7 +225,7 @@ describe('CircuitBreaker', () => {
       for (let i = 0; i < 3; i++) {
         try {
           await circuitBreaker.execute(operation);
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
@@ -252,7 +249,7 @@ describe('CircuitBreaker', () => {
       for (let i = 0; i < 3; i++) {
         try {
           await circuitBreaker.execute(operation);
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
@@ -268,7 +265,7 @@ describe('CircuitBreaker', () => {
 
       try {
         await circuitBreaker.execute(failOperation);
-      } catch (error) {
+      } catch {
         // Ignore
       }
 
@@ -283,7 +280,7 @@ describe('CircuitBreaker', () => {
       for (let i = 0; i < 3; i++) {
         try {
           await circuitBreaker.execute(operation);
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
@@ -400,7 +397,7 @@ describe('ResilienceManager', () => {
             serviceName: 'test-service',
             operationName: 'test-operation',
           });
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
@@ -427,7 +424,7 @@ describe('ResilienceManager', () => {
             serviceName: 'test-service',
             operationName: 'test-operation',
           });
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
@@ -448,7 +445,7 @@ describe('ResilienceManager', () => {
             serviceName: 'test-service',
             operationName: 'test-operation',
           });
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
@@ -476,7 +473,7 @@ describe('ResilienceManager', () => {
             serviceName: 'service-1',
             operationName: 'test-operation',
           });
-        } catch (error) {
+        } catch {
           // Ignore
         }
       }
