@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { getServiceClient } from '../../supabase/server';
+import { ResilientHttpClient } from '../../integration/http-client';
 
 import type {
         CheckoutPayload,
@@ -132,6 +133,7 @@ export class MidtransProvider implements PaymentProvider {
         private readonly serverKey: string;
         private readonly environment: 'production' | 'sandbox';
         private supabase?: SupabaseClient | null;
+        private readonly httpClient: ResilientHttpClient;
 
         constructor(options: MidtransOptions) {
                 if (!options.serverKey) {
@@ -139,6 +141,16 @@ export class MidtransProvider implements PaymentProvider {
                 }
                 this.serverKey = options.serverKey;
                 this.environment = options.environment ?? 'sandbox';
+
+                this.httpClient = new ResilientHttpClient({
+                        baseURL: MIDTRANS_BASE[this.environment].api,
+                        timeout: 30000,
+                        maxRetries: 2,
+                        circuitBreakerEnabled: true,
+                        defaultHeaders: {
+                                Authorization: this.authorizationHeader(),
+                        },
+                });
         }
 
         private get endpoints() {
@@ -342,22 +354,18 @@ export class MidtransProvider implements PaymentProvider {
                         enabled_payments: payload.allowedChannels,
                 };
 
-                const response = await fetch(`${this.endpoints.snap}/transactions`, {
-                        method: 'POST',
-                        headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: this.authorizationHeader(),
-                                Accept: 'application/json',
-                        },
-                        body: JSON.stringify(body),
-                });
-
-                if (!response.ok) {
-                        const detail = await response.text();
-                        throw new Error(`Gagal membuat sesi pembayaran: ${response.status} ${detail}`);
-                }
-
-                const data = (await response.json()) as { token: string; redirect_url: string; expiry_time?: string };
+                const data = await this.httpClient.post<{ token: string; redirect_url: string; expiry_time?: string }>(
+                        '/snap/transactions',
+                        body,
+                        {
+                                context: {
+                                        serviceName: 'midtrans-snap',
+                                        operationName: 'createCheckoutSession',
+                                },
+                                timeout: 20000,
+                                retries: 2,
+                        }
+                );
 
                 return {
                         id: data.token,
@@ -476,22 +484,18 @@ export class MidtransProvider implements PaymentProvider {
                         metadata: metadataPayload,
                 };
 
-                const response = await fetch(`${this.endpoints.api}/subscriptions`, {
-                        method: 'POST',
-                        headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: this.authorizationHeader(),
-                                Accept: 'application/json',
-                        },
-                        body: JSON.stringify(body),
-                });
-
-                if (!response.ok) {
-                        const detail = await response.text();
-                        throw new Error(`Gagal membuat langganan: ${response.status} ${detail}`);
-                }
-
-                const data = (await response.json()) as MidtransSubscriptionResponse;
+                const data = await this.httpClient.post<MidtransSubscriptionResponse>(
+                        '/subscriptions',
+                        body,
+                        {
+                                context: {
+                                        serviceName: 'midtrans-api',
+                                        operationName: 'createSubscription',
+                                },
+                                timeout: 25000,
+                                retries: 2,
+                        }
+                );
                 const intervalUnit = data.schedule?.interval_unit ?? scheduleSettings.intervalUnit;
                 const scheduleLabel: 'monthly' | 'yearly' = intervalUnit === 'year' ? 'yearly' : 'monthly';
 
@@ -609,23 +613,21 @@ export class MidtransProvider implements PaymentProvider {
         }
 
         async getPaymentStatus(reference: string): Promise<PaymentRecord> {
-                const response = await fetch(`${this.endpoints.api}/transactions/${reference}/status`, {
-                        headers: {
-                                Accept: 'application/json',
-                                Authorization: this.authorizationHeader(),
-                        },
-                });
-
-                if (!response.ok) {
-                        const detail = await response.text();
-                        throw new Error(`Tidak dapat mengambil status transaksi ${reference}: ${detail}`);
-                }
-
-                const data = (await response.json()) as Record<string, unknown> & {
+                const data = await this.httpClient.get<Record<string, unknown> & {
                         transaction_status?: string;
                         gross_amount?: string;
                         currency?: string;
-                };
+                }>(
+                        `/transactions/${reference}/status`,
+                        {
+                                context: {
+                                        serviceName: 'midtrans-api',
+                                        operationName: 'getPaymentStatus',
+                                },
+                                timeout: 15000,
+                                retries: 2,
+                        }
+                );
 
                 const amount = data.gross_amount ? Number.parseInt(String(data.gross_amount), 10) : 0;
 

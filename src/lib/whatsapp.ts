@@ -1,3 +1,5 @@
+import { ResilientHttpClient } from './integration/http-client';
+
 const WHATSAPP_API_URL = 'https://graph.facebook.com/v15.0';
 
 interface WhatsAppComponent {
@@ -10,14 +12,22 @@ interface WhatsAppParameter {
   text: string;
 }
 
+const httpClient = new ResilientHttpClient({
+  baseURL: WHATSAPP_API_URL,
+  timeout: 20000,
+  maxRetries: 2,
+  circuitBreakerEnabled: true,
+  defaultHeaders: {
+    'Content-Type': 'application/json',
+  },
+});
+
 export async function sendTemplate(to: string, template: string, components: WhatsAppComponent[]) {
-  const response = await fetch(`${WHATSAPP_API_URL}/${import.meta.env.WHATSAPP_BUSINESS_ID}/messages`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${import.meta.env.WHATSAPP_ACCESS_TOKEN}`,
-    },
-    body: JSON.stringify({
+  const businessId = import.meta.env.WHATSAPP_BUSINESS_ID || import.meta.env.WHATSAPP_PHONE_NUMBER_ID;
+
+  return httpClient.post(
+    `${businessId}/messages`,
+    {
       messaging_product: 'whatsapp',
       to,
       type: 'template',
@@ -26,15 +36,19 @@ export async function sendTemplate(to: string, template: string, components: Wha
         language: { code: 'id' },
         components,
       },
-    }),
-  });
-
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`Gagal mengirim template WhatsApp: ${response.status} ${detail}`);
-  }
-
-  return response.json();
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.WHATSAPP_ACCESS_TOKEN}`,
+      },
+      context: {
+        serviceName: 'whatsapp-api',
+        operationName: 'sendTemplate',
+      },
+      timeout: 20000,
+      retries: 2,
+    }
+  );
 }
 
 export async function sendInvoiceAlert(to: string, invoiceNumber: string, amount: string, dueDate: string, paymentUrl: string) {

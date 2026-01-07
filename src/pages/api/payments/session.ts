@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { withRateLimit, withTimeout } from '../../../lib/api-middleware';
 
 import {
         assertPaymentProvider,
@@ -41,44 +42,48 @@ const isCheckoutPayload = (payload: unknown): payload is CheckoutPayload => {
         );
 };
 
-export const POST: APIRoute = async ({ request }) => {
-        let rawPayload: unknown;
-        try {
-                rawPayload = await request.json();
-        } catch {
-                return json({ error: 'Body harus berupa JSON valid.' }, { status: 400 });
-        }
-
-        if (!isCheckoutPayload(rawPayload)) {
-                return json({ error: 'Payload checkout tidak valid.' }, { status: 422 });
-        }
-
-        const provider = (() => {
+export const POST: APIRoute = withRateLimit(
+        withTimeout(async ({ request }) => {
+                let rawPayload: unknown;
                 try {
-                        return assertPaymentProvider();
+                        rawPayload = await request.json();
                 } catch {
-                        return null;
-                }
-        })();
-
-        if (!provider) {
-                return json({ error: 'Provider pembayaran belum dikonfigurasi.' }, { status: 503 });
-        }
-
-        try {
-                const payload = sanitizeCheckoutPayload(rawPayload);
-                if (payload.couponCode && provider.applyCoupon) {
-                        await provider.applyCoupon(payload.reference!, payload.couponCode);
+                        return json({ error: 'Body harus berupa JSON valid.' }, { status: 400 });
                 }
 
-                const session = await provider.createCheckoutSession(payload);
-                return json({ session }, {
-                        headers: {
-                                'idempotency-key': request.headers.get('idempotency-key') ?? '',
-                        },
-                });
-        } catch (error) {
-                console.error('[payments/session]', error);
-                return json({ error: 'Gagal membuat sesi pembayaran.' }, { status: 500 });
-        }
-};
+                if (!isCheckoutPayload(rawPayload)) {
+                        return json({ error: 'Payload checkout tidak valid.' }, { status: 422 });
+                }
+
+                const provider = (() => {
+                        try {
+                                return assertPaymentProvider();
+                        } catch {
+                                return null;
+                        }
+                })();
+
+                if (!provider) {
+                        return json({ error: 'Provider pembayaran belum dikonfigurasi.' }, { status: 503 });
+                }
+
+                try {
+                        const payload = sanitizeCheckoutPayload(rawPayload);
+                        if (payload.couponCode && provider.applyCoupon) {
+                                await provider.applyCoupon(payload.reference!, payload.couponCode);
+                        }
+
+                        const session = await provider.createCheckoutSession(payload);
+                        return json({ session }, {
+                                headers: {
+                                        'idempotency-key': request.headers.get('idempotency-key') ?? '',
+                                },
+                        });
+                } catch (error) {
+                        console.error('[payments/session]', error);
+                        return json({ error: 'Gagal membuat sesi pembayaran.' }, { status: 500 });
+                }
+        }, 20000),
+        60 * 1000,
+        10
+);

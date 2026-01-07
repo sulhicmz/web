@@ -275,6 +275,60 @@
   - Created infrastructure for future lazy-loading improvements
   - Fixed CSS syntax errors improving build reliability
 
+### INT-001: Integration Hardening
+- **Status**: Complete
+- **Priority**: P1
+- **Agent**: 07 (Integration)
+- **Description**: Add resilience patterns (timeouts, retries, circuit breakers) to all external service integrations
+- **Implementation**:
+  - **Resilience Library** (`src/lib/integration/resilience.ts`):
+    - `TimeoutManager`: Configurable timeout handling with custom callbacks
+    - `RetryManager`: Exponential backoff retry with configurable max attempts
+    - `CircuitBreaker`: Three-state circuit (closed/open/half-open) for service health
+    - `ResilienceManager`: Combined resilience patterns for comprehensive protection
+  - **HTTP Client** (`src/lib/integration/http-client.ts`):
+    - `ResilientHttpClient`: Built-in timeout, retry, and circuit breaker
+    - Automatic error parsing and type-safe responses
+    - Circuit state monitoring and management
+  - **API Middleware** (`src/lib/api-middleware.ts`):
+    - `withRateLimit`: Rate limiting per IP with configurable windows
+    - `withTimeout`: Request timeout protection
+    - `withCircuitBreaker`: Circuit breaker for API endpoints
+    - `ApiMiddleware`: Comprehensive middleware with logging and error handling
+  - **Midtrans Integration** (`src/lib/payments/providers/midtrans.ts`):
+    - All API calls use `ResilientHttpClient`
+    - Checkout sessions: 20s timeout, 2 retries
+    - Subscriptions: 25s timeout, 2 retries
+    - Status queries: 15s timeout, 2 retries
+    - Circuit breakers for `midtrans-api` and `midtrans-snap`
+  - **WhatsApp Integration** (`src/lib/whatsapp.ts`):
+    - Template sends: 20s timeout, 2 retries
+    - Circuit breaker for `whatsapp-api`
+  - **API Endpoints**:
+    - `/api/payments/session`: Rate limiting (10 req/min), timeout (20s)
+    - `/api/payments/webhook`: Timeout (10s)
+  - **Tests** (`tests/unit/integration/`):
+    - Resilience tests: 40+ tests covering retry, circuit breaker, timeout
+    - HTTP client tests: 50+ tests covering all HTTP methods and resilience
+  - **Documentation** (`docs/blueprint.md`):
+    - Added comprehensive integration resilience patterns section
+    - Usage examples and configuration guidelines
+    - Monitoring and debugging instructions
+- **Configuration**:
+  - Default timeouts: 30s (configurable per service)
+  - Default retries: 3 attempts with exponential backoff (1s → 2s → 4s)
+  - Circuit breaker threshold: 5 failures to open, 3 successes to close
+  - Circuit breaker timeout: 60s before half-open attempt
+  - Rate limiting: 100 req/15min (default), 10 req/min (payments), 5 req/15min (auth)
+- **Benefits**:
+  - No indefinite hangs from external services
+  - Automatic recovery from transient failures
+  - Fast fail when services are unavailable
+  - Prevent cascading failures through circuit breakers
+  - Protection against API abuse with rate limiting
+  - Comprehensive test coverage for resilience patterns
+  - Well-documented patterns for future integrations
+
 ### SEC-001: Critical Vulnerability Remediation
 - **Status**: Complete
 - **Priority**: P0
@@ -325,8 +379,8 @@
 
 ## Quick Stats
 
-- **Total Tasks**: 10
+- **Total Tasks**: 11
 - **Backlog**: 0
 - **In Progress**: 0
-- **Complete**: 10
+- **Complete**: 11
 - **Blocked**: 0

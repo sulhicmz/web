@@ -96,6 +96,220 @@ supabase/              # Database migrations & seeds
 - Rotate compromised credentials
 - Review `supabase/README.md` before database changes
 
+## Integration Resilience Patterns
+
+### Overview
+Integration resilience patterns protect application stability when external services fail. All integrations implement timeouts, retries, and circuit breakers to prevent cascading failures.
+
+### Resilience Library (`src/lib/integration/`)
+
+#### Timeout Management
+- **File**: `resilience.ts` - `TimeoutManager`
+- **Purpose**: Prevent indefinite hangs on external calls
+- **Configuration**:
+  - Default timeout: 30 seconds
+  - Per-service overrides supported
+  - Custom timeout callbacks available
+
+#### Retry Logic
+- **File**: `resilience.ts` - `RetryManager`
+- **Purpose**: Automatically retry transient failures
+- **Configuration**:
+  - Max attempts: 3 (configurable)
+  - Base delay: 1000ms
+  - Backoff multiplier: 2 (exponential)
+  - Max delay cap: 30 seconds
+- **Retryable Errors**:
+  - Network errors: `ECONNRESET`, `ETIMEDOUT`, `ENOTFOUND`
+  - HTTP status: 408, 429, 500, 502, 503, 504
+  - Error patterns containing "network"
+
+#### Circuit Breaker
+- **File**: `resilience.ts` - `CircuitBreaker`, `ResilienceManager`
+- **Purpose**: Stop calling failing services to prevent resource exhaustion
+- **States**:
+  - **Closed**: Normal operation, requests flow through
+  - **Open**: Circuit is tripped, requests fail immediately
+  - **Half-open**: Testing if service has recovered
+- **Configuration**:
+  - Failure threshold: 5 consecutive failures
+  - Success threshold: 3 consecutive successes (to close)
+  - Timeout: 60 seconds (before half-open attempt)
+  - Half-open max calls: 2
+
+#### HTTP Client
+- **File**: `http-client.ts` - `ResilientHttpClient`
+- **Features**:
+  - Built-in timeout, retry, circuit breaker
+  - Automatic error parsing
+  - Response type safety
+  - Circuit state monitoring
+
+### Integration Implementations
+
+#### Midtrans Payment Provider (`src/lib/payments/providers/midtrans.ts`)
+- **Applied Patterns**:
+  - All API calls use `ResilientHttpClient`
+  - Checkout sessions: 20s timeout, 2 retries
+  - Subscription creation: 25s timeout, 2 retries
+  - Status queries: 15s timeout, 2 retries
+  - Circuit breaker enabled per service
+- **Service Names**: `midtrans-api`, `midtrans-snap`
+
+#### WhatsApp Integration (`src/lib/whatsapp.ts`)
+- **Applied Patterns**:
+  - Uses shared `ResilientHttpClient` instance
+  - Template sends: 20s timeout, 2 retries
+  - Circuit breaker enabled
+- **Service Name**: `whatsapp-api`
+
+### API Middleware (`src/lib/api-middleware.ts`)
+
+#### Rate Limiting
+- **Default**: 100 requests per 15 minutes per IP
+- **Payment endpoints**: 10 requests per minute
+- **Auth endpoints**: 5 requests per 15 minutes
+- **Response**: 429 status with `Retry-After` header
+
+#### Request Timeout
+- **Default**: 30 seconds
+- **Webhook handlers**: 10 seconds
+- **Payment session**: 20 seconds
+
+#### Error Handling
+- Automatic error logging with context
+- Consistent error response format
+- User-friendly error messages
+
+### Usage Patterns
+
+#### Basic Resilient HTTP Call
+```typescript
+const client = new ResilientHttpClient({
+  baseURL: 'https://api.service.com',
+  timeout: 30000,
+  maxRetries: 2,
+  circuitBreakerEnabled: true,
+});
+
+const data = await client.get('/endpoint', {
+  context: {
+    serviceName: 'my-service',
+    operationName: 'fetch-data',
+  },
+});
+```
+
+#### Retry-Only Pattern
+```typescript
+const retryManager = new RetryManager({
+  maxAttempts: 3,
+  baseDelayMs: 1000,
+});
+
+const result = await retryManager.retry(
+  () => someOperation(),
+  'operation-context'
+);
+```
+
+#### Circuit Breaker Pattern
+```typescript
+const circuitBreaker = new CircuitBreaker('service-name', {
+  failureThreshold: 5,
+  timeoutMs: 60000,
+});
+
+const result = await circuitBreaker.execute(
+  () => someOperation()
+);
+```
+
+#### Combined Resilience
+```typescript
+const resilienceManager = new ResilienceManager(
+  { maxAttempts: 3 },
+  { failureThreshold: 5 },
+  { timeoutMs: 30000 }
+);
+
+const result = await resilienceManager.execute(
+  () => someOperation(),
+  {
+    serviceName: 'my-service',
+    operationName: 'critical-operation',
+  }
+);
+```
+
+### Monitoring & Debugging
+
+#### Circuit Breaker State
+```typescript
+// Get specific circuit state
+const state = resilienceManager.getCircuitBreakerState('midtrans-api');
+console.log('Circuit state:', state);
+
+// Get all circuit states
+const allStates = resilienceManager.getAllCircuitStates();
+console.log('All circuits:', allStates);
+```
+
+#### Reset Circuits
+```typescript
+// Reset specific circuit
+resilienceManager.resetCircuitBreaker('midtrans-api');
+
+// CircuitBreaker instance method
+circuitBreaker.reset();
+```
+
+### Testing
+
+#### Unit Tests
+- **Location**: `tests/unit/integration/`
+- **Coverage**:
+  - Retry logic (40+ tests)
+  - Circuit breaker states (30+ tests)
+  - Timeout handling (20+ tests)
+  - HTTP client (50+ tests)
+
+#### Test Patterns
+- Mock network failures
+- Simulate timeout scenarios
+- Test circuit state transitions
+- Verify exponential backoff
+- Validate retry attempts
+
+### Configuration Guidelines
+
+#### Timeouts
+- Fast operations: 5-10 seconds
+- Normal operations: 15-30 seconds
+- Slow operations: 60+ seconds
+- Webhooks: 5-10 seconds (must respond quickly)
+
+#### Retries
+- Idempotent operations: 3-5 retries
+- Non-idempotent: 0-1 retries
+- Critical operations: 3 retries
+- Non-critical: 1-2 retries
+
+#### Circuit Breaker
+- Low-value services: 3-5 failure threshold
+- High-value services: 5-10 failure threshold
+- Recovery timeout: 30-120 seconds
+- Success threshold: 2-5 successes
+
+### Benefits
+
+- **Stability**: Prevents cascading failures from external services
+- **Performance**: Fast fail when services are down
+- **Reliability**: Automatic retries for transient failures
+- **Observability**: Circuit state monitoring for debugging
+- **Flexibility**: Per-service configuration for different needs
+- **Maintainability**: Centralized resilience patterns
+
 ## Architecture History
 
 | Date | Version | Changes |
@@ -103,6 +317,7 @@ supabase/              # Database migrations & seeds
 | 2025-01-07 | 1.0 | Initial blueprint creation |
 | 2025-01-07 | 1.1 | Module extraction - Split `auth.ts` and `state-manager.ts` into focused modules following Single Responsibility Principle |
 | 2025-01-07 | 1.2 | Data architecture improvements - Added data access layer, constraints, validation layer, and seed data |
+| 2025-01-07 | 1.3 | Integration resilience - Added timeout, retry, circuit breaker patterns for all external integrations |
 
 ### Architecture Improvements (v1.1)
 

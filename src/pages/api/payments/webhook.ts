@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { withTimeout } from '../../../lib/api-middleware';
 import { MidtransProvider } from '../../../lib/payments/providers/midtrans';
 
 const json = (data: unknown, init: ResponseInit = {}) =>
@@ -10,7 +11,7 @@ const json = (data: unknown, init: ResponseInit = {}) =>
                 },
         });
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = withTimeout(async ({ request }) => {
         const serverKey = import.meta.env.MIDTRANS_SERVER_KEY || '';
         const environment = (import.meta.env.PAYMENT_ENV as 'sandbox' | 'production') || 'sandbox';
 
@@ -30,4 +31,4 @@ export const POST: APIRoute = async ({ request }) => {
         const event = await provider.parseWebhook(JSON.stringify(body), Object.fromEntries(request.headers.entries()));
 
         return json({ received: true, event: { reference: event.reference, status: event.status } });
-};
+}, 10000);
