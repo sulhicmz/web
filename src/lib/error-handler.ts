@@ -77,6 +77,74 @@ export class ExternalServiceError extends Error {
   }
 }
 
+// Error type metadata interface
+interface ErrorTypeMetadata {
+  statusCode: number;
+  errorCode: string;
+  isRetryable: boolean;
+}
+
+// Error type discriminator
+function getErrorType(error: unknown): ErrorTypeMetadata | null {
+  if (error instanceof ValidationError) {
+    return {
+      statusCode: error.statusCode,
+      errorCode: error.errorCode,
+      isRetryable: false,
+    };
+  }
+
+  if (error instanceof AuthenticationError) {
+    return {
+      statusCode: error.statusCode,
+      errorCode: error.errorCode,
+      isRetryable: false,
+    };
+  }
+
+  if (error instanceof AuthorizationError) {
+    return {
+      statusCode: error.statusCode,
+      errorCode: error.errorCode,
+      isRetryable: false,
+    };
+  }
+
+  if (error instanceof NotFoundError) {
+    return {
+      statusCode: error.statusCode,
+      errorCode: error.errorCode,
+      isRetryable: false,
+    };
+  }
+
+  if (error instanceof ConflictError) {
+    return {
+      statusCode: error.statusCode,
+      errorCode: error.errorCode,
+      isRetryable: false,
+    };
+  }
+
+  if (error instanceof RateLimitError) {
+    return {
+      statusCode: error.statusCode,
+      errorCode: error.errorCode,
+      isRetryable: true,
+    };
+  }
+
+  if (error instanceof ExternalServiceError) {
+    return {
+      statusCode: error.statusCode,
+      errorCode: error.errorCode,
+      isRetryable: true,
+    };
+  }
+
+  return null;
+}
+
 // Error handler utility functions
 export const ErrorHandler = {
   /**
@@ -85,64 +153,12 @@ export const ErrorHandler = {
   handleApiError(error: unknown): ApiResponse<never> {
     console.error('API Error:', error);
 
-    if (error instanceof ValidationError) {
-      return {
-        success: false,
-        error: error.errorCode,
-        message: error.message,
-        timestamp: new Date().toISOString(),
-      };
-    }
+    const errorType = getErrorType(error);
 
-    if (error instanceof AuthenticationError) {
+    if (errorType && error instanceof Error) {
       return {
         success: false,
-        error: error.errorCode,
-        message: error.message,
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    if (error instanceof AuthorizationError) {
-      return {
-        success: false,
-        error: error.errorCode,
-        message: error.message,
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    if (error instanceof NotFoundError) {
-      return {
-        success: false,
-        error: error.errorCode,
-        message: error.message,
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    if (error instanceof ConflictError) {
-      return {
-        success: false,
-        error: error.errorCode,
-        message: error.message,
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    if (error instanceof RateLimitError) {
-      return {
-        success: false,
-        error: error.errorCode,
-        message: error.message,
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    if (error instanceof ExternalServiceError) {
-      return {
-        success: false,
-        error: error.errorCode,
+        error: errorType.errorCode,
         message: error.message,
         timestamp: new Date().toISOString(),
       };
@@ -173,32 +189,14 @@ export const ErrorHandler = {
   handleMiddlewareError(error: unknown): Response {
     console.error('Middleware Error:', error);
 
-    if (error instanceof AuthenticationError) {
-      return new Response(JSON.stringify({
-        error: error.errorCode,
-        message: error.message,
-      }), {
-        status: error.statusCode,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    const errorType = getErrorType(error);
 
-    if (error instanceof AuthorizationError) {
+    if (errorType && error instanceof Error) {
       return new Response(JSON.stringify({
-        error: error.errorCode,
+        error: errorType.errorCode,
         message: error.message,
       }), {
-        status: error.statusCode,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (error instanceof RateLimitError) {
-      return new Response(JSON.stringify({
-        error: error.errorCode,
-        message: error.message,
-      }), {
-        status: error.statusCode,
+        status: errorType.statusCode,
         headers: { 'Content-Type': 'application/json' },
       });
     }
@@ -290,12 +288,10 @@ export const ErrorHandler = {
    * Check if error is retryable
    */
   isRetryableError(error: unknown): boolean {
-    if (error instanceof RateLimitError) {
-      return true;
-    }
+    const errorType = getErrorType(error);
 
-    if (error instanceof ExternalServiceError) {
-      return true;
+    if (errorType) {
+      return errorType.isRetryable;
     }
 
     if (error instanceof Error && error.message.includes('network')) {
@@ -309,32 +305,10 @@ export const ErrorHandler = {
    * Get error status code
    */
   getStatusCode(error: unknown): number {
-    if (error instanceof ValidationError) {
-      return error.statusCode;
-    }
+    const errorType = getErrorType(error);
 
-    if (error instanceof AuthenticationError) {
-      return error.statusCode;
-    }
-
-    if (error instanceof AuthorizationError) {
-      return error.statusCode;
-    }
-
-    if (error instanceof NotFoundError) {
-      return error.statusCode;
-    }
-
-    if (error instanceof ConflictError) {
-      return error.statusCode;
-    }
-
-    if (error instanceof RateLimitError) {
-      return error.statusCode;
-    }
-
-    if (error instanceof ExternalServiceError) {
-      return error.statusCode;
+    if (errorType) {
+      return errorType.statusCode;
     }
 
     return 500;
