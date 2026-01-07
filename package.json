@@ -16,12 +16,12 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "@astrojs/cloudflare": "12.6.0",
-    "@astrojs/mdx": "4.3.0",
-    "@astrojs/rss": "4.0.11",
-    "@astrojs/sitemap": "3.4.1",
-    "@supabase/supabase-js": "2.46.1",
-    "astro": "5.10.1",
+    "@astrojs/cloudflare": "12.6.12",
+    "@astrojs/mdx": "4.3.13",
+    "@astrojs/rss": "4.0.14",
+    "@astrojs/sitemap": "3.6.1",
+    "@supabase/supabase-js": "2.90.0",
+    "astro": "5.16.7",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
@@ -36,7 +36,7 @@
     "happy-dom": "^20.1.0",
     "typescript-eslint": "^8.52.0",
     "vitest": "^4.0.16",
-    "wrangler": "4.21.x"
+    "wrangler": "4.57.0"
   },
   "scripts": {
     "astro": "astro",
