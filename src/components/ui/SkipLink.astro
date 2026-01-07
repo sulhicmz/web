@@ -1,0 +1,59 @@
+---
+interface SkipLinkProps extends AstroHTML.JSX.AnchorHTMLAttributes {
+    href: string;
+    label?: string;
+}
+
+const {
+    href = '#main',
+    label = 'Skip to main content',
+    class: customClass = '',
+    ...rest
+} = Astro.props as SkipLinkProps & Record<string, unknown>;
+
+const classes = ['skip-link', typeof customClass === 'string' ? customClass : ''].filter(Boolean).join(' ');
+---
+
+<a
+    href={href}
+    class={classes}
+    {...rest}
+>
+    {label}
+</a>
+
+<style>
+    .skip-link {
+        position: fixed;
+        top: -100%;
+        left: var(--space-4);
+        z-index: 9999;
+        padding: var(--space-3) var(--space-6);
+        background: var(--color-primary);
+        color: white;
+        font-weight: var(--font-semibold);
+        font-size: var(--text-base);
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        transition: all var(--transition-base);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .skip-link:focus {
+        top: var(--space-4);
+        outline: 3px solid white;
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .skip-link {
+            transition: none;
+        }
+    }
+
+    @media (prefers-contrast: high) {
+        .skip-link {
+            border: 2px solid white;
+        }
+    }
+</style>

@@ -1,0 +1,155 @@
+---
+interface EmptyStateProps extends AstroHTML.JSX.HTMLAttributes<'div'> {
+    icon?: string;
+    title?: string;
+    description?: string;
+    action?: { label: string; href: string };
+    variant?: 'default' | 'info' | 'warning';
+}
+
+const {
+    icon = '📭',
+    title = 'No data found',
+    description = 'There is no data to display at this time.',
+    action,
+    variant = 'default',
+    class: customClass = '',
+    ...rest
+} = Astro.props as EmptyStateProps & Record<string, unknown>;
+
+const classes = ['empty-state', `empty-state--${variant}`, typeof customClass === 'string' ? customClass : ''].filter(Boolean).join(' ');
+---
+
+<div class={classes} role="status" aria-live="polite" {...rest}>
+    <div class="empty-state__icon" aria-hidden="true">
+        {icon}
+    </div>
+    <h2 class="empty-state__title">{title}</h2>
+    <p class="empty-state__description">{description}</p>
+    {action && (
+        <a href={action.href} class="empty-state__action">
+            {action.label}
+            <span aria-hidden="true">→</span>
+        </a>
+    )}
+</div>
+
+<style>
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: var(--space-12) var(--space-6);
+        min-height: 400px;
+        border-radius: var(--radius-xl);
+        border: 2px dashed var(--color-border);
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .empty-state__icon {
+        font-size: 4rem;
+        line-height: 1;
+        margin-bottom: var(--space-6);
+        opacity: 0.7;
+    }
+
+    .empty-state__title {
+        font-size: var(--text-xl);
+        font-weight: var(--font-semibold);
+        color: var(--color-text-primary);
+        margin: 0 0 var(--space-3) 0;
+    }
+
+    .empty-state__description {
+        font-size: var(--text-base);
+        color: var(--color-text-secondary);
+        line-height: var(--leading-relaxed);
+        margin: 0 0 var(--space-6) 0;
+        max-width: 500px;
+    }
+
+    .empty-state__action {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-6);
+        background: var(--gradient-primary);
+        color: white;
+        font-weight: var(--font-semibold);
+        text-decoration: none;
+        border-radius: var(--radius-lg);
+        transition: all var(--transition-base);
+        box-shadow: var(--shadow-md);
+    }
+
+    .empty-state__action:hover,
+    .empty-state__action:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        background: linear-gradient(135deg, #6D28D9 0%, #1E40AF 100%);
+    }
+
+    .empty-state__action:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.8);
+        outline-offset: 2px;
+    }
+
+    .empty-state--info {
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .empty-state--info .empty-state__icon {
+        opacity: 0.8;
+    }
+
+    .empty-state--warning {
+        border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .empty-state--warning .empty-state__icon {
+        opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+        .empty-state {
+            min-height: 300px;
+            padding: var(--space-8) var(--space-4);
+        }
+
+        .empty-state__icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .empty-state__title {
+            font-size: var(--text-lg);
+        }
+
+        .empty-state__description {
+            font-size: var(--text-sm);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .empty-state__action {
+            transition: none;
+        }
+
+        .empty-state__action:hover,
+        .empty-state__action:focus-visible {
+            transform: none;
+        }
+    }
+
+    @media (prefers-contrast: high) {
+        .empty-state {
+            border-width: 3px;
+        }
+
+        .empty-state__action {
+            border: 2px solid white;
+        }
+    }
+</style>

@@ -2,6 +2,7 @@
 import BaseHead from '../components/ui/BaseHead.astro';
 import PortalNav from '../components/portal/PortalNav.astro';
 import AnalyticsConsent from '../components/analytics/AnalyticsConsent.astro';
+import SkipLink from '../components/ui/SkipLink.astro';
 import { SITE } from '../consts';
 
 interface Props {
@@ -18,11 +19,12 @@ const { title = `${SITE.title} Portal`, description = 'Portal klien untuk mengel
         	<BaseHead title={title} description={description} type="website" />
         </head>
         <body class="portal-shell">
+                <SkipLink href="#portal-main" label="Skip to main content" />
                 <div class="portal-background" aria-hidden="true"></div>
                 <aside class="sidebar">
                         <PortalNav />
                 </aside>
-                <main class="portal-main">
+                <main id="portal-main" class="portal-main">
                         <div class="portal-main__surface">
                                 <slot />
                         </div>

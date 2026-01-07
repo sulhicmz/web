@@ -3,6 +3,7 @@ import BaseHead from '../components/ui/BaseHead.astro';
 import MarketingHeader from '../components/marketing/MarketingHeader.astro';
 import MarketingFooter from '../components/marketing/MarketingFooter.astro';
 import AnalyticsConsent from '../components/analytics/AnalyticsConsent.astro';
+import SkipLink from '../components/ui/SkipLink.astro';
 import { SITE } from '../consts';
 
 interface Props {
@@ -19,9 +20,10 @@ const { title = SITE.title, description = SITE.description } = Astro.props as Pr
         	<BaseHead title={title} description={description} type="website" />
         </head>
         <body class="marketing-shell">
+                <SkipLink href="#main" label="Skip to main content" />
                 <div class="marketing-grid" aria-hidden="true"></div>
                 <MarketingHeader />
-                <main class="marketing-main">
+                <main id="main" class="marketing-main">
                         <slot />
                 </main>
                 <MarketingFooter />
