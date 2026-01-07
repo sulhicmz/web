@@ -219,15 +219,35 @@ export const errorHandler: MiddlewareHandler = async ({ request }, next) => {
 export const securityHeaders: MiddlewareHandler = async ({ request }, next) => {
   const response = await next();
 
+  const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321';
+
+  // Content Security Policy - comprehensive XSS and injection protection
+  const cspDirectives = [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline' ${siteUrl}`,
+    `style-src 'self' 'unsafe-inline' ${siteUrl}`,
+    `img-src 'self' data: https: blob:`,
+    `font-src 'self' data:`,
+    "connect-src 'self' https://*.supabase.co https://*.midtrans.com",
+    "frame-src 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "report-uri /api/csp-report"
+  ].join('; ');
+
   // Add security headers
+  response.headers.set('Content-Security-Policy', cspDirectives);
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
   // Only add HSTS in production over HTTPS
   if (request.url.startsWith('https://') && import.meta.env.MODE === 'production') {
-    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   }
 
   return response;

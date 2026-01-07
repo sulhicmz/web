@@ -8,17 +8,17 @@ import { z } from 'zod';
 
 export function validateRequest<T>(schema: z.ZodSchema<T>, data: unknown): T {
   const result = schema.safeParse(data);
-  
+
   if (!result.success) {
-    const errors = result.error.errors.map(err => ({
+    const errors = result.error.issues.map((err: z.ZodIssue) => ({
       field: err.path.join('.'),
       message: err.message,
       code: err.code,
     }));
-    
+
     throw new Error(`Validation failed: ${JSON.stringify(errors)}`);
   }
-  
+
   return result.data;
 }
 
@@ -32,16 +32,16 @@ export function validateQueryParams<T>(schema: z.ZodSchema<T>, searchParams: URL
   return validateRequest(schema, params);
 }
 
-export function createValidationError(errors: z.ZodError): Error {
-  const formattedErrors = errors.errors.map(err => ({
+export function createValidationError(error: z.ZodError): Error {
+  const formattedErrors = error.issues.map((err: z.ZodIssue) => ({
     field: err.path.join('.'),
     message: err.message,
     code: err.code,
   }));
-  
-  const error = new Error(`Validation failed`);
-  error.name = 'ValidationError';
-  (error as Error & { details: Array<{ field: string; message: string; code: string }> }).details = formattedErrors;
-  
-  return error;
+
+  const err = new Error('Validation failed');
+  err.name = 'ValidationError';
+  (err as Error & { details: Array<{ field: string; message: string; code: string }> }).details = formattedErrors;
+
+  return err;
 }

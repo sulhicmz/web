@@ -7,7 +7,7 @@ export const uuidSchema = z.string().regex(uuidRegex, 'Invalid UUID format');
 export const emailSchema = z.string().regex(emailRegex, 'Invalid email format');
 export const urlSchema = z.string().url('Invalid URL format').nullable().optional();
 export const timestampSchema = z.string().datetime('Invalid timestamp format').or(z.date());
-export const jsonbSchema = z.record(z.unknown());
+export const jsonbSchema = z.record(z.string(), z.unknown());
 
 export const paginationSchema = z.object({
   page: z.coerce.number().min(1).default(1),
