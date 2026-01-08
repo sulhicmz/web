@@ -1,20 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ClientStateManager } from '../../../src/lib/state/client-state';
+import type { StateContext } from '../../../src/lib/state/state-context';
+import { ClientStateContext } from '../../../src/lib/state/client-state-context';
 
 describe('Client State Manager', () => {
-  let stateManager: ClientStateManager;
+  let stateManager: StateContext;
 
   beforeEach(() => {
-    stateManager = ClientStateManager.getInstance();
+    stateManager = new ClientStateContext();
     stateManager.clear();
-  });
-
-  describe('Singleton Pattern', () => {
-    it('should return same instance', () => {
-      const instance1 = ClientStateManager.getInstance();
-      const instance2 = ClientStateManager.getInstance();
-      expect(instance1).toBe(instance2);
-    });
   });
 
   describe('set and get', () => {

@@ -1,10 +1,6 @@
-// ==========================================================================
-// AstroPro Digital - App State Store
-// Manajemen state aplikasi dengan reactive subscriptions
-// ==========================================================================
-
 import type { User } from '@supabase/supabase-js';
-import { ClientStateManager } from './client-state';
+import type { StateContext } from './state-context';
+import { ClientStateContext } from './client-state-context';
 
 interface Notification {
   id: string;
@@ -21,62 +17,66 @@ interface CacheEntry<T> {
 }
 
 export class AppStateStore {
-  private clientState = ClientStateManager.getInstance();
+  private stateContext: StateContext;
+
+  constructor(stateContext?: StateContext) {
+    this.stateContext = stateContext ?? new ClientStateContext();
+  }
 
   get currentUser() {
-    return this.clientState.get<User>('current_user') || null;
+    return this.stateContext.get<User>('current_user') || null;
   }
 
   set currentUser(user: User | null) {
-    this.clientState.set('current_user', user);
+    this.stateContext.set('current_user', user);
   }
 
   get sidebarOpen() {
-    return this.clientState.get<boolean>('sidebar_open') || false;
+    return this.stateContext.get<boolean>('sidebar_open') || false;
   }
 
   set sidebarOpen(open: boolean) {
-    this.clientState.set('sidebar_open', open);
+    this.stateContext.set('sidebar_open', open);
   }
 
   get theme() {
-    return this.clientState.get<'light' | 'dark' | 'system'>('theme') || 'system';
+    return this.stateContext.get<'light' | 'dark' | 'system'>('theme') || 'system';
   }
 
   set theme(theme: 'light' | 'dark' | 'system') {
-    this.clientState.set('theme', theme);
+    this.stateContext.set('theme', theme);
   }
 
   get language() {
-    return this.clientState.get<string>('language') || 'id';
+    return this.stateContext.get<string>('language') || 'id';
   }
 
   set language(lang: string) {
-    this.clientState.set('language', lang);
+    this.stateContext.set('language', lang);
   }
 
   get isLoading() {
-    return this.clientState.get<boolean>('is_loading') || false;
+    return this.stateContext.get<boolean>('is_loading') || false;
   }
 
   set isLoading(loading: boolean) {
-    this.clientState.set('is_loading', loading);
+    this.stateContext.set('is_loading', loading);
   }
 
   get loadingMessage() {
-    return this.clientState.get<string>('loading_message') || '';
+    return this.stateContext.get<string>('loading_message') || '';
   }
 
   set loadingMessage(message: string) {
-    this.clientState.set('loading_message', message);
+    this.stateContext.set('loading_message', message);
   }
 
   get notifications() {
-    return this.clientState.get<Notification[]>('notifications') || [];
+    return this.stateContext.get<Notification[]>('notifications') || [];
   }
 
   set notifications(notifications: Notification[]) {
-    this.clientState.set('notifications', notifications);
+    this.stateContext.set('notifications', notifications);
   }
 
   get unreadCount() {
@@ -84,24 +84,24 @@ export class AppStateStore {
   }
 
   get currentProject() {
-    const project = this.clientState.get<Record<string, unknown>>('current_project');
+    const project = this.stateContext.get<Record<string, unknown>>('current_project');
     return project || undefined;
   }
 
   set currentProject(project: Record<string, unknown> | undefined | null) {
-    this.clientState.set('current_project', project);
+    this.stateContext.set('current_project', project);
   }
 
   setFormState<T>(formName: string, state: T) {
-    this.clientState.set(`form_${formName}`, state);
+    this.stateContext.set(`form_${formName}`, state);
   }
 
   getFormState<T>(formName: string): T | undefined {
-    return this.clientState.get<T>(`form_${formName}`);
+    return this.stateContext.get<T>(`form_${formName}`);
   }
 
   clearFormState(formName: string) {
-    this.clientState.delete(`form_${formName}`);
+    this.stateContext.delete(`form_${formName}`);
   }
 
   setCache<T>(key: string, data: T, ttlMinutes: number = 5) {
@@ -110,15 +110,15 @@ export class AppStateStore {
       timestamp: Date.now(),
       ttl: ttlMinutes * 60 * 1000
     };
-    this.clientState.set(`cache_${key}`, entry);
+    this.stateContext.set(`cache_${key}`, entry);
   }
 
   getCache<T>(key: string): T | undefined {
-    const cached = this.clientState.get<CacheEntry<T>>(`cache_${key}`);
+    const cached = this.stateContext.get<CacheEntry<T>>(`cache_${key}`);
     if (!cached) return undefined;
 
     if (Date.now() > cached.timestamp + cached.ttl) {
-      this.clientState.delete(`cache_${key}`);
+      this.stateContext.delete(`cache_${key}`);
       return undefined;
     }
 
@@ -127,22 +127,23 @@ export class AppStateStore {
 
   clearCache(key?: string) {
     if (key) {
-      this.clientState.delete(`cache_${key}`);
+      this.stateContext.delete(`cache_${key}`);
     } else {
-      const keys = Array.from(this.clientState['state'].keys());
+      const state = this.stateContext as unknown as { state: Map<string, unknown> };
+      const keys = Array.from(state.state.keys());
       keys.forEach(k => {
         if (k.startsWith('cache_')) {
-          this.clientState.delete(k);
+          this.stateContext.delete(k);
         }
       });
     }
   }
 
   subscribe<T>(key: string, callback: (value: T) => void) {
-    return this.clientState.subscribe(key, (value: unknown) => callback(value as T));
+    return this.stateContext.subscribe(key, (value: unknown) => callback(value as T));
   }
 
   reset() {
-    this.clientState.clear();
+    this.stateContext.clear();
   }
 }
