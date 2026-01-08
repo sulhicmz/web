@@ -4,15 +4,23 @@
 // ==========================================================================
 
 import type { MiddlewareHandler } from 'astro';
-import { SUPABASE_CONFIG, ERROR_MESSAGES } from '../config';
-import { ApiUtils } from '../lib/api-utils';
-import { AuthUtils } from '../lib/auth';
-import { CONSTS } from '../consts';
+
+interface AstroCookies {
+  get(name: string): { value: string } | undefined;
+  delete(name: string, options?: { path?: string }): void;
+}
+
+interface MiddlewareContext {
+  locals: AuthenticatedLocals;
+  request: Request;
+  cookies: AstroCookies;
+  redirect: (path: string) => Response;
+}
 
 // Types for middleware context
 interface AuthenticatedLocals {
-  user?: any;
-  role?: string;
+  user?: Record<string, unknown> | null;
+  role?: string | null;
   isAuthenticated?: boolean;
   permissions?: string[];
 }
@@ -50,7 +58,7 @@ const PUBLIC_ROUTES = [
 
 // Authentication middleware
 export const authGuard: MiddlewareHandler = async (context, next) => {
-  const { locals, request, cookies, redirect } = context as any;
+  const { locals, request, cookies, redirect } = context as MiddlewareContext;
   const url = new URL(request.url);
   const pathname = url.pathname;
 
@@ -122,7 +130,7 @@ function getRouteConfig(pathname: string) {
   return null;
 }
 
-async function authenticateUser(cookies: any) {
+async function authenticateUser(cookies: AstroCookies) {
     const accessToken = cookies.get('sb-access-token');
 
     if (!accessToken) {
@@ -161,8 +169,8 @@ function logRequest(request: Request, locals: AuthenticatedLocals): void {
   });
 }
 
-function handleMiddlewareError(error: unknown, redirect: (path: string) => Response): Response {
-  console.error('Middleware error:', error);
+function handleMiddlewareError(_error: unknown, _redirect: (path: string) => Response): Response {
+  console.error('Middleware error:', _error);
 
   // In production, you might want to redirect to a generic error page
   // For now, we'll continue with the request but log the error
@@ -173,7 +181,7 @@ function handleMiddlewareError(error: unknown, redirect: (path: string) => Respo
 }
 
 // Error handling middleware
-export const errorHandler: MiddlewareHandler = async ({ request, redirect }, next) => {
+export const errorHandler: MiddlewareHandler = async ({ request }, next) => {
   try {
     return await next();
   } catch (error) {
@@ -206,7 +214,7 @@ export const securityHeaders: MiddlewareHandler = async ({ request }, next) => {
 };
 
 // Request logging middleware
-export const requestLogger: MiddlewareHandler = async ({ request, locals }, next) => {
+export const requestLogger: MiddlewareHandler = async ({ request }, next) => {
   const startTime = Date.now();
   const response = await next();
   const duration = Date.now() - startTime;
@@ -222,7 +230,7 @@ export const requestLogger: MiddlewareHandler = async ({ request, locals }, next
 // Rate limiting (basic implementation)
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
 
-export const rateLimiter: MiddlewareHandler = async ({ request, redirect }, next) => {
+export const rateLimiter: MiddlewareHandler = async ({ request }, next) => {
   const clientIP = request.headers.get('x-forwarded-for') ||
                    request.headers.get('x-real-ip') ||
                    'unknown';

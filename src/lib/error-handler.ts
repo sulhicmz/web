@@ -237,7 +237,7 @@ export const ErrorHandler = {
   /**
    * Log error with context
    */
-  logError(error: unknown, context?: Record<string, any>) {
+  logError(error: unknown, context?: Record<string, unknown>) {
     const errorInfo = {
       error: error instanceof Error ? {
         name: error.name,
@@ -342,7 +342,7 @@ export const ErrorHandler = {
 };
 
 // Global error boundary for Astro pages
-export function createErrorBoundary(message: string = 'Terjadi kesalahan') {
+export function createErrorBoundary(_message: string = 'Terjadi kesalahan') {
   return (error: unknown) => {
     ErrorHandler.logError(error, { context: 'error_boundary' });
 
@@ -358,7 +358,7 @@ export const ValidationHelpers = {
   /**
    * Validate required field
    */
-  required(value: any, fieldName: string): void {
+  required<T>(value: T, fieldName: string): void {
     if (value === null || value === undefined || value === '') {
       throw new ValidationError(`${fieldName} wajib diisi`, fieldName);
     }

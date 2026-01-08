@@ -2,7 +2,7 @@
 export interface PaymentProvider {
   name: string;
   isActive: boolean;
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 }
 
 export interface MidtransConfig {

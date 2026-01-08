@@ -1,6 +1,16 @@
 const WHATSAPP_API_URL = 'https://graph.facebook.com/v15.0';
 
-export async function sendTemplate(to: string, template: string, components: any[]) {
+interface WhatsAppComponent {
+  type: string;
+  parameters: WhatsAppParameter[];
+}
+
+interface WhatsAppParameter {
+  type: string;
+  text: string;
+}
+
+export async function sendTemplate(to: string, template: string, components: WhatsAppComponent[]) {
   const response = await fetch(`${WHATSAPP_API_URL}/${import.meta.env.WHATSAPP_BUSINESS_ID}/messages`, {
     method: 'POST',
     headers: {

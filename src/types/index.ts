@@ -3,7 +3,7 @@
 // Menggabungkan semua type definitions dalam satu tempat terpusat
 // ==========================================================================
 
-import type { User, Session } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 
 // Base Types
 export interface BaseEntity {
@@ -167,7 +167,7 @@ export interface WhatsAppWebhookPayload {
 }
 
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -237,7 +237,7 @@ export interface ActivityItem {
   description: string;
   timestamp: string;
   user_id?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Navigation Types
@@ -261,7 +261,7 @@ export interface ComponentBaseProps {
 export interface AppError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -286,7 +286,7 @@ export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
+} & {};
 
 // Constants Types (from consts.ts)
 export type ProjectStatus = 'active' | 'completed' | 'on_hold' | 'cancelled';

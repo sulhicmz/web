@@ -18,5 +18,5 @@ interface ImportMeta {
 }
 
 declare namespace App {
-  interface Locals extends Runtime {}
+  type Locals = Runtime;
 }

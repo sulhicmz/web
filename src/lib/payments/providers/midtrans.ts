@@ -20,6 +20,13 @@ interface MidtransOptions {
         environment?: 'production' | 'sandbox';
 }
 
+interface MidtransWebhookPayload {
+        order_id?: string;
+        status_code?: string;
+        gross_amount?: string;
+        transaction_time?: string;
+}
+
 const MIDTRANS_BASE = {
         production: {
                 api: 'https://api.midtrans.com/v2',
@@ -567,10 +574,12 @@ export class MidtransProvider implements PaymentProvider {
                 };
         }
 
-        async verifyWebhook(payload: any, signature: string): Promise<boolean> {
-                const reference = String(payload?.order_id ?? '');
-                const statusCode = String(payload?.status_code ?? '');
-                const grossAmount = String(payload?.gross_amount ?? '');
+        async verifyWebhook(payload: unknown, signature: string): Promise<boolean> {
+                const midtransPayload = payload as MidtransWebhookPayload;
+
+                const reference = String(midtransPayload?.order_id ?? '');
+                const statusCode = String(midtransPayload?.status_code ?? '');
+                const grossAmount = String(midtransPayload?.gross_amount ?? '');
 
                 if (!reference || !statusCode || !grossAmount || !signature) {
                         return false;
@@ -582,8 +591,8 @@ export class MidtransProvider implements PaymentProvider {
                         return false;
                 }
 
-                if (payload?.transaction_time) {
-                        const transactionTime = new Date(payload.transaction_time);
+                if (midtransPayload?.transaction_time) {
+                        const transactionTime = new Date(midtransPayload.transaction_time);
                         const now = new Date();
                         const fiveMinutes = 5 * 60 * 1000;
 
