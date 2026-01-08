@@ -69,23 +69,26 @@ supabase/              # Database migrations & seeds
 - Hidden dependencies across modules
 - Violates dependency inversion principle
 
-### 2. Tight Coupling in Payment Provider (P1)
+### 2. Tight Coupling in Payment Provider (P1) - RESOLVED
 **Location**: `src/lib/payments/providers/midtrans.ts`
 **Issue**: Provider directly queries database for coupons, packages, addons
-**Impact**:
-- Violates separation of concerns
-- Difficult to test (database dependency)
-- Can't swap data source without changing provider
-- Business logic mixed with data access
+**Resolution**: ✅ Repository pattern implemented with dependency injection
+- Created repository interfaces for all entities
+- Refactored MidtransProvider to use repositories via constructor
+- Removed all Supabase-specific code from provider
+- Provider now depends on abstractions (interfaces), not concretions
+- Testable with mocked repositories
 
-### 3. No Repository Pattern (P1)
+### 3. No Repository Pattern (P1) - RESOLVED
 **Location**: Scattered across `src/lib/supabase/queries/`
 **Issue**: Direct database queries in service classes, no abstraction layer
-**Impact**:
-- Tight coupling to Supabase
-- Difficult to mock for testing
-- Can't swap database implementation
-- Query logic scattered across codebase
+**Resolution**: ✅ Complete repository pattern implementation
+- Created base repository interface with CRUD operations
+- Implemented repository interfaces for: Coupon, Package, Addon, Project, Client, Invoice, UserProfile
+- Created Supabase implementations for all repositories
+- Created factory functions for dependency injection
+- Updated payment provider to use repository pattern
+- All data access now goes through repository layer
 
 ### 4. Circular Dependency Risk (P1)
 **Location**: `MidtransProvider` ↔ `supabase/server`
@@ -173,6 +176,40 @@ supabase/              # Database migrations & seeds
 
 ## Integration Patterns
 
+### Resilience Patterns
+- Location: `src/lib/integration/resilience.ts`
+- **RetryManager**: Exponential backoff with configurable attempts
+- **CircuitBreaker**: State machine (closed/open/half-open) for service degradation
+- **TimeoutManager**: Operation timeout enforcement
+- **ResilienceManager**: Combines all resilience patterns
+- **ResilientHttpClient**: HTTP client with built-in resilience (timeout, retry, circuit breaker)
+- Usage: Payment and WhatsApp integrations use ResilientHttpClient
+- Benefits: Graceful degradation, automatic recovery, predictable failures
+
+### Webhook Infrastructure
+- **Deduplication**: `WebhookDeduplicationService` prevents duplicate webhook processing
+- **Retry Queue**: Automatic retry with exponential backoff (5, 15, 60, 120, 240 minutes)
+- **Dead-Letter Queue**: Permanently failed webhooks stored for manual intervention
+- **Metrics**: `WebhookMetricsService` provides observability for webhook health
+- Tables: `payment_webhook_dedup`, `payment_webhook_retry_queue`, `webhook_dead_letter_queue`
+- WhatsApp Tables: `whatsapp_events`, `whatsapp_retry_queue`
+- Benefits: At-least-once processing, no duplicate payments, monitoring support
+
+### Rate Limiting
+- Location: `src/lib/integration/rate-limiter.ts`
+- **PersistentRateLimiter**: Database-backed rate limiting (persists across instances)
+- Per-endpoint configuration: Different limits for payment, webhook, auth, API endpoints
+- Auto-cleanup: Expired records automatically removed
+- Tables: `rate_limits` with atomic operations
+- Benefits: Works across multiple instances, no rate limit evasion, persistent state
+
+### Monitoring & Debugging
+- Metrics endpoint: `GET /api/webhook/metrics?type=summary|health|retry-queue|dead-letter`
+- Replay endpoint: `POST /api/webhook/replay` for manual retry of failed webhooks
+- Health status: Calculates webhook system health (healthy/degraded/unhealthy)
+- Admin authentication: Requires `ADMIN_API_TOKEN` header
+- Benefits: Observability, debugging capability, manual intervention
+
 ### Supabase
 - Client configuration: `src/lib/supabase/client.ts`
 - Queries: Centralized in `src/lib/supabase/`
@@ -188,12 +225,21 @@ supabase/              # Database migrations & seeds
 - Integration: `src/lib/payments/`
 - Provider interface: `PaymentProvider`
 - Concrete implementation: `MidtransProvider`
+- Uses: ResilientHttpClient, repository pattern
+- Webhook: Deduplicated with retry queue
 - Never commit credentials to git
 
+### Messaging
+- Integration: `src/lib/whatsapp.ts`
+- Uses: ResilientHttpClient
+- Webhook: Tracked with retry queue
+- Template sending with retry logic
+
 ### State Management
-- Current: Global singleton (`ClientStateManager`)
-- Target: Context-based with proper lifecycle
+- Current: Context-based with dependency injection (v2.1)
 - Separation: Server state vs Client state
+- Hydration: Server → client state transfer
+- Factory: `createServerAppState`, `createClientAppState`
 
 ## Testing Guidelines
 
@@ -269,6 +315,8 @@ Presentation → Application → Domain → Infrastructure
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2025-01-08 | 2.3 | Integration hardening - Added webhook deduplication, retry queues, persistent rate limiting, metrics service, dead-letter queue handler |
+| 2025-01-08 | 2.2 | Repository pattern implementation - Added data access abstraction layer with DI, refactored payment provider |
 | 2025-01-08 | 2.1 | State management refactoring - Replaced global singleton with context-based DI, added SSR isolation |
 | 2025-01-08 | 2.0 | Comprehensive architectural analysis, identified 5 major issues, defined refactoring roadmap |
 | 2025-01-07 | 1.5 | Error handler refactoring - Eliminated duplicate instanceof checks with type-safe error discriminator |
@@ -294,9 +342,39 @@ Presentation → Application → Domain → Infrastructure
   - Server → client state hydration support
   - Clean separation of server and client concerns
   - Follows SOLID principles (Dependency Inversion)
-- **Breaking Changes**: None (backward compatible)
+   - **Breaking Changes**: None (backward compatible)
 
-### Architecture Improvements (v2.0)
+### Architecture Improvements (v2.2)
+
+#### Repository Pattern Implementation
+- **Before**: Direct database queries in service classes, no abstraction layer
+- **After**: Repository pattern with dependency injection and factory functions
+- **Implementation**:
+  - Created `IRepository<T>` base interface with standard CRUD operations
+  - Implemented entity-specific repository interfaces:
+    - `ICouponRepository` for coupon operations
+    - `IPackageRepository` for package operations
+    - `IAddonRepository` for addon operations
+    - `IProjectRepository` for project operations
+    - `IClientRepository` for client operations
+    - `IInvoiceRepository` for invoice operations
+    - `IUserProfileRepository` for user profile operations
+  - Implemented Supabase concrete implementations for all repositories
+  - Created factory functions: `createRepositories()`, `createCouponRepository()`, etc.
+  - Refactored `MidtransProvider` to accept repositories via constructor injection
+  - Removed all direct Supabase queries from `MidtransProvider`
+  - Updated payment provider factory to work with repositories
+  - Updated webhook endpoint to use repository pattern
+- **Benefits**:
+  - Decoupled payment provider from Supabase implementation
+  - Payment provider now testable with mocked repositories
+  - Database implementation can be swapped without changing payment provider
+  - All data access goes through abstraction layer (repositories)
+  - Follows SOLID principles (Dependency Inversion, Single Responsibility)
+  - Clear separation of concerns (business logic vs data access)
+  - **Breaking Changes**: None (backward compatible)
+
+### Architecture Improvements (v2.1)
 
 #### Architectural Analysis
 - **Completed**: Comprehensive codebase analysis
