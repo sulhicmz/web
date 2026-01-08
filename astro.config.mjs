@@ -36,7 +36,7 @@ export default defineConfig({
       'import.meta.env.PUBLIC_SITE_URL': JSON.stringify(import.meta.env.PUBLIC_SITE_URL || 'https://astropro.digital'),
     },
     ssr: {
-      external: ['@supabase/supabase-js'],
+      external: ['@supabase/supabase-js', 'crypto'],
     },
     build: {
       rollupOptions: {
