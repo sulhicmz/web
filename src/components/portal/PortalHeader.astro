@@ -5,6 +5,7 @@
 // ==========================================================================
 
 import type { UserProfile } from '../../types';
+import Icon from '../ui/Icon.astro';
 
 interface Props {
   title?: string;
@@ -61,14 +62,20 @@ const {
     <div class="portal-header__actions">
       {showNotifications && (
         <button class="notification-btn" aria-label="Notifikasi">
-          <span class="notification-btn__icon" aria-hidden="true">🔔</span>
+          <span class="notification-btn__icon"><Icon name="notification" size={20} /></span>
           <span class="notification-btn__badge">3</span>
         </button>
       )}
 
       {user && (
         <div class="user-menu">
-          <button class="user-menu__trigger" aria-label="Menu pengguna">
+          <button
+            class="user-menu__trigger"
+            aria-label="Menu pengguna"
+            aria-haspopup="true"
+            aria-expanded="false"
+            id="user-menu-trigger"
+          >
             {user.avatar_url ? (
               <img src={user.avatar_url} alt={user.full_name} class="user-avatar" />
             ) : (
@@ -79,22 +86,27 @@ const {
             <span class="user-menu__name">{user.full_name}</span>
           </button>
 
-          <div class="user-menu__dropdown">
-            <a href="/portal/account" class="user-menu__item">
-              <span aria-hidden="true">👤</span>
+          <div
+            class="user-menu__dropdown"
+            role="menu"
+            aria-labelledby="user-menu-trigger"
+            hidden
+          >
+            <a href="/portal/account" class="user-menu__item" role="menuitem">
+              <span class="user-menu__item-icon"><Icon name="user" size={16} /></span>
               Profil Akun
             </a>
-            <a href="/portal/account/settings" class="user-menu__item">
-              <span aria-hidden="true">⚙️</span>
+            <a href="/portal/account/settings" class="user-menu__item" role="menuitem">
+              <span class="user-menu__item-icon"><Icon name="settings-gear" size={16} /></span>
               Pengaturan
             </a>
-            <a href="/portal/support" class="user-menu__item">
-              <span aria-hidden="true">🎫</span>
+            <a href="/portal/support" class="user-menu__item" role="menuitem">
+              <span class="user-menu__item-icon"><Icon name="support" size={16} /></span>
               Dukungan
             </a>
             <hr class="user-menu__divider" />
-            <button class="user-menu__item user-menu__logout">
-              <span aria-hidden="true">🚪</span>
+            <button class="user-menu__item user-menu__logout" role="menuitem">
+              <span class="user-menu__item-icon"><Icon name="logout" size={16} /></span>
               Keluar
             </button>
           </div>
@@ -209,7 +221,10 @@ const {
   }
 
   .notification-btn__icon {
-    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
   }
 
   .notification-btn__badge {
@@ -297,8 +312,11 @@ const {
     z-index: 1000;
   }
 
-  .user-menu:hover .user-menu__dropdown,
-  .user-menu__trigger:focus + .user-menu__dropdown {
+  .user-menu__dropdown[hidden] {
+    display: none;
+  }
+
+  .user-menu__dropdown:not([hidden]) {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -319,6 +337,13 @@ const {
     cursor: pointer;
     width: 100%;
     text-align: left;
+  }
+
+  .user-menu__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
   }
 
   .user-menu__item:hover,
@@ -424,27 +449,117 @@ const {
   // Handle user menu dropdown
   document.addEventListener('DOMContentLoaded', () => {
     const userMenu = document.querySelector('.user-menu');
+    const userMenuTrigger = document.getElementById('user-menu-trigger') as HTMLButtonElement;
+    const userMenuDropdown = document.querySelector('.user-menu__dropdown') as HTMLDivElement;
     const logoutButton = document.querySelector('.user-menu__logout');
 
-    if (userMenu && logoutButton) {
-      logoutButton.addEventListener('click', async (e) => {
-        e.preventDefault();
+    const toggleDropdown = () => {
+      const isExpanded = userMenuTrigger?.getAttribute('aria-expanded') === 'true';
+      userMenuTrigger?.setAttribute('aria-expanded', String(!isExpanded));
 
-        try {
-          const response = await fetch('/api/auth/logout', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+      if (userMenuDropdown) {
+        userMenuDropdown.hidden = isExpanded;
+      }
+
+      if (!isExpanded) {
+        const firstItem = userMenuDropdown?.querySelector('.user-menu__item') as HTMLElement;
+        firstItem?.focus();
+      } else {
+        userMenuTrigger?.focus();
+      }
+    };
+
+    const closeDropdown = () => {
+      userMenuTrigger?.setAttribute('aria-expanded', 'false');
+
+      if (userMenuDropdown) {
+        userMenuDropdown.hidden = true;
+      }
+    };
+
+    if (userMenuTrigger && userMenuDropdown) {
+      // Click handler for toggle
+      userMenuTrigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleDropdown();
+      });
+
+      // Keyboard handlers
+      userMenuTrigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          toggleDropdown();
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        const isClickInsideMenu = userMenu?.contains(e.target as Node);
+
+        if (!isClickInsideMenu && userMenuDropdown && !userMenuDropdown.hidden) {
+          closeDropdown();
+        }
+      });
+
+      // Close dropdown on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && userMenuDropdown && !userMenuDropdown.hidden) {
+          e.preventDefault();
+          closeDropdown();
+        }
+      });
+
+      // Handle logout button
+      if (logoutButton) {
+        logoutButton.addEventListener('click', async (e) => {
+          e.preventDefault();
+
+          try {
+            const response = await fetch('/api/auth/logout', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (response.ok) {
+              window.location.href = '/login';
+            } else {
+              console.error('Logout failed');
+            }
+          } catch (error) {
+            console.error('Logout error:', error);
+          }
+        });
+      }
+
+      // Focus trap within dropdown
+      userMenuDropdown.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeDropdown();
+        }
+
+        if (e.key === 'Tab') {
+          const focusableItems = Array.from(
+            userMenuDropdown.querySelectorAll('.user-menu__item[href], .user-menu__item[role="menuitem"]')
+          ).filter((item) => {
+            const el = item as HTMLElement;
+            return el.offsetParent !== null;
           });
 
-          if (response.ok) {
-            window.location.href = '/login';
-          } else {
-            console.error('Logout failed');
+          const activeElement = document.activeElement as HTMLElement;
+          const currentIndex = focusableItems.indexOf(activeElement);
+
+          if (e.shiftKey && currentIndex === 0) {
+            e.preventDefault();
+            const lastItem = focusableItems[focusableItems.length - 1] as HTMLElement;
+            lastItem?.focus();
+          } else if (!e.shiftKey && currentIndex === focusableItems.length - 1) {
+            e.preventDefault();
+            const firstItem = focusableItems[0] as HTMLElement;
+            firstItem?.focus();
           }
-        } catch (error) {
-          console.error('Logout error:', error);
         }
       });
     }

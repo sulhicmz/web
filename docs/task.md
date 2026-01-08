@@ -349,6 +349,113 @@
 
 ---
 
+## UI/UX Engineering Tasks
+
+### UIUX-001: Fix FormInput Component Accessibility
+- **Status**: Complete
+- **Priority**: High
+- **Agent**: 12 (UI/UX Engineer)
+- **Description**: Replace emoji icons with accessible SVG icons in FormInput component
+- **Impact**: Improves accessibility for screen readers, aligns with professional design system
+- **Implementation**:
+  - Created reusable Icon component with accessible SVG icons
+  - Replaced emoji icons (👤, 📧, 🔒, 📱, 🏢, 🌐, 🔍, 📅, 📍) with proper SVG icons
+  - Added error and success icon variants with proper ARIA labels
+  - Removed redundant emoji pseudo-elements
+  - Ensured proper keyboard navigation and focus states
+- **Files**: `src/components/ui/Icon.astro`, `src/components/ui/FormInput.astro`
+- **Benefits**:
+  - Screen reader compatible with proper aria-labels
+  - Professional SVG-based icons that scale properly
+  - Consistent icon sizing and styling
+  - Better semantic HTML and ARIA attributes
+- **Success Criteria**:
+  - ✅ No emoji icons in FormInput component
+  - ✅ All icons have proper aria-labels
+  - ✅ SVG icons accessible to screen readers
+  - ✅ Focus states visible and working
+  - ✅ Build passes: `npm run check`
+
+### UIUX-002: Fix PortalHeader User Menu Accessibility
+- **Status**: Complete
+- **Priority**: High
+- **Agent**: 12 (UI/UX Engineer)
+- **Description**: Make user menu dropdown keyboard accessible with click pattern instead of hover
+- **Impact**: Enables keyboard navigation for all users, improves accessibility
+- **Implementation**:
+  - Replaced hover-triggered dropdown with click pattern
+  - Added ARIA attributes (aria-haspopup, aria-expanded, role="menu")
+  - Implemented keyboard navigation (Enter/Space to open, Escape to close)
+  - Added focus trap within dropdown with Tab navigation
+  - Click outside to close functionality
+  - Replaced emoji icons with Icon component
+- **Files**: `src/components/portal/PortalHeader.astro`, `src/components/ui/Icon.astro`
+- **Benefits**:
+  - Keyboard accessible dropdown navigation
+  - Proper ARIA attributes for screen readers
+  - Focus trap ensures keyboard users don't lose focus
+  - Click outside improves UX
+  - Consistent with accessibility best practices
+- **Success Criteria**:
+  - ✅ Dropdown opens on click (not hover)
+  - ✅ Keyboard navigation works (Enter, Space, Arrow keys, Tab, Escape)
+  - ✅ Proper ARIA attributes
+  - ✅ Focus management working
+  - ✅ Build passes: `npm run check`
+
+### UIUX-004: Create SVG Icon System
+- **Status**: Complete
+- **Priority**: High
+- **Agent**: 12 (UI/UX Engineer)
+- **Description**: Create reusable SVG icon component to replace emoji usage throughout components
+- **Impact**: Provides consistent, accessible icon system across all UI components
+- **Implementation**:
+  - Created Icon.astro component with 20+ accessible SVG icons
+  - Icons include: user, email, password, phone, company, website, search, calendar, location, error, success, settings, support, logout, notification, eye, add, invoice, book, arrow
+  - All icons have proper aria-labels
+  - Configurable size and CSS classes
+  - Role="img" for screen readers
+  - TypeScript types for icon names
+- **Files**: `src/components/ui/Icon.astro`
+- **Benefits**:
+  - Reusable, accessible icon system
+  - Consistent icon styling across components
+  - Screen reader compatible
+  - Professional SVG-based icons
+  - Scalable and performant
+  - Type-safe with TypeScript
+- **Success Criteria**:
+  - ✅ Comprehensive icon set created
+  - ✅ All icons have aria-labels
+  - ✅ Reusable across components
+  - ✅ Type-safe implementation
+  - ✅ Build passes: `npm run check`
+
+### UIUX-005: Fix Dashboard Action Cards
+- **Status**: Complete
+- **Priority**: Medium
+- **Agent**: 12 (UI/UX Engineer)
+- **Description**: Replace emoji icons and improve focus states in dashboard action cards
+- **Impact**: Improves accessibility and visual consistency
+- **Implementation**:
+  - Replaced emoji icons (➕, 🎫, 🧾, 📚, 👁, ⚙) with Icon component
+  - Added visible focus indicators (3px outline)
+  - Improved button icon styling
+  - Enhanced hover and focus states
+- **Files**: `src/pages/portal/dashboard.astro`, `src/components/ui/Icon.astro`
+- **Benefits**:
+  - Accessible icons with proper aria-labels
+  - More visible focus states for keyboard navigation
+  - Consistent icon styling with design system
+  - Better visual feedback on interaction
+- **Success Criteria**:
+  - ✅ No emoji icons in action cards
+  - ✅ Focus indicators clearly visible
+  - ✅ Icons properly styled
+  - ✅ Build passes: `npm run check`
+
+---
+
 ## Notes
 
 ### Task Dependencies

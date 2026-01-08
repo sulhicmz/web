@@ -174,6 +174,35 @@ supabase/              # Database migrations & seeds
 3. Make all external dependencies swappable
 4. Add factory pattern for complex objects
 
+## UI/UX Patterns
+
+### SVG Icon System
+- **Location**: `src/components/ui/Icon.astro`
+- **Component**: Reusable accessible SVG icon component
+- **Available Icons**: user, email, password, phone, company, website, search, calendar, location, error, success, settings, settings-gear, support, logout, notification, eye, add, invoice, book, arrow
+- **Features**:
+  - Configurable size (number or string)
+  - Custom CSS classes
+  - Proper ARIA labels
+  - Role="img" for screen readers
+  - Type-safe icon names
+  - 20+ accessible SVG icons
+- **Usage**: `<Icon name="user" size={20} class="custom-icon" />`
+- **Benefits**:
+  - Screen reader compatible
+  - Professional SVG-based icons (no emojis)
+  - Consistent styling across components
+  - Scalable and performant
+  - Aligns with design system
+
+### Accessibility Patterns
+- **Keyboard Navigation**: All interactive elements support keyboard navigation
+- **Focus Indicators**: Visible focus states with 3px outlines
+- **ARIA Attributes**: Proper aria-labels, aria-expanded, aria-haspopup, role attributes
+- **Screen Reader Support**: Icons have role="img" and aria-label
+- **Reduced Motion**: Respects prefers-reduced-motion preference
+- **High Contrast**: Respects prefers-contrast preference with increased border widths
+
 ## Integration Patterns
 
 ### Resilience Patterns
