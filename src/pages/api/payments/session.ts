@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { withRateLimit, withTimeout } from '../../../lib/api-middleware';
-import { ApiError, handleApiError } from '../../../lib/api-utils';
+import { ApiError } from '../../../lib/api-utils';
 
 import {
         assertPaymentProvider,

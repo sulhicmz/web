@@ -150,7 +150,7 @@ export const POST: APIRoute = withTimeout(async ({ request }) => {
         let payload: Record<string, unknown>;
         try {
                 payload = (await request.json()) as Record<string, unknown>;
-        } catch (error) {
+        } catch {
                 throw new ApiError('Request body must be valid JSON', 400, 'INVALID_JSON');
         }
 
