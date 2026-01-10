@@ -352,6 +352,7 @@ Presentation → Application → Domain → Infrastructure
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2025-01-10 | 2.6 | DI container implemented - Lightweight dependency injection container with singleton/transient scoping (ARCH-006) |
 | 2025-01-10 | 2.5 | Configuration coupling resolved - Implemented message provider pattern for error handler decoupling (ARCH-005) |
 | 2025-01-10 | 2.4 | Planning phase updates - Unblocked ARCH-004/006, updated roadmap, reflected progress |
 | 2025-01-08 | 2.3 | Integration hardening - Added webhook deduplication, retry queues, persistent rate limiting, metrics service, dead-letter queue handler |
@@ -382,6 +383,26 @@ Presentation → Application → Domain → Infrastructure
   - Clean separation of server and client concerns
   - Follows SOLID principles (Dependency Inversion)
    - **Breaking Changes**: None (backward compatible)
+
+### Architecture Improvements (v2.6)
+
+#### Dependency Injection Container
+- **Before**: Manual factory functions for service creation scattered across modules
+- **After**: Lightweight DI container with centralized service registration and resolution
+- **Implementation**:
+  - Created `DIContainer` class with register/resolve/has/clear methods
+  - Implemented `ServiceScope` type (singleton, transient) for service lifetime management
+  - Created `ServiceFactory<T>` type for complex object creation
+  - Implemented `initializeContainer()` to register core services
+  - Registered services: repositories, state contexts, payment provider, error message provider
+  - Added `resetContainer()` for test isolation
+- **Benefits**:
+  - Centralized service management
+  - Singleton/transient scoping for service lifetimes
+  - Testable with reset functionality
+  - Clearer dependency graph
+  - Lightweight implementation (no over-engineering)
+- **Breaking Changes**: None (container is optional, existing factories still work)
 
 ### Architecture Improvements (v2.5)
 
