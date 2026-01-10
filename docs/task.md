@@ -143,22 +143,29 @@
   - Build passes: `npm run check`
 
 ### ARCH-005: Decouple Error Handler from Configuration
-- **Status**: Backlog
+- **Status**: Complete
 - **Priority**: P2
 - **Agent**: 01 (Architect)
 - **Description**: Remove tight coupling between `ErrorHandler` and `ERROR_MESSAGES` config, enabling independent testing and usage
 - **Impact**: Improves testability, follows dependency inversion principle, allows different error message configurations
 - **Implementation**:
-  - Create `ErrorMessageProvider` interface
-  - Implement `DefaultErrorMessageProvider` using current config
-  - Refactor `ErrorHandler` to accept provider via constructor
-  - Add factory function for handler instantiation
-  - Update all consumers to use dependency injection
-- **Files**: `src/lib/error-handler.ts`, `src/config.ts`
+  - Created `IErrorMessageProvider` interface for error message contracts
+  - Implemented `DefaultErrorMessageProvider` using current config values
+  - Refactored error handler to use provider via `getMessageProvider()` helper
+  - Added `setMessageProvider()` and `resetMessageProvider()` for testing
+  - Removed all direct config imports from error handler
+- **Files**: `src/lib/error-handler/error-message-provider.interface.ts`, `src/lib/error-handler/default-error-message-provider.ts`, `src/lib/error-handler/provider-instance.ts`, `src/lib/error-handler.ts`
+- **Benefits**:
+  - Error handler decoupled from config module
+  - Error handler now testable with mocked message providers
+  - Error messages can be swapped without changing error handler
+  - Backward compatible through default provider instance
+  - Follows SOLID principles (Dependency Inversion)
 - **Success Criteria**:
-  - No direct config import in error handler
-  - Error handler tested with mock provider
-  - Build passes: `npm run check`
+  - ✅ No direct config import in error handler
+  - ✅ All error messages accessed through provider interface
+  - ✅ Provider can be swapped for testing
+  - ✅ Build passes: `npm run check`
 
 ### ARCH-006: Implement Dependency Injection Container
 - **Status**: Backlog (Ready to start)
@@ -464,7 +471,7 @@
 ### Task Dependencies
 - ✅ ARCH-003 (Payment Provider Refactor) - Completed (was blocked by ARCH-002)
 - 🔄 ARCH-004 (Circular Dependency) - In Progress (was blocked by ARCH-002)
-- ⏳ ARCH-005 (Error Handler Decoupling) - Independent, ready to start
+- ✅ ARCH-005 (Error Handler Decoupling) - Complete
 - ⏳ ARCH-006 (DI Container) - Ready to start (was blocked by ARCH-001 and ARCH-002)
 
 ### Recommended Task Order
@@ -472,8 +479,8 @@
 2. ✅ ARCH-002 (P1) - Complete - Foundation for other refactoring tasks
 3. ✅ ARCH-003 (P1) - Complete - Payment provider refactoring
 4. 🔄 ARCH-004 (P1) - In Progress - Circular dependency resolution
-5. ⏳ ARCH-005 (P2) - Next - Error handler decoupling (independent)
-6. ⏳ ARCH-006 (P2) - Then - DI container (unblocked)
+5. ✅ ARCH-005 (P2) - Complete - Error handler decoupling (independent)
+6. ⏳ ARCH-006 (P2) - Next - DI container (unblocked)
 
 ### Testing Strategy
 - Each task must include unit tests

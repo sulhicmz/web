@@ -1,12 +1,8 @@
-// ==========================================================================
-// AstroPro Digital - Error Handling System
-// Sistem penanganan error yang komprehensif untuk aplikasi
-// ==========================================================================
-
-import { ERROR_MESSAGES } from '../config';
 import type { AppError, ApiResponse } from '../types';
+import { getMessageProvider } from './error-handler/provider-instance';
 
-// Error types
+const getMessages = () => getMessageProvider();
+
 export class ValidationError extends Error {
   public statusCode: number = 400;
   public errorCode: string = 'VALIDATION_ERROR';
@@ -21,7 +17,7 @@ export class AuthenticationError extends Error {
   public statusCode: number = 401;
   public errorCode: string = 'AUTHENTICATION_ERROR';
 
-  constructor(message: string = ERROR_MESSAGES.AUTH_UNAUTHORIZED) {
+  constructor(message: string = getMessages().AUTH_UNAUTHORIZED) {
     super(message);
     this.name = 'AuthenticationError';
   }
@@ -31,7 +27,7 @@ export class AuthorizationError extends Error {
   public statusCode: number = 403;
   public errorCode: string = 'AUTHORIZATION_ERROR';
 
-  constructor(message: string = ERROR_MESSAGES.AUTH_UNAUTHORIZED) {
+  constructor(message: string = getMessages().AUTH_UNAUTHORIZED) {
     super(message);
     this.name = 'AuthorizationError';
   }
@@ -41,7 +37,7 @@ export class NotFoundError extends Error {
   public statusCode: number = 404;
   public errorCode: string = 'NOT_FOUND';
 
-  constructor(message: string = ERROR_MESSAGES.NOT_FOUND) {
+  constructor(message: string = getMessages().NOT_FOUND) {
     super(message);
     this.name = 'NotFoundError';
   }
@@ -61,7 +57,7 @@ export class RateLimitError extends Error {
   public statusCode: number = 429;
   public errorCode: string = 'RATE_LIMIT_EXCEEDED';
 
-  constructor(message: string = ERROR_MESSAGES.RATE_LIMIT_EXCEEDED) {
+  constructor(message: string = getMessages().RATE_LIMIT_EXCEEDED) {
     super(message);
     this.name = 'RateLimitError';
   }
@@ -77,14 +73,12 @@ export class ExternalServiceError extends Error {
   }
 }
 
-// Error type metadata interface
 interface ErrorTypeMetadata {
   statusCode: number;
   errorCode: string;
   isRetryable: boolean;
 }
 
-// Error type discriminator
 function getErrorType(error: unknown): ErrorTypeMetadata | null {
   if (error instanceof ValidationError) {
     return {
@@ -145,11 +139,7 @@ function getErrorType(error: unknown): ErrorTypeMetadata | null {
   return null;
 }
 
-// Error handler utility functions
 export const ErrorHandler = {
-  /**
-   * Handle errors in API routes
-   */
   handleApiError(error: unknown): ApiResponse<never> {
     console.error('API Error:', error);
 
@@ -164,7 +154,6 @@ export const ErrorHandler = {
       };
     }
 
-    // Handle standard errors
     if (error instanceof Error) {
       return {
         success: false,
@@ -174,18 +163,14 @@ export const ErrorHandler = {
       };
     }
 
-    // Handle unknown errors
     return {
       success: false,
       error: 'INTERNAL_ERROR',
-      message: ERROR_MESSAGES.INTERNAL_ERROR,
+      message: getMessages().INTERNAL_ERROR,
       timestamp: new Date().toISOString(),
     };
   },
 
-  /**
-   * Handle errors in middleware
-   */
   handleMiddlewareError(error: unknown): Response {
     console.error('Middleware Error:', error);
 
@@ -201,19 +186,15 @@ export const ErrorHandler = {
       });
     }
 
-    // Default error response
     return new Response(JSON.stringify({
       error: 'INTERNAL_ERROR',
-      message: ERROR_MESSAGES.INTERNAL_ERROR,
+      message: getMessages().INTERNAL_ERROR,
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   },
 
-  /**
-   * Handle errors in Astro components
-   */
   handleComponentError(error: unknown): AppError {
     console.error('Component Error:', error);
 
@@ -227,14 +208,11 @@ export const ErrorHandler = {
 
     return {
       code: 'UNKNOWN_ERROR',
-      message: ERROR_MESSAGES.INTERNAL_ERROR,
+      message: getMessages().INTERNAL_ERROR,
       timestamp: new Date().toISOString(),
     };
   },
 
-  /**
-   * Log error with context
-   */
   logError(error: unknown, context?: Record<string, unknown>) {
     const errorInfo = {
       error: error instanceof Error ? {
@@ -248,33 +226,27 @@ export const ErrorHandler = {
     };
 
     console.error('Application Error:', errorInfo);
-
-    // In production, you might want to send this to an error tracking service
-    // like Sentry, LogRocket, or Bugsnag
   },
 
-  /**
-   * Create user-friendly error message
-   */
   getUserFriendlyMessage(error: unknown): string {
     if (error instanceof ValidationError) {
       return error.message;
     }
 
     if (error instanceof AuthenticationError) {
-      return ERROR_MESSAGES.AUTH_INVALID_CREDENTIALS;
+      return getMessages().AUTH_INVALID_CREDENTIALS;
     }
 
     if (error instanceof AuthorizationError) {
-      return ERROR_MESSAGES.AUTH_UNAUTHORIZED;
+      return getMessages().AUTH_UNAUTHORIZED;
     }
 
     if (error instanceof NotFoundError) {
-      return ERROR_MESSAGES.NOT_FOUND;
+      return getMessages().NOT_FOUND;
     }
 
     if (error instanceof RateLimitError) {
-      return ERROR_MESSAGES.RATE_LIMIT_EXCEEDED;
+      return getMessages().RATE_LIMIT_EXCEEDED;
     }
 
     if (error instanceof ExternalServiceError) {
@@ -284,9 +256,6 @@ export const ErrorHandler = {
     return 'Terjadi kesalahan yang tidak terduga. Silakan coba lagi atau hubungi dukungan teknis.';
   },
 
-  /**
-   * Check if error is retryable
-   */
   isRetryableError(error: unknown): boolean {
     const errorType = getErrorType(error);
 
@@ -301,9 +270,6 @@ export const ErrorHandler = {
     return false;
   },
 
-  /**
-   * Get error status code
-   */
   getStatusCode(error: unknown): number {
     const errorType = getErrorType(error);
 
@@ -315,7 +281,6 @@ export const ErrorHandler = {
   },
 };
 
-// Global error boundary for Astro pages
 export function createErrorBoundary(_message: string = 'Terjadi kesalahan') {
   return (error: unknown) => {
     ErrorHandler.logError(error, { context: 'error_boundary' });
@@ -327,71 +292,49 @@ export function createErrorBoundary(_message: string = 'Terjadi kesalahan') {
   };
 }
 
-// Validation helper functions
 export const ValidationHelpers = {
-  /**
-   * Validate required field
-   */
   required<T>(value: T, fieldName: string): void {
     if (value === null || value === undefined || value === '') {
       throw new ValidationError(`${fieldName} wajib diisi`, fieldName);
     }
   },
 
-  /**
-   * Validate email format
-   */
   email(value: string): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(value)) {
-      throw new ValidationError(ERROR_MESSAGES.VALIDATION_INVALID_EMAIL, 'email');
+      throw new ValidationError(getMessages().VALIDATION_INVALID_EMAIL, 'email');
     }
   },
 
-  /**
-   * Validate phone number (Indonesian format)
-   */
   phone(value: string): void {
     const phoneRegex = /^(\+62|62|0)8[1-9][0-9]{6,11}$/;
     if (!phoneRegex.test(value)) {
-      throw new ValidationError(ERROR_MESSAGES.VALIDATION_INVALID_PHONE, 'phone');
+      throw new ValidationError(getMessages().VALIDATION_INVALID_PHONE, 'phone');
     }
   },
 
-  /**
-   * Validate password strength
-   */
   password(value: string): void {
     if (value.length < 8) {
-      throw new ValidationError(ERROR_MESSAGES.VALIDATION_PASSWORD_TOO_WEAK, 'password');
+      throw new ValidationError(getMessages().VALIDATION_PASSWORD_TOO_WEAK, 'password');
     }
 
     if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
-      throw new ValidationError(ERROR_MESSAGES.VALIDATION_PASSWORD_TOO_WEAK, 'password');
+      throw new ValidationError(getMessages().VALIDATION_PASSWORD_TOO_WEAK, 'password');
     }
   },
 
-  /**
-   * Validate password confirmation
-   */
   passwordConfirmation(password: string, confirmation: string): void {
     if (password !== confirmation) {
-      throw new ValidationError(ERROR_MESSAGES.VALIDATION_PASSWORDS_NOT_MATCH, 'confirmPassword');
+      throw new ValidationError(getMessages().VALIDATION_PASSWORDS_NOT_MATCH, 'confirmPassword');
     }
   },
 
-  /**
-   * Validate minimum length
-   */
   minLength(value: string, minLength: number, fieldName: string): void {
     if (value.length < minLength) {
       throw new ValidationError(`${fieldName} minimal ${minLength} karakter`, fieldName);
     }
   },
 
-  /**
-   * Validate maximum length
-   */
   maxLength(value: string, maxLength: number, fieldName: string): void {
     if (value.length > maxLength) {
       throw new ValidationError(`${fieldName} maksimal ${maxLength} karakter`, fieldName);
@@ -399,7 +342,6 @@ export const ValidationHelpers = {
   },
 };
 
-// Export all error utilities
 export const ErrorUtils = {
   ValidationError,
   AuthenticationError,

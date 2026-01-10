@@ -102,13 +102,17 @@ supabase/              # Database migrations & seeds
 - Using DI to break identified cycles
 - Adding cycle detection to build process
 
-### 5. Configuration Coupling (P2)
+### 5. Configuration Coupling (P2) - RESOLVED
 **Location**: `src/lib/error-handler.ts`
 **Issue**: Error handler tightly coupled to `ERROR_MESSAGES` config
-**Impact**:
-- Difficult to test in isolation
-- Can't use error handler with different configs
-- Violates dependency inversion
+**Resolution**: ✅ Implemented message provider pattern with dependency injection (ARCH-005)
+- Created `IErrorMessageProvider` interface for error message contracts
+- Implemented `DefaultErrorMessageProvider` using current config values
+- Refactored error handler to use provider via `getMessageProvider()` helper
+- Added `setMessageProvider()` and `resetMessageProvider()` for testing
+- Removed direct config import from error handler
+- Error handler now testable with mocked providers
+- Backward compatible through default provider instance
 
 ## Coding Standards
 
@@ -348,6 +352,7 @@ Presentation → Application → Domain → Infrastructure
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2025-01-10 | 2.5 | Configuration coupling resolved - Implemented message provider pattern for error handler decoupling (ARCH-005) |
 | 2025-01-10 | 2.4 | Planning phase updates - Unblocked ARCH-004/006, updated roadmap, reflected progress |
 | 2025-01-08 | 2.3 | Integration hardening - Added webhook deduplication, retry queues, persistent rate limiting, metrics service, dead-letter queue handler |
 | 2025-01-08 | 2.2 | Repository pattern implementation - Added data access abstraction layer with DI, refactored payment provider (ARCH-002, ARCH-003) |
@@ -377,6 +382,27 @@ Presentation → Application → Domain → Infrastructure
   - Clean separation of server and client concerns
   - Follows SOLID principles (Dependency Inversion)
    - **Breaking Changes**: None (backward compatible)
+
+### Architecture Improvements (v2.5)
+
+#### Error Handler Decoupling
+- **Before**: Error handler tightly coupled to `ERROR_MESSAGES` config, directly imported and used throughout
+- **After**: Message provider pattern with dependency injection using `IErrorMessageProvider` interface
+- **Implementation**:
+  - Created `IErrorMessageProvider` interface defining all error message contracts
+  - Implemented `DefaultErrorMessageProvider` with current config values
+  - Refactored `ErrorHandler` to use `getMessageProvider()` helper function
+  - Added `setMessageProvider()` for custom provider injection (testing)
+  - Added `resetMessageProvider()` for test cleanup
+  - Updated all error classes and validation helpers to use provider
+  - Removed direct `ERROR_MESSAGES` import from error handler
+- **Benefits**:
+  - Error handler decoupled from config module
+  - Error handler now testable with mocked message providers
+  - Error message configuration can be swapped without code changes
+  - Follows SOLID principles (Dependency Inversion, Interface Segregation)
+  - Backward compatible through default provider instance
+- **Breaking Changes**: None (backward compatible)
 
 ### Architecture Improvements (v2.2)
 
