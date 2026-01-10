@@ -72,7 +72,7 @@ supabase/              # Database migrations & seeds
 ### 2. Tight Coupling in Payment Provider (P1) - RESOLVED
 **Location**: `src/lib/payments/providers/midtrans.ts`
 **Issue**: Provider directly queries database for coupons, packages, addons
-**Resolution**: ✅ Repository pattern implemented with dependency injection
+**Resolution**: ✅ Repository pattern implemented with dependency injection (ARCH-002, ARCH-003)
 - Created repository interfaces for all entities
 - Refactored MidtransProvider to use repositories via constructor
 - Removed all Supabase-specific code from provider
@@ -90,13 +90,17 @@ supabase/              # Database migrations & seeds
 - Updated payment provider to use repository pattern
 - All data access now goes through repository layer
 
-### 4. Circular Dependency Risk (P1)
+### 4. Circular Dependency Risk (P1) - IN PROGRESS
 **Location**: `MidtransProvider` ↔ `supabase/server`
 **Issue**: Potential circular dependency between payment provider and database client
 **Impact**:
 - Initialization order issues
 - Difficult to understand dependency graph
 - May cause runtime errors
+**Resolution**: 🔄 Dependency injection breaking cycles (ARCH-004)
+- Analyzing dependency graph to identify circular paths
+- Using DI to break identified cycles
+- Adding cycle detection to build process
 
 ### 5. Configuration Coupling (P2)
 **Location**: `src/lib/error-handler.ts`
@@ -344,9 +348,10 @@ Presentation → Application → Domain → Infrastructure
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2025-01-10 | 2.4 | Planning phase updates - Unblocked ARCH-004/006, updated roadmap, reflected progress |
 | 2025-01-08 | 2.3 | Integration hardening - Added webhook deduplication, retry queues, persistent rate limiting, metrics service, dead-letter queue handler |
-| 2025-01-08 | 2.2 | Repository pattern implementation - Added data access abstraction layer with DI, refactored payment provider |
-| 2025-01-08 | 2.1 | State management refactoring - Replaced global singleton with context-based DI, added SSR isolation |
+| 2025-01-08 | 2.2 | Repository pattern implementation - Added data access abstraction layer with DI, refactored payment provider (ARCH-002, ARCH-003) |
+| 2025-01-08 | 2.1 | State management refactoring - Replaced global singleton with context-based DI, added SSR isolation (ARCH-001) |
 | 2025-01-08 | 2.0 | Comprehensive architectural analysis, identified 5 major issues, defined refactoring roadmap |
 | 2025-01-07 | 1.5 | Error handler refactoring - Eliminated duplicate instanceof checks with type-safe error discriminator |
 | 2025-01-07 | 1.0 | Initial blueprint creation |

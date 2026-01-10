@@ -100,28 +100,31 @@
   - Follows SOLID principles (Dependency Inversion, Single Responsibility)
 
 ### ARCH-003: Refactor Payment Provider to Remove Database Dependencies
-- **Status**: Backlog (Blocked by ARCH-002)
+- **Status**: Complete
 - **Priority**: P1
 - **Agent**: 01 (Architect)
 - **Description**: Remove direct database access from `MidtransProvider`, delegating to repository interfaces
 - **Impact**: Separates concerns, improves testability, follows single responsibility principle
 - **Implementation**:
-  - Define constructor parameters: `couponRepository`, `packageRepository`, `addonRepository`
-  - Remove `getSupabaseClient()` method
-  - Replace `fetchCouponRow()` with `this.couponRepository.findByCode()`
-  - Replace `fetchPackageRow()` with `this.packageRepository.findByIdentifier()`
-  - Replace `fetchAddonRows()` with `this.addonRepository.findByIds()`
-  - Remove all Supabase-specific code from provider
-  - Create factory function for provider instantiation with dependencies
-- **Files**: `src/lib/payments/providers/midtrans.ts`
+   - Defined constructor parameters: `couponRepository`, `packageRepository`, `addonRepository`
+   - Removed `getSupabaseClient()` method
+   - Replaced `fetchCouponRow()` with `this.couponRepository.findByCode()`
+   - Replaced `fetchPackageRow()` with `this.packageRepository.findByIdentifier()`
+   - Replaced `fetchAddonRows()` with `this.addonRepository.findByIds()`
+   - Removed all Supabase-specific code from provider
+   - Created factory function for provider instantiation with dependencies
+- **Files**: `src/lib/payments/providers/midtrans.ts`, `src/lib/payments/factory.ts`
+- **Benefits**:
+   - Payment provider now decoupled from Supabase
+   - Testable with mocked repositories
+   - Database implementation swappable without changes
 - **Success Criteria**:
-  - No Supabase imports in provider
-  - All database access through repositories
-  - Provider tested with mocked repositories
-  - Build passes: `npm run check`
+   - ✅ No Supabase imports in provider
+   - ✅ All database access through repositories
+   - ✅ Build passes: `npm run check`
 
 ### ARCH-004: Resolve Circular Dependency Risk
-- **Status**: Backlog (Blocked by ARCH-002)
+- **Status**: In Progress
 - **Priority**: P1
 - **Agent**: 01 (Architect)
 - **Description**: Resolve circular dependency between `MidtransProvider` and Supabase client initialization
@@ -158,7 +161,7 @@
   - Build passes: `npm run check`
 
 ### ARCH-006: Implement Dependency Injection Container
-- **Status**: Backlog (Blocked by ARCH-001, ARCH-002)
+- **Status**: Backlog (Ready to start)
 - **Priority**: P2
 - **Agent**: 01 (Architect)
 - **Description**: Create a simple dependency injection container to manage service lifetimes and resolve dependencies
@@ -459,17 +462,18 @@
 ## Notes
 
 ### Task Dependencies
-- ARCH-003 (Payment Provider Refactor) blocked by ARCH-002 (Repository Pattern)
-- ARCH-004 (Circular Dependency) blocked by ARCH-002 (Repository Pattern)
-- ARCH-006 (DI Container) blocked by ARCH-001 (State Management) and ARCH-002 (Repository Pattern)
+- ✅ ARCH-003 (Payment Provider Refactor) - Completed (was blocked by ARCH-002)
+- 🔄 ARCH-004 (Circular Dependency) - In Progress (was blocked by ARCH-002)
+- ⏳ ARCH-005 (Error Handler Decoupling) - Independent, ready to start
+- ⏳ ARCH-006 (DI Container) - Ready to start (was blocked by ARCH-001 and ARCH-002)
 
 ### Recommended Task Order
-1. ARCH-001 (P0) - Critical state management issue
-2. ARCH-002 (P1) - Foundation for other refactoring tasks
-3. ARCH-003 (P1) - Unblocked after ARCH-002
-4. ARCH-004 (P1) - Unblocked after ARCH-002
-5. ARCH-005 (P2) - Independent, can be done anytime
-6. ARCH-006 (P2) - Unblocked after ARCH-001 and ARCH-002
+1. ✅ ARCH-001 (P0) - Complete - Critical state management issue
+2. ✅ ARCH-002 (P1) - Complete - Foundation for other refactoring tasks
+3. ✅ ARCH-003 (P1) - Complete - Payment provider refactoring
+4. 🔄 ARCH-004 (P1) - In Progress - Circular dependency resolution
+5. ⏳ ARCH-005 (P2) - Next - Error handler decoupling (independent)
+6. ⏳ ARCH-006 (P2) - Then - DI container (unblocked)
 
 ### Testing Strategy
 - Each task must include unit tests
