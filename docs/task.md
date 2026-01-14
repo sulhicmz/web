@@ -68,8 +68,40 @@
   - ✅ All 150 new tests pass consistently
   - ✅ Edge cases tested (TTL expiration, concurrent access, large payloads)
   - ✅ Tests readable and maintainable (AAA pattern, descriptive names)
-  - ✅ Breaking code causes test failure (integration testing)
-  - ✅ All existing tests still pass (376 total tests)
+   - ✅ Breaking code causes test failure (integration testing)
+   - ✅ All existing tests still pass (376 total tests)
+   - ✅ Build passes: `npm run check`
+
+### TEST-002: Comprehensive Testing of Dependency Injection Container
+- **Status**: Complete
+- **Priority**: P1
+- **Agent**: 11 (Test Engineer)
+- **Description**: Create comprehensive unit tests for DIContainer to ensure correct service lifecycle management and dependency resolution
+- **Impact**: Ensures correctness of ARCH-006 DI container implementation, provides test coverage for critical infrastructure
+- **Implementation**:
+  - Created tests for `DIContainer` service registration with default singleton scope
+  - Created tests for singleton scoping to ensure same instance returned on multiple resolves
+  - Created tests for transient scoping to ensure new instance returned on each resolve
+  - Created tests for service registration, resolution, and checking existence with `has()` method
+  - Created tests for container reset with `clear()` method
+  - Created tests for mixed singleton and transient services
+  - Created tests for error handling (resolving unregistered services)
+  - Created tests for edge cases (special characters, empty names, null returns, factory errors)
+  - Created integration scenario tests (dependency injection pattern, test isolation)
+- **Files**: `tests/unit/lib/di-container.test.ts`
+- **Benefits**:
+  - 30 new tests covering DIContainer functionality
+  - Tests ensure singleton/transient scoping works correctly
+  - Service lifecycle and registration tested
+  - Container reset functionality tested for test isolation
+  - Edge cases handled (special characters, factory errors, null returns)
+- **Success Criteria**:
+  - ✅ DIContainer methods tested (register, resolve, has, clear)
+  - ✅ Singleton/transient scoping tested
+  - ✅ All 30 new tests pass consistently
+  - ✅ Edge cases tested (factory errors, null returns, special characters)
+  - ✅ Tests readable and maintainable (AAA pattern, descriptive names)
+  - ✅ All existing tests still pass (406 total tests)
   - ✅ Build passes: `npm run check`
 
 ### ARCH-002: Implement Repository Pattern for Data Access
