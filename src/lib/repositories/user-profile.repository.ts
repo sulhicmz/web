@@ -1,17 +1,4 @@
-import type { IRepository } from './base';
-
-export interface QueryOptions {
-  select?: string;
-  orderBy?: {
-    column: string;
-    ascending?: boolean;
-  } | {
-    column: string;
-    ascending?: boolean;
-  }[];
-  limit?: number;
-  offset?: number;
-}
+import type { IRepository, QueryOptions } from './base';
 
 export interface UserProfile {
   id: string;

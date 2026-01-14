@@ -5,9 +5,8 @@ import type {
   Project,
   ProjectInsert,
   ProjectUpdate,
-  QueryOptions,
 } from '../project.repository';
-import type { RepositoryResult, PaginatedRepositoryResult } from '../base';
+import type { RepositoryResult, PaginatedRepositoryResult, QueryOptions } from '../base';
 
 export class SupabaseProjectRepository implements IProjectRepository {
   constructor(private readonly client: SupabaseClient) {}

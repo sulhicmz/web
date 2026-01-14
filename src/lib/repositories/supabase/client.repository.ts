@@ -5,9 +5,8 @@ import type {
   Client,
   ClientInsert,
   ClientUpdate,
-  QueryOptions,
 } from '../client.repository';
-import type { RepositoryResult } from '../base';
+import type { RepositoryResult, QueryOptions } from '../base';
 
 export class SupabaseClientRepository implements IClientRepository {
   constructor(private readonly client: SupabaseClient) {}

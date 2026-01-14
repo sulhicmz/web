@@ -5,9 +5,8 @@ import type {
   Invoice,
   InvoiceInsert,
   InvoiceUpdate,
-  QueryOptions,
 } from '../invoice.repository';
-import type { RepositoryResult } from '../base';
+import type { RepositoryResult, QueryOptions } from '../base';
 
 export class SupabaseInvoiceRepository implements IInvoiceRepository {
   constructor(private readonly client: SupabaseClient) {}

@@ -5,9 +5,8 @@ import type {
   UserProfile,
   UserProfileInsert,
   UserProfileUpdate,
-  QueryOptions,
 } from '../user-profile.repository';
-import type { RepositoryResult } from '../base';
+import type { RepositoryResult, QueryOptions } from '../base';
 
 export class SupabaseUserProfileRepository implements IUserProfileRepository {
   constructor(private readonly client: SupabaseClient) {}

@@ -1,14 +1,12 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type {
-  ICouponRepository,
-  IPackageRepository,
-  IAddonRepository,
-  IProjectRepository,
-  IClientRepository,
-  IInvoiceRepository,
-  IUserProfileRepository,
-} from './index';
+import type { ICouponRepository } from './coupon.repository';
+import type { IPackageRepository } from './package.repository';
+import type { IAddonRepository } from './addon.repository';
+import type { IProjectRepository } from './project.repository';
+import type { IClientRepository } from './client.repository';
+import type { IInvoiceRepository } from './invoice.repository';
+import type { IUserProfileRepository } from './user-profile.repository';
 import {
   SupabaseCouponRepository,
   SupabasePackageRepository,

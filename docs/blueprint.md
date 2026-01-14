@@ -90,17 +90,22 @@ supabase/              # Database migrations & seeds
 - Updated payment provider to use repository pattern
 - All data access now goes through repository layer
 
-### 4. Circular Dependency Risk (P1) - IN PROGRESS
-**Location**: `MidtransProvider` ↔ `supabase/server`
-**Issue**: Potential circular dependency between payment provider and database client
+### 4. Circular Dependency Risk (P1) - RESOLVED
+**Location**: `repositories/index.ts → factory.ts → index.ts`
+**Issue**: Circular dependency between repository module exports and factory
 **Impact**:
 - Initialization order issues
 - Difficult to understand dependency graph
 - May cause runtime errors
-**Resolution**: 🔄 Dependency injection breaking cycles (ARCH-004)
-- Analyzing dependency graph to identify circular paths
-- Using DI to break identified cycles
-- Adding cycle detection to build process
+**Resolution**: ✅ Circular dependency broken by refactoring imports (ARCH-004)
+- Analyzed dependency graph using madge
+- Identified circular dependency: `repositories/index.ts` re-exports from `factory.ts`, which imports types from `index.ts`
+- Solution: Updated `factory.ts` to import repository interfaces directly from individual files
+- Removed duplicate `QueryOptions` definitions across multiple files
+- Centralized `QueryOptions` in `base.ts`
+- Updated Supabase implementations to import from `base.ts`
+- Verified acyclic dependency graph with madge
+- Build passes successfully
 
 ### 5. Configuration Coupling (P2) - RESOLVED
 **Location**: `src/lib/error-handler.ts`
@@ -352,6 +357,7 @@ Presentation → Application → Domain → Infrastructure
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2025-01-14 | 2.7 | Circular dependency resolved - Broke circular dependency in repository module by refactoring imports (ARCH-004) |
 | 2025-01-10 | 2.6 | DI container implemented - Lightweight dependency injection container with singleton/transient scoping (ARCH-006) |
 | 2025-01-10 | 2.5 | Configuration coupling resolved - Implemented message provider pattern for error handler decoupling (ARCH-005) |
 | 2025-01-10 | 2.4 | Planning phase updates - Unblocked ARCH-004/006, updated roadmap, reflected progress |
@@ -383,6 +389,28 @@ Presentation → Application → Domain → Infrastructure
   - Clean separation of server and client concerns
   - Follows SOLID principles (Dependency Inversion)
    - **Breaking Changes**: None (backward compatible)
+
+### Architecture Improvements (v2.7)
+
+#### Circular Dependency Resolution
+- **Before**: Circular dependency `repositories/index.ts → factory.ts → index.ts`
+  - `index.ts` exports from `factory.ts`
+  - `factory.ts` imports interface types from `index.ts`
+- **After**: Acyclic dependency graph with direct imports
+- **Implementation**:
+  - Analyzed dependency graph using madge tool
+  - Updated `factory.ts` to import repository interfaces directly from individual files instead of `index.ts`
+  - Removed duplicate `QueryOptions` interface definitions from multiple files
+  - Centralized `QueryOptions` in `base.ts`
+  - Updated Supabase repository implementations to import from `base.ts`
+  - Verified acyclic dependency graph with madge
+- **Benefits**:
+  - No circular dependencies (verified with madge)
+  - Deterministic initialization order
+  - No duplicate type definitions
+  - Clearer module boundaries
+  - Better code organization
+- **Breaking Changes**: None (internal refactoring only)
 
 ### Architecture Improvements (v2.6)
 

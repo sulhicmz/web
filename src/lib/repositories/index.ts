@@ -7,5 +7,3 @@ export * from './client.repository';
 export * from './invoice.repository';
 export * from './user-profile.repository';
 export * from './factory';
-
-export type { QueryOptions } from './base';
