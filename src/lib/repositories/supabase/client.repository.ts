@@ -1,4 +1,4 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient, PostgrestError } from '@supabase/supabase-js';
 
 import type {
   IClientRepository,
@@ -6,7 +6,7 @@ import type {
   ClientInsert,
   ClientUpdate,
 } from '../client.repository';
-import type { RepositoryResult, QueryOptions } from '../base';
+import type { RepositoryResult, PaginatedRepositoryResult, QueryOptions } from '../base';
 
 export class SupabaseClientRepository implements IClientRepository {
   constructor(private readonly client: SupabaseClient) {}
@@ -21,12 +21,12 @@ export class SupabaseClientRepository implements IClientRepository {
     return { data: data as Client | null, error };
   }
 
-  async findAll(options?: QueryOptions): Promise<{ data: Client[]; count: number | null; error: any }> {
+  async findAll(options?: QueryOptions): Promise<PaginatedRepositoryResult<Client>> {
     const { data, error, count } = await this.client
       .from('clients')
       .select(options?.select ?? '*', { count: 'exact' });
 
-    return { data: data as unknown as Client[], count, error };
+    return { data: data as unknown as Client[], count, error: error as PostgrestError | null };
   }
 
   async create(data: ClientInsert): Promise<RepositoryResult<Client>> {

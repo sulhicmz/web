@@ -1,4 +1,4 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient, PostgrestError } from '@supabase/supabase-js';
 
 import type {
   IPackageRepository,
@@ -6,7 +6,7 @@ import type {
   PackageInsert,
   PackageUpdate,
 } from '../package.repository';
-import type { RepositoryResult } from '../base';
+import type { RepositoryResult, PaginatedRepositoryResult } from '../base';
 
 export class SupabasePackageRepository implements IPackageRepository {
   constructor(private readonly client: SupabaseClient) {}
@@ -21,13 +21,13 @@ export class SupabasePackageRepository implements IPackageRepository {
     return { data: data as Package | null, error };
   }
 
-  async findAll(options?: { select?: string }): Promise<{ data: Package[]; count: number | null; error: any }> {
+  async findAll(options?: { select?: string }): Promise<PaginatedRepositoryResult<Package>> {
     const { data, error, count } = await this.client
       .from('packages')
       .select(options?.select ?? '*', { count: 'exact' })
       .is('deleted_at', null);
 
-    return { data: data as unknown as Package[], count, error };
+    return { data: data as unknown as Package[], count, error: error as PostgrestError | null };
   }
 
   async create(data: PackageInsert): Promise<RepositoryResult<Package>> {

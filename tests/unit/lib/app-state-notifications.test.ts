@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { AppStateStore } from '../../../src/lib/state/app-state';
-import type { User } from '@supabase/supabase-js';
 
 describe('AppStateStore Notifications', () => {
   let store: AppStateStore;

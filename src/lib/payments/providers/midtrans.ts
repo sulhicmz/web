@@ -1,4 +1,5 @@
 import type { ICouponRepository, IPackageRepository, IAddonRepository } from '../../repositories';
+import type { Coupon } from '../../repositories/coupon.repository';
 import { ResilientHttpClient } from '../../integration/http-client';
 
 import type {
@@ -163,11 +164,11 @@ export class MidtransProvider implements PaymentProvider {
     return `Basic ${encoded}`;
   }
 
-  private couponMetadataMessage(coupon: any, key: string): string | undefined {
+  private couponMetadataMessage(coupon: Coupon, key: string): string | undefined {
     if (!coupon.metadata || typeof coupon.metadata !== 'object') {
       return undefined;
     }
-    const value = (coupon.metadata as Record<string, unknown>)[key];
+    const value = coupon.metadata[key];
     return typeof value === 'string' ? value : undefined;
   }
 

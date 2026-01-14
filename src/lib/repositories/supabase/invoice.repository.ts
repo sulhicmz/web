@@ -1,4 +1,4 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient, PostgrestError } from '@supabase/supabase-js';
 
 import type {
   IInvoiceRepository,
@@ -6,7 +6,7 @@ import type {
   InvoiceInsert,
   InvoiceUpdate,
 } from '../invoice.repository';
-import type { RepositoryResult, QueryOptions } from '../base';
+import type { RepositoryResult, PaginatedRepositoryResult, QueryOptions } from '../base';
 
 export class SupabaseInvoiceRepository implements IInvoiceRepository {
   constructor(private readonly client: SupabaseClient) {}
@@ -21,13 +21,13 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
     return { data: data as Invoice | null, error };
   }
 
-  async findAll(options?: QueryOptions): Promise<{ data: Invoice[]; count: number | null; error: any }> {
+  async findAll(options?: QueryOptions): Promise<PaginatedRepositoryResult<Invoice>> {
     const { data, error, count } = await this.client
       .from('invoices')
       .select(options?.select ?? '*', { count: 'exact' })
       .is('deleted_at', null);
 
-    return { data: data as unknown as Invoice[], count, error };
+    return { data: data as unknown as Invoice[], count, error: error as PostgrestError | null };
   }
 
   async create(data: InvoiceInsert): Promise<RepositoryResult<Invoice>> {

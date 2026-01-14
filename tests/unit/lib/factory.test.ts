@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { createAppStateStore, createServerAppState, createClientAppState } from '../../../src/lib/state/factory';
 import { ServerStateContext } from '../../../src/lib/state/server-state-context';
-import { ClientStateContext } from '../../../src/lib/state/client-state-context';
 
 describe('Factory Functions', () => {
   describe('createAppStateStore', () => {
@@ -55,7 +54,7 @@ describe('Factory Functions', () => {
     it('should support all store operations', () => {
       const store = createServerAppState();
 
-      store.currentUser = { id: '123', email: 'test@example.com' } as any;
+      store.currentUser = { id: '123', email: 'test@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: new Date().toISOString() };
       store.theme = 'dark';
       store.sidebarOpen = true;
       store.isLoading = true;
@@ -107,7 +106,7 @@ describe('Factory Functions', () => {
     it('should support reset', () => {
       const store = createServerAppState();
 
-      store.currentUser = { id: '123', email: 'test@example.com' } as any;
+      store.currentUser = { id: '123', email: 'test@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: new Date().toISOString() };
       store.theme = 'dark';
       store.setFormState('test', { value: 'test' });
 
@@ -144,7 +143,7 @@ describe('Factory Functions', () => {
     it('should support all store operations', () => {
       const store = createClientAppState();
 
-      store.currentUser = { id: '123', email: 'test@example.com' } as any;
+      store.currentUser = { id: '123', email: 'test@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: new Date().toISOString() };
       store.theme = 'dark';
       store.sidebarOpen = true;
       store.isLoading = true;
@@ -196,7 +195,7 @@ describe('Factory Functions', () => {
     it('should support reset', () => {
       const store = createClientAppState();
 
-      store.currentUser = { id: '123', email: 'test@example.com' } as any;
+      store.currentUser = { id: '123', email: 'test@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: new Date().toISOString() };
       store.theme = 'dark';
       store.setFormState('test', { value: 'test' });
 
@@ -230,8 +229,9 @@ describe('Factory Functions', () => {
       const serverStore = createServerAppState();
       const clientStore = createClientAppState();
 
-      serverStore.currentUser = { id: 'server-user', email: 'server@example.com' } as any;
-      clientStore.currentUser = { id: 'client-user', email: 'client@example.com' } as any;
+      const now = new Date().toISOString();
+      serverStore.currentUser = { id: 'server-user', email: 'server@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: now };
+      clientStore.currentUser = { id: 'client-user', email: 'client@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: now };
 
       expect(serverStore.currentUser?.email).toBe('server@example.com');
       expect(clientStore.currentUser?.email).toBe('client@example.com');
@@ -241,8 +241,9 @@ describe('Factory Functions', () => {
       const store1 = createServerAppState();
       const store2 = createServerAppState();
 
-      store1.currentUser = { id: 'user1', email: 'user1@example.com' } as any;
-      store2.currentUser = { id: 'user2', email: 'user2@example.com' } as any;
+      const now = new Date().toISOString();
+      store1.currentUser = { id: 'user1', email: 'user1@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: now };
+      store2.currentUser = { id: 'user2', email: 'user2@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: now };
 
       expect(store1.currentUser?.email).toBe('user1@example.com');
       expect(store2.currentUser?.email).toBe('user2@example.com');
@@ -253,7 +254,8 @@ describe('Factory Functions', () => {
     it('should handle server-side rendering flow', () => {
       const serverStore = createServerAppState();
 
-      serverStore.currentUser = { id: '123', email: 'user@example.com' } as any;
+      const now = new Date().toISOString();
+      serverStore.currentUser = { id: '123', email: 'user@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: now };
       serverStore.theme = 'dark';
       serverStore.setFormState('checkout', { step: 2, data: { items: [1, 2, 3] } });
 
@@ -272,7 +274,8 @@ describe('Factory Functions', () => {
       const serverStore = createServerAppState();
       const clientStore = createClientAppState();
 
-      serverStore.currentUser = { id: '123', email: 'user@example.com' } as any;
+      const now = new Date().toISOString();
+      serverStore.currentUser = { id: '123', email: 'user@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: now };
       serverStore.theme = 'dark';
 
       const snapshot = {
@@ -281,7 +284,7 @@ describe('Factory Functions', () => {
       };
 
       clientStore.currentUser = snapshot.currentUser;
-      clientStore.theme = snapshot.theme as any;
+      clientStore.theme = snapshot.theme as 'dark';
 
       expect(clientStore.currentUser?.email).toBe('user@example.com');
       expect(clientStore.theme).toBe('dark');
@@ -292,7 +295,8 @@ describe('Factory Functions', () => {
 
       expect(store.currentUser).toBeNull();
 
-      store.currentUser = { id: '123', email: 'user@example.com', user_metadata: { name: 'John Doe' } } as any;
+      const now = new Date().toISOString();
+      store.currentUser = { id: '123', email: 'user@example.com', user_metadata: { name: 'John Doe' }, app_metadata: {}, aud: 'test', created_at: now };
 
       expect(store.currentUser).not.toBeNull();
       expect(store.currentUser?.email).toBe('user@example.com');

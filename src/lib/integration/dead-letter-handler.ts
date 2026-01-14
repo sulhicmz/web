@@ -93,7 +93,7 @@ export class DeadLetterQueueHandler {
     const supabase = this.supabase;
 
     const orderId = deadLetter.webhook_id;
-    const payload = deadLetter.payload as Record<string, unknown>;
+    const _payload = deadLetter.payload as Record<string, unknown>;
 
     try {
       const { error: paymentError } = await supabase

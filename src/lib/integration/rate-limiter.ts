@@ -49,7 +49,7 @@ export class PersistentRateLimiter {
     try {
       const supabase = this.supabase;
       const now = new Date();
-      const windowStart = new Date(now.getTime() - config.windowMs);
+      const _windowStart = new Date(now.getTime() - config.windowMs);
       const windowEnd = new Date(now.getTime() + config.windowMs);
 
       const { data: existing, error: selectError } = await supabase
@@ -68,7 +68,7 @@ export class PersistentRateLimiter {
 
       const isExpired = !existing || new Date(existing.reset_at) < now;
       const currentCount = isExpired ? 0 : (existing?.count || 0);
-      const remaining = Math.max(0, config.maxRequests - currentCount);
+      const _remaining = Math.max(0, config.maxRequests - currentCount);
       const resetAt = existing && !isExpired
         ? new Date(existing.reset_at).getTime()
         : windowEnd.getTime();

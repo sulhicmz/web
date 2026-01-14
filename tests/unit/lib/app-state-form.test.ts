@@ -36,7 +36,7 @@ describe('AppStateStore Form State Management', () => {
     it('should handle empty form data', () => {
       store.setFormState('empty', {});
 
-      const retrieved = store.getFormState<{}>('empty');
+      const retrieved = store.getFormState<Record<string, never>>('empty');
       expect(retrieved).toEqual({});
     });
 
@@ -110,7 +110,7 @@ describe('AppStateStore Form State Management', () => {
 
     it('should only clear form state, not other state', () => {
       store.setFormState('login', { username: 'john' });
-      store.currentUser = { id: '123', email: 'test@example.com' } as any;
+      store.currentUser = { id: '123', email: 'test@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: new Date().toISOString() };
       store.notifications = [{ id: '1', message: 'Test', type: 'info' as const, isRead: false, timestamp: '2024-01-01' }];
 
       store.clearFormState('login');
@@ -134,7 +134,7 @@ describe('AppStateStore Form State Management', () => {
 
     it('should keep form states separate from app state', () => {
       store.setFormState('formData', { field1: 'value1' });
-      store.currentUser = { id: '123', email: 'test@example.com' } as any;
+      store.currentUser = { id: '123', email: 'test@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: new Date().toISOString() };
 
       expect(store.getFormState('formData')).toEqual({ field1: 'value1' });
       expect(store.currentUser).not.toBeNull();
@@ -252,8 +252,8 @@ describe('AppStateStore Form State Management', () => {
     });
 
     it('should handle circular references carefully', () => {
-      const data: any = { name: 'test' };
-      data.self = data;
+      const data: Record<string, unknown> = { name: 'test' };
+      (data as Record<string, unknown>).self = data;
 
       expect(() => store.setFormState('circular', data)).not.toThrow();
     });

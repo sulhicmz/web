@@ -1,4 +1,4 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient, PostgrestError } from '@supabase/supabase-js';
 
 import type {
   IAddonRepository,
@@ -6,7 +6,7 @@ import type {
   AddonInsert,
   AddonUpdate,
 } from '../addon.repository';
-import type { RepositoryResult } from '../base';
+import type { RepositoryResult, PaginatedRepositoryResult } from '../base';
 
 export class SupabaseAddonRepository implements IAddonRepository {
   constructor(private readonly client: SupabaseClient) {}
@@ -21,13 +21,13 @@ export class SupabaseAddonRepository implements IAddonRepository {
     return { data: data as Addon | null, error };
   }
 
-  async findAll(options?: { select?: string }): Promise<{ data: Addon[]; count: number | null; error: any }> {
+  async findAll(options?: { select?: string }): Promise<PaginatedRepositoryResult<Addon>> {
     const { data, error, count } = await this.client
       .from('addons')
       .select(options?.select ?? '*', { count: 'exact' })
       .is('deleted_at', null);
 
-    return { data: data as unknown as Addon[], count, error };
+    return { data: data as unknown as Addon[], count, error: error as PostgrestError | null };
   }
 
   async create(data: AddonInsert): Promise<RepositoryResult<Addon>> {

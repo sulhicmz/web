@@ -1,4 +1,4 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient, PostgrestError } from '@supabase/supabase-js';
 
 import type {
   ICouponRepository,
@@ -6,7 +6,7 @@ import type {
   CouponInsert,
   CouponUpdate,
 } from '../coupon.repository';
-import type { RepositoryResult } from '../base';
+import type { RepositoryResult, PaginatedRepositoryResult } from '../base';
 
 export class SupabaseCouponRepository implements ICouponRepository {
   constructor(private readonly client: SupabaseClient) {}
@@ -21,12 +21,12 @@ export class SupabaseCouponRepository implements ICouponRepository {
     return { data: data as Coupon | null, error };
   }
 
-  async findAll(options?: { select?: string }): Promise<{ data: Coupon[]; count: number | null; error: any }> {
+  async findAll(options?: { select?: string }): Promise<PaginatedRepositoryResult<Coupon>> {
     const { data, error, count } = await this.client
       .from('coupons')
       .select(options?.select ?? '*', { count: 'exact' });
 
-    return { data: data as unknown as Coupon[], count, error };
+    return { data: data as unknown as Coupon[], count, error: error as PostgrestError | null };
   }
 
   async create(data: CouponInsert): Promise<RepositoryResult<Coupon>> {

@@ -4,7 +4,7 @@ import { webhookDeduplicationService } from '../../../lib/integration/webhook-de
 import { deadLetterQueueHandler } from '../../../lib/integration/dead-letter-handler';
 import { webhookMetricsService } from '../../../lib/integration/webhook-metrics';
 
-export const GET: APIRoute = withTimeout(async ({ request, url }) => {
+export const GET: APIRoute = withTimeout(async ({ request }) => {
   const authHeader = request.headers.get('authorization');
   const adminToken = import.meta.env.ADMIN_API_TOKEN;
 
@@ -35,7 +35,7 @@ export const GET: APIRoute = withTimeout(async ({ request, url }) => {
 
   try {
     switch (metricType) {
-      case 'summary':
+      case 'summary': {
         const summaryMetrics = await webhookMetricsService.getMetrics();
         return new Response(
           JSON.stringify({
@@ -45,8 +45,9 @@ export const GET: APIRoute = withTimeout(async ({ request, url }) => {
           }),
           { status: 200, headers: { 'content-type': 'application/json' } }
         );
+      }
 
-      case 'health':
+      case 'health': {
         const healthStatus = await webhookMetricsService.getHealthStatus();
         return new Response(
           JSON.stringify({
@@ -59,8 +60,9 @@ export const GET: APIRoute = withTimeout(async ({ request, url }) => {
             headers: { 'content-type': 'application/json' },
           }
         );
+      }
 
-      case 'retry-queue':
+      case 'retry-queue': {
         const retryQueue =
           await webhookMetricsService.getDetailedRetryQueue(limit || 20);
         return new Response(
@@ -72,8 +74,9 @@ export const GET: APIRoute = withTimeout(async ({ request, url }) => {
           }),
           { status: 200, headers: { 'content-type': 'application/json' } }
         );
+      }
 
-      case 'dead-letter':
+      case 'dead-letter': {
         const deadLetterQueue =
           await webhookDeduplicationService.getDeadLetterQueue(limit || 50);
         return new Response(
@@ -85,8 +88,9 @@ export const GET: APIRoute = withTimeout(async ({ request, url }) => {
           }),
           { status: 200, headers: { 'content-type': 'application/json' } }
         );
+      }
 
-      case 'dead-letter-stats':
+      case 'dead-letter-stats': {
         const dlqStats = await deadLetterQueueHandler.getDeadLetterStats();
         return new Response(
           JSON.stringify({
@@ -96,8 +100,9 @@ export const GET: APIRoute = withTimeout(async ({ request, url }) => {
           }),
           { status: 200, headers: { 'content-type': 'application/json' } }
         );
+      }
 
-      case 'cleanup':
+      case 'cleanup': {
         const cleanupResult =
           await webhookDeduplicationService.cleanupOldRecords();
         return new Response(
@@ -109,6 +114,7 @@ export const GET: APIRoute = withTimeout(async ({ request, url }) => {
           }),
           { status: 200, headers: { 'content-type': 'application/json' } }
         );
+      }
 
       default:
         return new Response(

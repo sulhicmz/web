@@ -1,7 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { AppStateStore } from '../../../src/lib/state/app-state';
-import type { StateContext } from '../../../src/lib/state/state-context';
-import { ClientStateContext } from '../../../src/lib/state/client-state-context';
 
 describe('AppStateStore Cache System', () => {
   let store: AppStateStore;
@@ -165,7 +163,7 @@ describe('AppStateStore Cache System', () => {
 
     it('should only clear cache keys, not other state', () => {
       store.setCache('cache_key', { value: 'cached' });
-      store.currentUser = { id: '123', email: 'test@example.com' } as any;
+      store.currentUser = { id: '123', email: 'test@example.com', user_metadata: {}, app_metadata: {}, aud: 'test', created_at: new Date().toISOString() };
       store.sidebarOpen = true;
 
       store.clearCache();

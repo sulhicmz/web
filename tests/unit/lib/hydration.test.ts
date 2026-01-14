@@ -406,7 +406,7 @@ describe('Hydration Utilities', () => {
       serverContext.set('theme', 'dark');
 
       const serverState = extractServerState(serverContext);
-      const script = createInitialStateScript(serverState);
+      const _script = createInitialStateScript(serverState);
 
       const mockDocument = document.implementation.createHTMLDocument('test');
       const scriptElement = mockDocument.createElement('script');

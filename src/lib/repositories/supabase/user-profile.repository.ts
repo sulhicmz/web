@@ -1,4 +1,4 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient, PostgrestError } from '@supabase/supabase-js';
 
 import type {
   IUserProfileRepository,
@@ -6,7 +6,7 @@ import type {
   UserProfileInsert,
   UserProfileUpdate,
 } from '../user-profile.repository';
-import type { RepositoryResult, QueryOptions } from '../base';
+import type { RepositoryResult, PaginatedRepositoryResult, QueryOptions } from '../base';
 
 export class SupabaseUserProfileRepository implements IUserProfileRepository {
   constructor(private readonly client: SupabaseClient) {}
@@ -21,12 +21,12 @@ export class SupabaseUserProfileRepository implements IUserProfileRepository {
     return { data: data as UserProfile | null, error };
   }
 
-  async findAll(options?: QueryOptions): Promise<{ data: UserProfile[]; count: number | null; error: any }> {
+  async findAll(options?: QueryOptions): Promise<PaginatedRepositoryResult<UserProfile>> {
     const { data, error, count } = await this.client
       .from('user_profiles')
       .select(options?.select ?? '*', { count: 'exact' });
 
-    return { data: data as unknown as UserProfile[], count, error };
+    return { data: data as unknown as UserProfile[], count, error: error as PostgrestError | null };
   }
 
   async create(data: UserProfileInsert): Promise<RepositoryResult<UserProfile>> {
