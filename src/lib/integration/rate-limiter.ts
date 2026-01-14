@@ -49,109 +49,45 @@ export class PersistentRateLimiter {
     try {
       const supabase = this.supabase;
       const now = new Date();
-      const _windowStart = new Date(now.getTime() - config.windowMs);
       const windowEnd = new Date(now.getTime() + config.windowMs);
+      const windowEndIso = windowEnd.toISOString();
 
-      const { data: existing, error: selectError } = await supabase
-        .from(PersistentRateLimiter.TABLE_NAME)
-        .select('*')
-        .eq('key', key)
-        .maybeSingle();
-
-      if (selectError && selectError.code !== 'PGRST116') {
-        console.error('[RateLimiter] Error fetching rate limit record', {
-          key,
-          error: selectError.message,
+      const { data: existing, error: checkError } = await supabase
+        .rpc('check_and_increment_rate_limit', {
+          p_key: key,
+          p_window_ms: config.windowMs,
+          p_max_requests: config.maxRequests,
+          p_reset_at: windowEndIso,
         });
-        throw selectError;
+
+      if (checkError) {
+        console.error('[RateLimiter] Error in check_and_increment_rate_limit', {
+          key,
+          error: checkError.message,
+        });
+        throw checkError;
       }
 
-      const isExpired = !existing || new Date(existing.reset_at) < now;
-      const currentCount = isExpired ? 0 : (existing?.count || 0);
-      const _remaining = Math.max(0, config.maxRequests - currentCount);
-      const resetAt = existing && !isExpired
-        ? new Date(existing.reset_at).getTime()
-        : windowEnd.getTime();
+      const allowed = existing?.allowed ?? false;
+      const remaining = existing?.remaining ?? 0;
+      const resetAt = existing?.reset_at ? new Date(existing.reset_at).getTime() : windowEnd.getTime();
 
-      if (!isExpired && currentCount >= config.maxRequests) {
+      if (!allowed) {
         console.warn('[RateLimiter] Rate limit exceeded', {
           key,
-          count: currentCount,
-          maxRequests: config.maxRequests,
-        });
-
-        return {
-          allowed: false,
-          remaining: 0,
+          remaining,
           resetAt,
-          resetInSeconds: Math.ceil((resetAt - now.getTime()) / 1000),
-        };
-      }
-
-      const newCount = currentCount + 1;
-      const newResetAt = isExpired ? windowEnd.toISOString() : existing!.reset_at;
-
-      if (existing) {
-        const { error: updateError } = await supabase
-          .from(PersistentRateLimiter.TABLE_NAME)
-          .update({
-            count: newCount,
-            reset_at: newResetAt,
-          })
-          .eq('key', key);
-
-        if (updateError) {
-          console.error('[RateLimiter] Error updating rate limit record', {
-            key,
-            error: updateError.message,
-          });
-          throw updateError;
-        }
+        });
       } else {
-        const { error: insertError } = await supabase
-          .from(PersistentRateLimiter.TABLE_NAME)
-          .insert({
-            key,
-            count: newCount,
-            reset_at: newResetAt,
-          });
-
-        if (insertError) {
-          if (insertError.code === '23505') {
-            const { error: retryError } = await supabase
-              .from(PersistentRateLimiter.TABLE_NAME)
-              .update({
-                count: newCount,
-                reset_at: newResetAt,
-              })
-              .eq('key', key);
-
-            if (retryError) {
-              console.error('[RateLimiter] Error on retry insert', {
-                key,
-                error: retryError.message,
-              });
-              throw retryError;
-            }
-          } else {
-            console.error('[RateLimiter] Error inserting rate limit record', {
-              key,
-              error: insertError.message,
-            });
-            throw insertError;
-          }
-        }
+        console.info('[RateLimiter] Rate limit check passed', {
+          key,
+          remaining,
+        });
       }
-
-      console.info('[RateLimiter] Rate limit check passed', {
-        key,
-        count: newCount,
-        maxRequests: config.maxRequests,
-      });
 
       return {
-        allowed: true,
-        remaining: config.maxRequests - newCount,
+        allowed,
+        remaining,
         resetAt,
         resetInSeconds: Math.ceil((resetAt - now.getTime()) / 1000),
       };

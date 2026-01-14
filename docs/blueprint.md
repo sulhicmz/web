@@ -524,3 +524,22 @@ Presentation → Application → Domain → Infrastructure
   - Adding new error types now requires only one location change
   - Type-safe error handling with reduced maintenance burden
   - Improved code readability and maintainability
+
+### Architecture Improvements (v2.8)
+
+#### Database Performance Optimization
+- **Before**: Multiple database queries per operation (2-3 for rate limiter), missing indexes for frequently queried fields
+- **After**: Single atomic database operation with optimized indexes
+- **Implementation**:
+  - Created atomic `check_and_increment_rate_limit` PostgreSQL function using row-level locking
+  - Refactored `PersistentRateLimiter.check()` to use atomic function
+  - Added indexes for frequently queried single fields (slug, status, due_date)
+  - Added partial indexes for soft-deleted records (where deleted_at IS NULL)
+  - Added composite index for invoice overdue queries (status + due_date)
+- **Benefits**:
+  - 66% fewer database queries for rate limiting (3 → 1 per check)
+  - Faster repository queries through proper indexing
+  - Smaller index sizes with partial indexes (only active records)
+  - Atomic operations eliminate race conditions
+  - Reduced database load under high traffic
+- **Breaking Changes**: None (backward compatible)
