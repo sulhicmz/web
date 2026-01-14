@@ -562,10 +562,8 @@ const showModal = false; // Untuk demo purposes
       });
 
       if (error) {
-        // Show error toast
         showToast('error', 'Login Gagal', error.message);
       } else {
-        // Show success toast and redirect
         showToast('success', 'Login Berhasil', 'Selamat datang kembali!');
         setTimeout(() => {
           window.location.href = '/portal/dashboard';

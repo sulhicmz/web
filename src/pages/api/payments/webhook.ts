@@ -6,6 +6,7 @@ import { MidtransProvider } from '../../../lib/payments/providers/midtrans';
 import { createRepositories } from '../../../lib/repositories/factory';
 import type { ICouponRepository, IPackageRepository, IAddonRepository } from '../../../lib/repositories';
 import { webhookDeduplicationService } from '../../../lib/integration/webhook-deduplication';
+import { persistentRateLimiter } from '../../../lib/integration/rate-limiter';
 
 export const POST: APIRoute = withTimeout(async ({ request }) => {
   const serverKey = import.meta.env.MIDTRANS_SERVER_KEY;
@@ -14,6 +15,40 @@ export const POST: APIRoute = withTimeout(async ({ request }) => {
   if (!serverKey) {
     console.warn('[payments/webhook] MIDTRANS_SERVER_KEY not configured');
     throw new ApiError('Payment provider not configured', 500, 'PROVIDER_NOT_CONFIGURED');
+  }
+
+  const clientIP = request.headers.get('cf-connecting-ip') ||
+                   request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+                   request.headers.get('x-real-ip') ||
+                   'unknown';
+
+  const rateLimitKey = `webhook:${clientIP}`;
+
+  try {
+    const rateLimitResult = await persistentRateLimiter.check(rateLimitKey, {
+      windowMs: 60 * 1000,
+      maxRequests: 10,
+    });
+
+    if (!rateLimitResult.allowed) {
+      console.warn('[payments/webhook] Rate limit exceeded', {
+        clientIP,
+        retryAfter: rateLimitResult.resetInSeconds,
+      });
+      throw new ApiError(
+        'Too many requests',
+        429,
+        'RATE_LIMIT_EXCEEDED'
+      );
+    }
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 429) {
+      throw error;
+    }
+    console.error('[payments/webhook] Rate limit check failed', {
+      clientIP,
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 
   let couponRepository: ICouponRepository | null = null;

@@ -514,6 +514,123 @@
 
 ---
 
+## Security Engineering Tasks
+
+### SEC-001: Update Outdated Dependencies
+- **Status**: Complete
+- **Priority**: Medium
+- **Agent**: Security Specialist
+- **Description**: Update all outdated npm packages to latest versions
+- **Implementation**:
+  - Updated @supabase/supabase-js: 2.90.0 → 2.90.1
+  - Updated @vitest/coverage-v8: 4.0.16 → 4.0.17
+  - Updated @vitest/ui: 4.0.16 → 4.0.17
+  - Updated vitest: 4.0.16 → 4.0.17
+  - Updated astro: 5.16.7 → 5.16.9
+  - Updated typescript-eslint: 8.52.0 → 8.53.0
+  - Updated wrangler: 4.57.0 → 4.59.1
+- **Benefits**: Latest security patches, bug fixes, performance improvements
+- **Success Criteria**:
+  - ✅ No outdated packages
+  - ✅ npm audit passes (0 vulnerabilities)
+  - ✅ All tests pass (420 tests)
+  - ✅ Build passes: `npm run check`
+
+### SEC-002: Enhance Content Security Policy
+- **Status**: Complete
+- **Priority**: High
+- **Agent**: Security Specialist
+- **Description**: Strengthen CSP configuration to prevent XSS attacks
+- **Implementation**:
+  - Removed `unsafe-inline` from script-src directive
+  - Added Supabase domain to connect-src
+  - Added Plausible and Google Analytics to connect-src
+  - Added `require-trusted-types-for 'script'` directive
+  - Configured Supabase domain dynamically based on env variable
+- **Files**: `src/middleware/auth-guard.ts`
+- **Benefits**:
+  - Prevents inline script execution (XSS protection)
+  - Enables Trusted Types API for secure DOM manipulation
+  - Restricts external resource loading
+  - Comprehensive CSP violation reporting
+- **Success Criteria**:
+  - ✅ No `unsafe-inline` in script-src
+  - ✅ Trusted Types enabled
+  - ✅ Dynamic domain configuration
+  - ✅ Security headers tests passing
+
+### SEC-003: Implement DOMPurify for HTML Sanitization
+- **Status**: Complete
+- **Priority**: Medium
+- **Agent**: Security Specialist
+- **Description**: Create HTML sanitization utilities for user-generated content
+- **Implementation**:
+  - Created `src/lib/security/sanitize.ts` with sanitization utilities
+  - Implemented `sanitizeHtml()` using DOMPurify with strict config
+  - Implemented `sanitizeText()` for plain text escaping
+  - Configured allowed HTML tags and attributes
+  - Updated security documentation with usage guidelines
+- **Files**: `src/lib/security/sanitize.ts`, `docs/security.md`
+- **Benefits**:
+  - Safe HTML rendering for user content
+  - XSS prevention through sanitization
+  - Clear guidelines for developers
+  - Support for rich text with security constraints
+- **Success Criteria**:
+  - ✅ Sanitization utilities created
+  - ✅ DOMPurify configuration strict
+  - ✅ Documentation updated with usage examples
+  - ✅ No direct innerHTML without sanitization (except escapeHtml)
+
+### SEC-004: Implement Persistent Rate Limiting
+- **Status**: Complete
+- **Priority**: High
+- **Agent**: Security Specialist
+- **Description**: Replace in-memory rate limiting with persistent database-backed rate limiting
+- **Implementation**:
+  - Created `src/middleware/rate-limit.ts` for persistent rate limit middleware
+  - Updated `/api/payments/webhook` to use persistent rate limiter
+  - Updated `/api/webhook/replay` to use persistent rate limiter
+  - Added rate limit headers to responses (X-RateLimit-*, Retry-After)
+  - Configured per-endpoint rate limits (webhook, api, replay)
+- **Files**: `src/middleware/rate-limit.ts`, `src/pages/api/payments/webhook.ts`, `src/pages/api/webhook/replay.ts`
+- **Benefits**:
+  - Rate limits persist across instances (distributed systems)
+  - Rate limits survive server restarts
+  - Prevents rate limit evasion by rotating IPs
+  - Consistent rate limiting across infrastructure
+- **Success Criteria**:
+  - ✅ Persistent rate limiter used in endpoints
+  - ✅ Rate limit headers added to responses
+  - ✅ Per-endpoint configuration
+  - ✅ Error handling for rate limit failures
+
+### SEC-005: Add Security Tests
+- **Status**: Complete
+- **Priority**: Low
+- **Agent**: Security Specialist
+- **Description**: Create tests to validate security headers and configurations
+- **Implementation**:
+  - Created `tests/unit/security/security-headers.test.ts` with 14 tests
+  - Tests for CSP directives (script-src, frame-src, object-src)
+  - Tests for security headers (X-Frame-Options, X-Content-Type-Options, etc.)
+  - Tests for rate limiting logic
+  - Tests for input validation (email, URL, UUID)
+  - Tests for secrets management (no hardcoded secrets)
+- **Files**: `tests/unit/security/security-headers.test.ts`
+- **Benefits**:
+  - Automated security validation
+  - Regression prevention for security changes
+  - Clear security requirements documented in tests
+  - Coverage of critical security patterns
+- **Success Criteria**:
+  - ✅ 14 security tests created
+  - ✅ All security tests passing
+  - ✅ Tests cover headers, rate limiting, validation
+  - ✅ Integration with existing test suite
+
+---
+
 ## Notes
 
 ### Task Dependencies

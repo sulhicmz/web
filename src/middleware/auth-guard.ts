@@ -220,20 +220,23 @@ export const securityHeaders: MiddlewareHandler = async ({ request }, next) => {
   const response = await next();
 
   const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321';
+  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || '';
 
-  // Content Security Policy - comprehensive XSS and injection protection
+  const supabaseDomain = supabaseUrl ? new URL(supabaseUrl).hostname : '*.supabase.co';
+
   const cspDirectives = [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline' ${siteUrl}`,
+    `script-src 'self' ${siteUrl}`,
     `style-src 'self' 'unsafe-inline' ${siteUrl}`,
-    `img-src 'self' data: https: blob:`,
-    `font-src 'self' data:`,
-    "connect-src 'self' https://*.supabase.co https://*.midtrans.com",
+    `img-src 'self' data: https: blob: ${supabaseDomain}`,
+    "font-src 'self' data:",
+    `connect-src 'self' ${supabaseDomain} https://*.midtrans.com https://*.plausible.io https://*.google-analytics.com`,
     "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
+    "require-trusted-types-for 'script'",
     "report-uri /api/csp-report"
   ].join('; ');
 

@@ -311,6 +311,12 @@ supabase/              # Database migrations & seeds
 - Scrub local `.env` before sharing logs
 - Rotate compromised credentials
 - Review `supabase/README.md` before database changes
+- Validate ALL user input (Zod schemas)
+- Sanitize user-generated content (DOMPurify)
+- Implement rate limiting (persistent storage)
+- Set comprehensive security headers (CSP, HSTS)
+- Never trust client-side data
+- Use parameterized queries (Supabase client)
 
 ## Architectural Principles
 
