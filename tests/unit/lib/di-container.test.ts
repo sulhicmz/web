@@ -362,7 +362,7 @@ describe('DIContainer', () => {
       
       const dbFactory = (): Database => ({
         connect: () => console.log('Connecting to database...'),
-        query: (sql: string) => [{ id: 1, name: 'test' }],
+        query: (_sql: string) => [{ id: 1, name: 'test' }],
       });
       
       const serviceFactory = (logger: Logger, db: Database): Service => ({
