@@ -2,6 +2,7 @@
 import PortalLayout from '../../layouts/PortalLayout.astro';
 import StatsCard from '../../components/ui/StatsCard.astro';
 import ProjectCard from '../../components/ui/ProjectCard.astro';
+import Icon from '../../components/ui/Icon.astro';
 export const prerender = false;
 
 // Mock data untuk demonstrasi - nanti akan diganti dengan data dari Supabase
@@ -137,11 +138,11 @@ const projectsData = [
                                         >
                                                 <div slot="actions" class="project-actions">
                                                         <button class="btn btn--sm btn--ghost">
-                                                                <span aria-hidden="true">👁</span>
+                                                                <span class="btn__icon"><Icon name="eye" size={16} /></span>
                                                                 Preview
                                                         </button>
                                                         <button class="btn btn--sm btn--primary">
-                                                                <span aria-hidden="true">⚙</span>
+                                                                <span class="btn__icon"><Icon name="settings-gear" size={16} /></span>
                                                                 Manage
                                                         </button>
                                                 </div>
@@ -155,7 +156,7 @@ const projectsData = [
                         <h2>Aksi Cepat</h2>
                         <div class="actions-grid">
                                 <a href="/portal/projects/new" class="action-card">
-                                        <div class="action-card__icon" aria-hidden="true">➕</div>
+                                        <div class="action-card__icon"><Icon name="add" size={24} /></div>
                                         <div class="action-card__content">
                                                 <h3>Proyek Baru</h3>
                                                 <p>Mulai proyek baru untuk klien</p>
@@ -163,7 +164,7 @@ const projectsData = [
                                 </a>
 
                                 <a href="/portal/support/new" class="action-card">
-                                        <div class="action-card__icon" aria-hidden="true">🎫</div>
+                                        <div class="action-card__icon"><Icon name="support" size={24} /></div>
                                         <div class="action-card__content">
                                                 <h3>Tiket Support</h3>
                                                 <p>Ajukan tiket dukungan teknis</p>
@@ -171,7 +172,7 @@ const projectsData = [
                                 </a>
 
                                 <a href="/portal/billing/invoices" class="action-card">
-                                        <div class="action-card__icon" aria-hidden="true">🧾</div>
+                                        <div class="action-card__icon"><Icon name="invoice" size={24} /></div>
                                         <div class="action-card__content">
                                                 <h3>Invoice</h3>
                                                 <p>Lihat dan kelola invoice</p>
@@ -179,7 +180,7 @@ const projectsData = [
                                 </a>
 
                                 <a href="/portal/knowledge-base" class="action-card">
-                                        <div class="action-card__icon" aria-hidden="true">📚</div>
+                                        <div class="action-card__icon"><Icon name="book" size={24} /></div>
                                         <div class="action-card__content">
                                                 <h3>Knowledge Base</h3>
                                                 <p>Akses dokumentasi dan panduan</p>
@@ -340,28 +341,38 @@ const projectsData = [
                 transition: opacity var(--transition-base);
         }
 
-        .action-card:hover::before,
-        .action-card:focus-visible::before {
-                opacity: 1;
-        }
+    .action-card:hover::before,
+    .action-card:focus-visible::before {
+        opacity: 1;
+    }
 
-        .action-card:hover,
-        .action-card:focus-visible {
-                transform: translateY(-2px);
-                box-shadow: var(--shadow-gradient);
-                border-color: rgba(124, 58, 237, 0.3);
-        }
+    .action-card:hover,
+    .action-card:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-gradient);
+        border-color: rgba(124, 58, 237, 0.3);
+    }
 
-        .action-card__icon {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 3rem;
-                height: 3rem;
-                background: var(--gradient-primary);
-                border-radius: var(--radius-lg);
-                font-size: 1.5rem;
-        }
+    .action-card:focus-visible {
+        outline: 3px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
+
+    .action-card__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        background: var(--gradient-primary);
+        border-radius: var(--radius-lg);
+        color: white;
+    }
+
+    .btn__icon {
+        display: flex;
+        align-items: center;
+    }
 
         .action-card__content {
                 flex: 1;

@@ -1,0 +1,140 @@
+---
+interface LoadingSpinnerProps extends AstroHTML.JSX.HTMLAttributes<'div'> {
+    size?: 'sm' | 'md' | 'lg';
+    color?: string;
+    variant?: 'default' | 'light' | 'dark';
+    label?: string;
+}
+
+const {
+    size = 'md',
+    color,
+    variant = 'default',
+    label = 'Loading...',
+    class: customClass = '',
+    ...rest
+} = Astro.props as LoadingSpinnerProps & Record<string, unknown>;
+
+const classes = ['loading-spinner', `loading-spinner--${size}`, `loading-spinner--${variant}`, typeof customClass === 'string' ? customClass : ''].filter(Boolean).join(' ');
+
+const sizeMap = {
+    sm: '1rem',
+    md: '1.5rem',
+    lg: '2rem'
+};
+---
+
+<div
+    class={classes}
+    style={color ? `--spinner-color: ${color}` : undefined}
+    role="status"
+    aria-label={label}
+    aria-live="polite"
+    {...rest}
+>
+    <div class="loading-spinner__circle">
+        <svg viewBox="0 0 50 50" focusable="false" aria-hidden="true">
+            <circle
+                cx="25"
+                cy="25"
+                r="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"
+            />
+        </svg>
+    </div>
+    <span class="visually-hidden">{label}</span>
+</div>
+
+<style>
+    .loading-spinner {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        --spinner-color: currentColor;
+    }
+
+    .loading-spinner__circle {
+        width: var(--spinner-size);
+        height: var(--spinner-size);
+        position: relative;
+    }
+
+    .loading-spinner__circle svg {
+        width: 100%;
+        height: 100%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    .loading-spinner__circle circle {
+        stroke: var(--spinner-color);
+        stroke-linecap: round;
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: 0;
+    }
+
+    .loading-spinner--sm {
+        --spinner-size: 1rem;
+    }
+
+    .loading-spinner--md {
+        --spinner-size: 1.5rem;
+    }
+
+    .loading-spinner--lg {
+        --spinner-size: 2rem;
+    }
+
+    .loading-spinner--light .loading-spinner__circle circle {
+        stroke: #ffffff;
+    }
+
+    .loading-spinner--dark .loading-spinner__circle circle {
+        stroke: #1e293b;
+    }
+
+    @keyframes spin {
+        0% {
+            stroke-dashoffset: 0;
+            transform: rotate(0deg);
+        }
+        50% {
+            stroke-dashoffset: -35;
+            transform: rotate(135deg);
+        }
+        100% {
+            stroke-dashoffset: -124;
+            transform: rotate(270deg);
+        }
+    }
+
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .loading-spinner__circle svg {
+            animation: none;
+        }
+
+        .loading-spinner__circle circle {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -124;
+        }
+    }
+
+    @media (prefers-contrast: high) {
+        .loading-spinner__circle circle {
+            stroke-width: 5;
+        }
+    }
+</style>

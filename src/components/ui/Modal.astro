@@ -110,18 +110,88 @@ if (isOpen && preventScroll && typeof window !== 'undefined') {
     </div>
 )}
 
-<script>
-    // Add escape key listener when modal is open
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            // Dispatch custom event for parent component to handle
+<script define:vars={{ isOpen, closeOnEscape }}>
+    let previouslyFocusedElement: HTMLElement | null = null;
+    let focusableElements: HTMLElement[] = [];
+
+    const getFocusableElements = (modal: HTMLElement): HTMLElement[] => {
+        const selectors = [
+            'button:not([disabled])',
+            'input:not([disabled])',
+            'select:not([disabled])',
+            'textarea:not([disabled])',
+            'a[href]',
+            '[tabindex]:not([tabindex="-1"])'
+        ];
+        return Array.from(modal.querySelectorAll(selectors.join(', ')));
+    };
+
+    const trapFocus = (event: KeyboardEvent) => {
+        const modal = document.querySelector('.modal--open') as HTMLElement;
+        if (!modal) return;
+
+        focusableElements = getFocusableElements(modal);
+        
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.key === 'Tab') {
+            if (event.shiftKey) {
+                if (document.activeElement === firstElement) {
+                    event.preventDefault();
+                    lastElement.focus();
+                }
+            } else {
+                if (document.activeElement === lastElement) {
+                    event.preventDefault();
+                    firstElement.focus();
+                }
+            }
+        }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+        if (closeOnEscape && event.key === 'Escape') {
             window.dispatchEvent(new CustomEvent('modal:close'));
+        }
+    };
+
+    if (isOpen) {
+        previouslyFocusedElement = document.activeElement as HTMLElement;
+        
+        requestAnimationFrame(() => {
+            const modal = document.querySelector('.modal--open') as HTMLElement;
+            if (modal) {
+                focusableElements = getFocusableElements(modal);
+                const firstFocusable = focusableElements[0];
+                if (firstFocusable) {
+                    firstFocusable.focus();
+                }
+            }
+        });
+
+        document.addEventListener('keydown', trapFocus);
+        document.addEventListener('keydown', handleEscape);
+    } else {
+        if (previouslyFocusedElement) {
+            previouslyFocusedElement.focus();
+        }
+        document.removeEventListener('keydown', trapFocus);
+        document.removeEventListener('keydown', handleEscape);
+    }
+
+    window.addEventListener('modal:close', () => {
+        if (previouslyFocusedElement) {
+            previouslyFocusedElement.focus();
         }
     });
 
-    // Cleanup scroll prevention when component is removed
     document.addEventListener('astro:before-swap', () => {
         document.body.style.overflow = '';
+        document.removeEventListener('keydown', trapFocus);
+        document.removeEventListener('keydown', handleEscape);
     });
 </script>
 

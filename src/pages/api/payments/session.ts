@@ -1,20 +1,12 @@
 import type { APIRoute } from 'astro';
+import { withRateLimit, withTimeout } from '../../../lib/api-middleware';
+import { ApiError } from '../../../lib/api-utils';
 
 import {
         assertPaymentProvider,
         sanitizeCheckoutPayload,
         type CheckoutPayload,
 } from '../../../lib/payments';
-
-const json = (data: unknown, init: ResponseInit = {}) =>
-        new Response(JSON.stringify(data), {
-                status: init.status ?? 200,
-                headers: {
-                        'content-type': 'application/json; charset=utf-8',
-                        'cache-control': 'no-store',
-                        ...init.headers,
-                },
-        });
 
 const isCheckoutPayload = (payload: unknown): payload is CheckoutPayload => {
         if (!payload || typeof payload !== 'object') return false;
@@ -41,44 +33,55 @@ const isCheckoutPayload = (payload: unknown): payload is CheckoutPayload => {
         );
 };
 
-export const POST: APIRoute = async ({ request }) => {
-        let rawPayload: unknown;
-        try {
-                rawPayload = await request.json();
-        } catch (error) {
-                return json({ error: 'Body harus berupa JSON valid.' }, { status: 400 });
-        }
-
-        if (!isCheckoutPayload(rawPayload)) {
-                return json({ error: 'Payload checkout tidak valid.' }, { status: 422 });
-        }
-
-        const provider = (() => {
+export const POST: APIRoute = withRateLimit(
+        withTimeout(async ({ request }) => {
+                let rawPayload: unknown;
                 try {
-                        return assertPaymentProvider();
+                        rawPayload = await request.json();
+                } catch {
+                        throw new ApiError('Request body must be valid JSON', 400, 'INVALID_JSON');
+                }
+
+                if (!isCheckoutPayload(rawPayload)) {
+                        throw new ApiError('Invalid checkout payload', 422, 'INVALID_PAYLOAD');
+                }
+
+                const provider = (() => {
+                        try {
+                                return assertPaymentProvider();
+                        } catch {
+                                return null;
+                        }
+                })();
+
+                if (!provider) {
+                        throw new ApiError('Payment provider not configured', 503, 'PROVIDER_NOT_CONFIGURED');
+                }
+
+                try {
+                        const payload = sanitizeCheckoutPayload(rawPayload);
+                        if (payload.couponCode && provider.applyCoupon) {
+                                await provider.applyCoupon(payload.reference!, payload.couponCode);
+                        }
+
+                        const session = await provider.createCheckoutSession(payload);
+                        return new Response(JSON.stringify({
+                                success: true,
+                                data: { session },
+                                timestamp: new Date().toISOString(),
+                        }), {
+                                status: 200,
+                                headers: {
+                                        'content-type': 'application/json; charset=utf-8',
+                                        'cache-control': 'no-store',
+                                        'idempotency-key': request.headers.get('idempotency-key') ?? '',
+                                },
+                        });
                 } catch (error) {
-                        return null;
+                        console.error('[payments/session]', error);
+                        throw new ApiError('Failed to create payment session', 500, 'SESSION_CREATION_FAILED');
                 }
-        })();
-
-        if (!provider) {
-                return json({ error: 'Provider pembayaran belum dikonfigurasi.' }, { status: 503 });
-        }
-
-        try {
-                const payload = sanitizeCheckoutPayload(rawPayload);
-                if (payload.couponCode && provider.applyCoupon) {
-                        await provider.applyCoupon(payload.reference!, payload.couponCode);
-                }
-
-                const session = await provider.createCheckoutSession(payload);
-                return json({ session }, {
-                        headers: {
-                                'idempotency-key': request.headers.get('idempotency-key') ?? '',
-                        },
-                });
-        } catch (error) {
-                console.error('[payments/session]', error);
-                return json({ error: 'Gagal membuat sesi pembayaran.' }, { status: 500 });
-        }
-};
+        }, 20000),
+        60 * 1000,
+        10
+);

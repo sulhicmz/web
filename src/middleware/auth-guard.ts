@@ -4,15 +4,24 @@
 // ==========================================================================
 
 import type { MiddlewareHandler } from 'astro';
-import { SUPABASE_CONFIG, ERROR_MESSAGES } from '../config';
-import { ApiUtils } from '../lib/api-utils';
-import { AuthUtils } from '../lib/auth';
-import { CONSTS } from '../consts';
+import { getServerClient } from '../lib/supabase';
+
+interface AstroCookies {
+  get(name: string): { value: string } | undefined;
+  delete(name: string, options?: { path?: string }): void;
+}
+
+interface MiddlewareContext {
+  locals: AuthenticatedLocals;
+  request: Request;
+  cookies: AstroCookies;
+  redirect: (path: string) => Response;
+}
 
 // Types for middleware context
 interface AuthenticatedLocals {
-  user?: any;
-  role?: string;
+  user?: Record<string, unknown> | null;
+  role?: string | null;
   isAuthenticated?: boolean;
   permissions?: string[];
 }
@@ -50,7 +59,7 @@ const PUBLIC_ROUTES = [
 
 // Authentication middleware
 export const authGuard: MiddlewareHandler = async (context, next) => {
-  const { locals, request, cookies, redirect } = context as any;
+  const { locals, request, cookies, redirect } = context as MiddlewareContext;
   const url = new URL(request.url);
   const pathname = url.pathname;
 
@@ -78,11 +87,11 @@ export const authGuard: MiddlewareHandler = async (context, next) => {
          }
        }
 
-       // Set authenticated locals
-       locals.user = authResult.user;
-       locals.role = authResult.role;
-       locals.isAuthenticated = true;
-       locals.permissions = authResult.permissions;
+        // Set authenticated locals
+        locals.user = authResult.user ? { ...authResult.user } : null;
+        locals.role = authResult.role;
+        locals.isAuthenticated = true;
+        locals.permissions = authResult.permissions;
      }
 
     // Log successful request
@@ -122,7 +131,7 @@ function getRouteConfig(pathname: string) {
   return null;
 }
 
-async function authenticateUser(cookies: any) {
+async function authenticateUser(cookies: AstroCookies) {
     const accessToken = cookies.get('sb-access-token');
 
     if (!accessToken) {
@@ -130,16 +139,35 @@ async function authenticateUser(cookies: any) {
     }
 
     try {
-      // For now, we'll implement a simpler authentication check
-      // TODO: Implement proper server-side user retrieval
-      if (!accessToken || accessToken.value === '') {
+      const supabase = getServerClient({ accessToken: accessToken.value });
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        // Invalid or expired token - clean up cookies
+        cookies.delete('sb-access-token', { path: '/' });
+        cookies.delete('sb-refresh-token', { path: '/' });
+        cookies.delete('sb-expires-at', { path: '/' });
         return { success: false, user: null, role: null, permissions: [] };
       }
 
-      // Clean up invalid tokens
-      cookies.delete('sb-access-token', { path: '/' });
-      cookies.delete('sb-refresh-token', { path: '/' });
-      return { success: false, user: null, role: null, permissions: [] };
+      // Fetch user profile to get role
+      const { data: profile, error: profileError } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error('Error fetching user profile:', profileError);
+        return { success: false, user, role: null, permissions: [] };
+      }
+
+      return {
+        success: true,
+        user,
+        role: profile.role,
+        permissions: profile.permissions || [],
+      };
 
     } catch (error) {
       console.error('Authentication error:', error);
@@ -161,8 +189,8 @@ function logRequest(request: Request, locals: AuthenticatedLocals): void {
   });
 }
 
-function handleMiddlewareError(error: unknown, redirect: (path: string) => Response): Response {
-  console.error('Middleware error:', error);
+function handleMiddlewareError(_error: unknown, _redirect: (path: string) => Response): Response {
+  console.error('Middleware error:', _error);
 
   // In production, you might want to redirect to a generic error page
   // For now, we'll continue with the request but log the error
@@ -173,7 +201,7 @@ function handleMiddlewareError(error: unknown, redirect: (path: string) => Respo
 }
 
 // Error handling middleware
-export const errorHandler: MiddlewareHandler = async ({ request, redirect }, next) => {
+export const errorHandler: MiddlewareHandler = async ({ request }, next) => {
   try {
     return await next();
   } catch (error) {
@@ -191,22 +219,45 @@ export const errorHandler: MiddlewareHandler = async ({ request, redirect }, nex
 export const securityHeaders: MiddlewareHandler = async ({ request }, next) => {
   const response = await next();
 
+  const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321';
+  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || '';
+
+  const supabaseDomain = supabaseUrl ? new URL(supabaseUrl).hostname : '*.supabase.co';
+
+  const cspDirectives = [
+    "default-src 'self'",
+    `script-src 'self' ${siteUrl}`,
+    `style-src 'self' 'unsafe-inline' ${siteUrl}`,
+    `img-src 'self' data: https: blob: ${supabaseDomain}`,
+    "font-src 'self' data:",
+    `connect-src 'self' ${supabaseDomain} https://*.midtrans.com https://*.plausible.io https://*.google-analytics.com`,
+    "frame-src 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "require-trusted-types-for 'script'",
+    "report-uri /api/csp-report"
+  ].join('; ');
+
   // Add security headers
+  response.headers.set('Content-Security-Policy', cspDirectives);
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
   // Only add HSTS in production over HTTPS
   if (request.url.startsWith('https://') && import.meta.env.MODE === 'production') {
-    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   }
 
   return response;
 };
 
 // Request logging middleware
-export const requestLogger: MiddlewareHandler = async ({ request, locals }, next) => {
+export const requestLogger: MiddlewareHandler = async ({ request }, next) => {
   const startTime = Date.now();
   const response = await next();
   const duration = Date.now() - startTime;
@@ -222,7 +273,7 @@ export const requestLogger: MiddlewareHandler = async ({ request, locals }, next
 // Rate limiting (basic implementation)
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
 
-export const rateLimiter: MiddlewareHandler = async ({ request, redirect }, next) => {
+export const rateLimiter: MiddlewareHandler = async ({ request }, next) => {
   const clientIP = request.headers.get('x-forwarded-for') ||
                    request.headers.get('x-real-ip') ||
                    'unknown';

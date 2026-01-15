@@ -2,6 +2,7 @@
 import BaseHead from '../components/ui/BaseHead.astro';
 import PortalNav from '../components/portal/PortalNav.astro';
 import AnalyticsConsent from '../components/analytics/AnalyticsConsent.astro';
+import SkipLink from '../components/ui/SkipLink.astro';
 import { SITE } from '../consts';
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
         description?: string;
 }
 
-const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengelola proyek, paket, dan dukungan.' } = Astro.props as Props;
+const { title = `${SITE.title} Portal`, description = 'Portal klien untuk mengelola proyek, paket, dan dukungan.' } = Astro.props as Props;
 ---
 
 <!doctype html>
@@ -18,11 +19,12 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
         	<BaseHead title={title} description={description} type="website" />
         </head>
         <body class="portal-shell">
+                <SkipLink href="#portal-main" label="Skip to main content" />
                 <div class="portal-background" aria-hidden="true"></div>
                 <aside class="sidebar">
                         <PortalNav />
                 </aside>
-                <main class="portal-main">
+                <main id="portal-main" class="portal-main">
                         <div class="portal-main__surface">
                                 <slot />
                         </div>
@@ -32,13 +34,11 @@ const { title = `${SITE_TITLE} Portal`, description = 'Portal klien untuk mengel
 </html>
 
 <script>
-  import { createClient } from '@supabase/supabase-js';
-
-  const supabase = createClient(import.meta.env.PUBLIC_SUPABASE_URL, import.meta.env.PUBLIC_SUPABASE_ANON_KEY);
-
   const logoutButton = document.getElementById('logout-button');
-
-  logoutButton.addEventListener('click', async () => {
+  
+  logoutButton?.addEventListener('click', async () => {
+    const { getSupabaseClient } = await import('../lib/supabase/lazy-client');
+    const supabase = await getSupabaseClient();
     await supabase.auth.signOut();
     window.location.href = '/login';
   });

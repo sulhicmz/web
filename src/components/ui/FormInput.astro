@@ -1,10 +1,12 @@
 ---
+import Icon from './Icon.astro';
+
 interface FormInputProps extends AstroHTML.JSX.InputHTMLAttributes {
     label?: string;
     description?: string;
     error?: string;
     success?: boolean;
-    icon?: string;
+    icon?: 'user' | 'email' | 'password' | 'phone' | 'company' | 'website' | 'search' | 'calendar' | 'location';
     variant?: 'default' | 'floating' | 'underline';
     size?: 'sm' | 'md' | 'lg';
     fullWidth?: boolean;
@@ -41,74 +43,57 @@ const classes = [
 const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
 const descriptionId = description ? `${inputId}-description` : undefined;
 const errorId = error ? `${inputId}-error` : undefined;
-
-// Icon mapping untuk berbagai jenis input
-const getIcon = (iconName?: string): string => {
-    const icons: Record<string, string> = {
-        'user': '👤',
-        'email': '📧',
-        'password': '🔒',
-        'phone': '📱',
-        'company': '🏢',
-        'website': '🌐',
-        'search': '🔍',
-        'calendar': '📅',
-        'location': '📍',
-        'default': ''
-    };
-    return icons[iconName || 'default'] || '';
-};
 ---
 
-<div class={`form-input-wrapper ${fullWidth ? 'form-input-wrapper--full-width' : ''}`}>
-    {label && (
-        <label class="form-input__label" for={inputId}>
-            {label}
-            {required && <span class="form-input__required" aria-label="required">*</span>}
-        </label>
-    )}
+    <div class={`form-input-wrapper ${fullWidth ? 'form-input-wrapper--full-width' : ''}`}>
+        {label && (
+            <label class="form-input__label" for={inputId}>
+                {label}
+                {required && <span class="form-input__required" aria-label="required">*</span>}
+            </label>
+        )}
 
-    <div class="form-input__container">
-        {icon && (
-            <div class="form-input__icon-wrapper">
-                <span class="form-input__icon" aria-hidden="true">{getIcon(icon)}</span>
+        <div class="form-input__container">
+            {icon && (
+                <div class="form-input__icon-wrapper">
+                    <Icon name={icon} size={size === 'sm' ? 16 : size === 'lg' ? 24 : 20} class="form-input__icon" />
+                </div>
+            )}
+
+            <input
+                {...rest}
+                class={classes}
+                id={inputId}
+                aria-describedby={[descriptionId, errorId].filter(Boolean).join(' ') || undefined}
+                aria-invalid={error ? 'true' : undefined}
+                disabled={disabled}
+            />
+
+            {/* Success/Error icons */}
+            {error && (
+                <div class="form-input__status-icon form-input__status-icon--error">
+                    <Icon name="error" size={18} class="form-input__status-icon-svg" />
+                </div>
+            )}
+            {success && !error && (
+                <div class="form-input__status-icon form-input__status-icon--success">
+                    <Icon name="success" size={18} class="form-input__status-icon-svg" />
+                </div>
+            )}
+        </div>
+
+        {description && (
+            <div class="form-input__description" id={descriptionId}>
+                {description}
             </div>
         )}
 
-        <input
-            {...rest}
-            class={classes}
-            id={inputId}
-            aria-describedby={[descriptionId, errorId].filter(Boolean).join(' ') || undefined}
-            aria-invalid={error ? 'true' : undefined}
-            disabled={disabled}
-        />
-
-        {/* Success/Error icons */}
         {error && (
-            <div class="form-input__status-icon form-input__status-icon--error" aria-hidden="true">
-                ⚠️
-            </div>
-        )}
-        {success && !error && (
-            <div class="form-input__status-icon form-input__status-icon--success" aria-hidden="true">
-                ✅
+            <div class="form-input__error" id={errorId} role="alert">
+                {error}
             </div>
         )}
     </div>
-
-    {description && (
-        <div class="form-input__description" id={descriptionId}>
-            {description}
-        </div>
-    )}
-
-    {error && (
-        <div class="form-input__error" id={errorId} role="alert">
-            {error}
-        </div>
-    )}
-</div>
 
 <style>
     .form-input-wrapper {
@@ -153,6 +138,12 @@ const getIcon = (iconName?: string): string => {
         pointer-events: none;
     }
 
+    .form-input__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .form-input {
         width: 100%;
         font-family: var(--font-primary);
@@ -181,6 +172,18 @@ const getIcon = (iconName?: string): string => {
         align-items: center;
         justify-content: center;
         pointer-events: none;
+    }
+
+    .form-input__status-icon-svg {
+        color: currentColor;
+    }
+
+    .form-input__status-icon--error {
+        color: var(--color-error);
+    }
+
+    .form-input__status-icon--success {
+        color: var(--color-success);
     }
 
     .form-input__container:has(.form-input__status-icon) .form-input {
@@ -284,16 +287,6 @@ const getIcon = (iconName?: string): string => {
         color: var(--color-error);
         line-height: var(--leading-relaxed);
         margin-top: var(--space-1);
-        display: flex;
-        align-items: flex-start;
-        gap: var(--space-1);
-    }
-
-    .form-input__error::before {
-        content: '⚠️';
-        font-size: 0.875em;
-        flex-shrink: 0;
-        margin-top: 0.125rem;
     }
 
     /* Responsive */

@@ -31,6 +31,17 @@ const classes = [
     typeof customClass === 'string' ? customClass : ''
 ].filter(Boolean).join(' ');
 
+const toastId = `toast-${Math.random().toString(36).substr(2, 9)}`;
+
+const getRoleAndLive = (type: ToastType) => {
+    if (type === 'error') {
+        return { role: 'alert', live: 'assertive' };
+    }
+    return { role: 'status', live: 'polite' };
+};
+
+const { role, live } = getRoleAndLive(type);
+
 // Icon mapping untuk berbagai tipe toast
 const getIcon = (type: ToastType): string => {
     const icons: Record<ToastType, string> = {
@@ -72,10 +83,12 @@ const getColors = (type: ToastType) => {
 
 {isVisible && (
     <div
+        id={toastId}
         class={classes}
         style={`--toast-duration: ${duration}ms`}
-        role="alert"
-        aria-live="polite"
+        role={role as 'status' | 'alert'}
+        aria-live={live as 'polite' | 'assertive'}
+        aria-atomic="true"
         {...rest}
     >
         <div class="toast__icon" aria-hidden="true">
@@ -381,20 +394,15 @@ const getColors = (type: ToastType) => {
     }
 </style>
 
-<script>
-    // Auto-dismiss toast after duration
-    document.addEventListener('DOMContentLoaded', () => {
-        const toasts = document.querySelectorAll('.toast--visible');
-
-        toasts.forEach((toast) => {
-            const duration = toast.style.getPropertyValue('--toast-duration') || '5000ms';
-            const durationMs = parseInt(duration);
-
-            if (durationMs > 0) {
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, durationMs);
-            }
-        });
-    });
+<script define:vars={{ toastId, isVisible, duration }}>
+    if (isVisible) {
+        const toast = document.getElementById(toastId) as HTMLElement;
+        
+        if (toast && duration > 0) {
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.setAttribute('aria-hidden', 'true');
+            }, duration);
+        }
+    }
 </script>

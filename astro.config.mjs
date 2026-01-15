@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import cloudflare from "@astrojs/cloudflare";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,11 +24,28 @@ export default defineConfig({
     imageService: "compile",
   }),
   vite: {
+    plugins: [
+      visualizer({
+        emitFile: true,
+        filename: "stats.html",
+        open: false,
+        gzipSize: true,
+      })
+    ],
     define: {
       'import.meta.env.PUBLIC_SITE_URL': JSON.stringify(import.meta.env.PUBLIC_SITE_URL || 'https://astropro.digital'),
     },
     ssr: {
-      external: ['@supabase/supabase-js'],
+      external: ['@supabase/supabase-js', 'crypto'],
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'supabase': ['@supabase/supabase-js'],
+          },
+        },
+      },
     },
   },
   output: 'server',

@@ -4,6 +4,8 @@
 // ==========================================================================
 
 import type { ApiResponse, PaginatedResponse } from '../types';
+import { createHmac } from 'crypto';
+import DOMPurify from 'dompurify';
 
 // API Response Helpers
 export function createSuccessResponse<T>(
@@ -85,10 +87,10 @@ export function handleApiError(error: unknown): ApiResponse<never> {
 }
 
 // Validation Helpers
-export function validateRequired(
-  value: any,
+export function validateRequired<T>(
+  value: T,
   fieldName: string
-): asserts value is NonNullable<typeof value> {
+): asserts value is NonNullable<T> {
   if (value === null || value === undefined || value === '') {
     throw new ApiError(
       `Field ${fieldName} is required`,
@@ -186,12 +188,15 @@ export function getSearchParams(request: Request): string | undefined {
 
 // Security Utilities
 export function sanitizeHtml(input: string): string {
-  // Basic HTML sanitization - in production, use a proper library like DOMPurify
-  return input
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    .replace(/javascript:/gi, '')
-    .replace(/on\w+\s*=/gi, '');
+  // Use DOMPurify for comprehensive XSS protection
+  // Configured to allow basic HTML elements but block scripts and dangerous attributes
+  return DOMPurify.sanitize(input, {
+    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'span'],
+    ALLOWED_ATTR: ['href', 'title', 'class', 'style'],
+    ALLOW_DATA_ATTR: false,
+    FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'],
+    FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur']
+  });
 }
 
 export function generateSlug(text: string): string {
@@ -214,7 +219,7 @@ export const RATE_LIMITS = {
 export type RateLimitType = keyof typeof RATE_LIMITS;
 
 // Cache Utilities
-export function getCacheKey(endpoint: string, params?: Record<string, any>): string {
+export function getCacheKey(endpoint: string, params?: Record<string, unknown>): string {
   const paramStr = params ? JSON.stringify(params) : '';
   return `api:${endpoint}:${paramStr}`;
 }
@@ -234,7 +239,7 @@ export function logApiRequest(
   method: string,
   endpoint: string,
   userId?: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): void {
   console.log(`[${new Date().toISOString()}] ${method} ${endpoint}`, {
     userId,
@@ -246,7 +251,7 @@ export function logApiError(
   endpoint: string,
   error: Error,
   statusCode: number,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): void {
   console.error(`[${new Date().toISOString()}] ERROR ${endpoint}`, {
     error: error.message,
@@ -257,36 +262,71 @@ export function logApiError(
 }
 
 // Response Headers
-export function getCorsHeaders(): Record<string, string> {
+export function getCorsHeaders(origin?: string): Record<string, string> {
+  const siteUrl = typeof import.meta.env !== 'undefined' ? import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321' : 'http://localhost:4321';
+  const allowedOrigins = [
+    siteUrl,
+    'http://localhost:4321',
+    'http://localhost:3000',
+  ];
+
+  // Validate and sanitize origin
+  let allowedOrigin = '';
+  if (origin && allowedOrigins.includes(origin)) {
+    allowedOrigin = origin;
+  }
+
   return {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': allowedOrigin ? 'true' : 'false',
+    'Access-Control-Max-Age': '86400',
   };
 }
 
 export function getSecurityHeaders(): Record<string, string> {
+  const siteUrl = typeof import.meta.env !== 'undefined' ? import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321' : 'http://localhost:4321';
+
+  // Content Security Policy - comprehensive XSS and injection protection
+  const cspDirectives = [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline' ${siteUrl}`,
+    `style-src 'self' 'unsafe-inline' ${siteUrl}`,
+    `img-src 'self' data: https: blob:`,
+    `font-src 'self' data:`,
+    "connect-src 'self' https://*.supabase.co https://*.midtrans.com",
+    "frame-src 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "report-uri /api/csp-report"
+  ].join('; ');
+
   return {
+    'Content-Security-Policy': cspDirectives,
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'geolocation=(), microphone=(), camera=()'
   };
 }
 
-export function getApiResponseHeaders(): Record<string, string> {
+export function getApiResponseHeaders(origin?: string): Record<string, string> {
   return {
     'Content-Type': 'application/json',
-    ...getCorsHeaders(),
+    ...getCorsHeaders(origin),
     ...getSecurityHeaders(),
   };
 }
 
 // Database Query Helpers
 export function buildWhereClause(
-  filters: Record<string, any>
-): Record<string, any> {
-  const whereClause: Record<string, any> = {};
+  filters: Record<string, unknown>
+): Record<string, unknown> {
+  const whereClause: Record<string, unknown> = {};
 
   Object.entries(filters).forEach(([key, value]) => {
     if (value !== null && value !== undefined && value !== '') {
@@ -355,8 +395,7 @@ export function verifyWebhookSignature(
 ): boolean {
   // In production, use proper cryptographic verification
   // This is a simplified example
-  const expectedSignature = `sha256=${require('crypto')
-    .createHmac('sha256', secret)
+  const expectedSignature = `sha256=${createHmac('sha256', secret)
     .update(payload)
     .digest('hex')}`;
 
